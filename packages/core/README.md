@@ -1,11 +1,18 @@
-# core
+# Store SDK for WooCommerce
 
-This library was generated with [Nx](https://nx.dev).
+A modern, TypeScript-first SDK for integrating with the **WooCommerce Store API**.
+This library provides typed client utilities and convenient abstractions to simplify working with WooCommerce headless or decoupled storefronts.
 
-## Building
+## ✨ Features
 
-Run `nx build core` to build the library.
+- 📦 Easy-to-use API for WooCommerce Store endpoints
+- 🔐 Supports both guest and authenticated users
+- 🧩 Modular design — import only what you need
+- 🛠️ Type-safe responses powered by TypeScript
+- ⚙️ Built with modern tooling (NX, Vitest)
 
-## Running unit tests
+## 📦 Installation
 
-Run `nx test core` to execute the unit tests via [Vitest](https://vitest.dev/).
+```bash
+npm install @store-sdk/core
+```

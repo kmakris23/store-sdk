@@ -6,6 +6,7 @@
     "url": "https://github.com/kmakris23/store-sdk",
     "directory": ""
   },
+  "license": "MIT",
   "description": "TypeScript-first SDK for integrating with the WooCommerce Store API",
   "type": "module",
   "main": "./dist/index.js",
