@@ -1,7 +1,12 @@
 {
   "name": "@store-sdk/core",
   "version": "0.0.3",
-  "private": false,
+  "author": "Kostas Makris <kostasmakris23@gmail.com>",
+  "repository": {
+    "url": "https://github.com/kmakris23/store-sdk",
+    "directory": ""
+  },
+  "description": "TypeScript-first SDK for integrating with the WooCommerce Store API",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
