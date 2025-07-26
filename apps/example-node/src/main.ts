@@ -1,8 +1,5 @@
 import { StoreSdk } from '@store-sdk/core/i';
 
-const sdk = new StoreSdk({
-  baseUrl: '',
-});
-
-sdk.cart.get();
+StoreSdk.init({ baseUrl: '' });
+StoreSdk.products().list();
 console.log('Hello World');
