@@ -23,7 +23,7 @@ export class CartCouponService {
    */
   list(): Promise<CartCouponResponse[]> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return this.axiosInstance.get<{}, CartCouponResponse[]>(url);
+    return this.axiosInstance.get<unknown, CartCouponResponse[]>(url);
   }
 
   /**

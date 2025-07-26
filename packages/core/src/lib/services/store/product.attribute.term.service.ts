@@ -31,6 +31,6 @@ export class ProductAttributeTermService {
   ): Promise<ProductAttributeResponse[]> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/${attributeId}/terms?${query}`;
-    return this.axiosInstance.get<{}, ProductAttributeResponse[]>(url);
+    return this.axiosInstance.get<unknown, ProductAttributeResponse[]>(url);
   }
 }

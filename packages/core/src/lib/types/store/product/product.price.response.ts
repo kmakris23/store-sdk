@@ -9,5 +9,5 @@ export interface ProductPriceResponse {
   price: string;
   regular_price: string;
   sale_price: string;
-  price_range: {} | unknown;
+  price_range: unknown;
 }

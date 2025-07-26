@@ -23,6 +23,6 @@ export class ProductTagService {
    */
   list(): Promise<ProductTagResponse[]> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return this.axiosInstance.get<{}, ProductTagResponse[]>(url);
+    return this.axiosInstance.get<unknown, ProductTagResponse[]>(url);
   }
 }

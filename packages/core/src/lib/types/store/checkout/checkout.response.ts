@@ -17,5 +17,5 @@ export interface CheckoutResponse {
   };
   additional_fields: { [key: string]: string }[];
   __experimentalCart: unknown;
-  extensions: {};
+  extensions: unknown;
 }

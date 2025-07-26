@@ -23,7 +23,7 @@ export class ProductCategoryService {
    */
   list(): Promise<ProductCategoryResponse[]> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return this.axiosInstance.get<{}, ProductCategoryResponse[]>(url);
+    return this.axiosInstance.get<unknown, ProductCategoryResponse[]>(url);
   }
 
   /**
@@ -33,6 +33,6 @@ export class ProductCategoryService {
    */
   single(id: number): Promise<ProductCategoryResponse> {
     const url = `${this.baseUrl}/${this.endpoint}/${id}`;
-    return this.axiosInstance.get<{}, ProductCategoryResponse>(url);
+    return this.axiosInstance.get<unknown, ProductCategoryResponse>(url);
   }
 }

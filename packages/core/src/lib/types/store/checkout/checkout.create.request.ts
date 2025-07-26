@@ -29,5 +29,5 @@ export interface CheckoutCreateRequest {
    * Optionally define a password for new accounts.
    */
   customer_password?: string;
-  extensions: {};
+  extensions?: unknown;
 }

@@ -29,6 +29,6 @@ export class ProductCollectionDataService {
   ): Promise<ProductCollectionDataResponse> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    return this.axiosInstance.get<{}, ProductCollectionDataResponse>(url);
+    return this.axiosInstance.get<unknown, ProductCollectionDataResponse>(url);
   }
 }

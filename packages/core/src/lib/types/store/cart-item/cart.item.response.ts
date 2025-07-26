@@ -25,5 +25,5 @@ export interface CartItemResponse {
   prices: CartItemPriceResponse;
   totals: CartItemTotalResponse;
   catalog_visibility: string;
-  extensions: {} | unknown;
+  extensions: unknown;
 }

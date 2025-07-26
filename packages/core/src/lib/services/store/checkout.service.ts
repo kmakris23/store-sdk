@@ -27,7 +27,7 @@ export class CheckoutService {
    */
   get(): Promise<CheckoutResponse> {
     const url = `${this.baseUrl}/${this.endpoint}/`;
-    return this.axiosInstance.get<{}, CheckoutResponse>(url);
+    return this.axiosInstance.get<unknown, CheckoutResponse>(url);
   }
 
   /**

@@ -27,7 +27,7 @@ export class CartService {
    */
   get(): Promise<CartResponse> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return this.axiosInstance.get<{}, CartResponse>(url);
+    return this.axiosInstance.get<unknown, CartResponse>(url);
   }
 
   /**
