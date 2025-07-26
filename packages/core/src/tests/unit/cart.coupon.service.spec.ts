@@ -1,10 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
 import { CartCouponService } from '../../lib/services/store/cart.coupon.service';
+import { cartCouponListMock } from '../services/cart.coupon.list.data';
+
+const cartCoupotGetData = cartCouponListMock;
 
 vi.mock('axios');
 describe('CartCouponService', () => {
-  const baseUrl = 'https://example.com';
+  const baseUrl = 'http://local.wordpress.test';
   let service: CartCouponService;
   let axiosMockInstance: any;
 
@@ -20,7 +23,7 @@ describe('CartCouponService', () => {
   });
 
   it('should call GET on list()', async () => {
-    const mockData = [{ code: 'SUMMER20' }];
+    const mockData = cartCoupotGetData;
     axiosMockInstance.get.mockResolvedValue(mockData);
 
     const result = await service.list();
@@ -31,40 +34,40 @@ describe('CartCouponService', () => {
   });
 
   it('should call GET on single()', async () => {
-    const mockData = { code: 'DISCOUNT10' };
+    const mockData = cartCoupotGetData.at(0);
     axiosMockInstance.get.mockResolvedValue(mockData);
 
-    const result = await service.single('DISCOUNT10');
+    const result = await service.single('20off');
     expect(axiosMockInstance.get).toHaveBeenCalledWith(
-      `${baseUrl}/wp-json/wc/store/v1/cart/coupons/DISCOUNT10`
+      `${baseUrl}/wp-json/wc/store/v1/cart/coupons/20off`
     );
     expect(result).toEqual(mockData);
   });
 
   it('should call POST on add()', async () => {
-    const mockData = { code: 'NEWCODE' };
+    const mockData = cartCoupotGetData.at(0);
     axiosMockInstance.post.mockResolvedValue(mockData);
 
-    const result = await service.add('NEWCODE');
+    const result = await service.add('20off');
     expect(axiosMockInstance.post).toHaveBeenCalledWith(
-      `${baseUrl}/wp-json/wc/store/v1/cart/coupons?code=NEWCODE`
+      `${baseUrl}/wp-json/wc/store/v1/cart/coupons?code=20off`
     );
     expect(result).toEqual(mockData);
   });
 
   it('should call DELETE on delete()', async () => {
-    const mockResponse = { success: true };
+    const mockResponse = {};
     axiosMockInstance.delete.mockResolvedValue(mockResponse);
 
-    const result = await service.delete('OLDCOUPON');
+    const result = await service.delete('20off');
     expect(axiosMockInstance.delete).toHaveBeenCalledWith(
-      `${baseUrl}/wp-json/wc/store/v1/cart/coupons/OLDCOUPON`
+      `${baseUrl}/wp-json/wc/store/v1/cart/coupons/20off`
     );
     expect(result).toEqual(mockResponse);
   });
 
   it('should call DELETE on clear()', async () => {
-    const mockData = [{ code: 'A' }, { code: 'B' }];
+    const mockData: unknown[] = [];
     axiosMockInstance.delete.mockResolvedValue(mockData);
 
     const result = await service.clear();

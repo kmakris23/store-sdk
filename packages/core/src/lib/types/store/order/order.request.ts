@@ -9,7 +9,7 @@ export interface OrderRequest {
   /**
    * The email address used to verify guest orders.
    */
-  billing_email: string;
+  billing_email?: string;
   /**
    * Object of updated billing address data for the customer.
    */
@@ -25,5 +25,5 @@ export interface OrderRequest {
   /**
    * Data to pass through to the payment method when processing payment.
    */
-  payment_data: { key: string; value: string }[];
+  payment_data?: { key: string; value: string }[];
 }
