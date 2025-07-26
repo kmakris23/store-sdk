@@ -60,6 +60,9 @@
     }
   },
   "release": {
+    "version": {
+      "conventionalCommits": true
+    },
     "changelog": {
       "workspaceChangelog": {
         "createRelease": "github"
