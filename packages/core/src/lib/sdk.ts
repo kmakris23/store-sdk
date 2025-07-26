@@ -1,3 +1,4 @@
+import { StoreSdkConfig } from './types/sdk.config';
 import { CartCouponService } from './services/store/cart.coupon.service';
 import { CartItemService } from './services/store/cart.item.service';
 import { CartService } from './services/store/cart.service';
@@ -11,39 +12,104 @@ import { ProductCollectionDataService } from './services/store/product.collectio
 import { ProductReviewService } from './services/store/product.review.service';
 import { ProductService } from './services/store/product.service';
 import { ProductTagService } from './services/store/product.tag.service';
-import { Config } from './types/config';
 
-export class StoreSdk {
-  readonly tags: ProductTagService;
-  readonly orders: OrderService;
-  readonly brands: ProductBrandService;
-  readonly checkout: CheckoutService;
-  readonly products: ProductService;
-  readonly reviews: ProductReviewService;
-  readonly categories: ProductCategoryService;
-  readonly attributes: ProductAttributeService;
-  readonly attributesTerms: ProductAttributeTermService;
-  readonly collectionData: ProductCollectionDataService;
+class Sdk {
+  private _tags!: ProductTagService;
+  private _orders!: OrderService;
+  private _brands!: ProductBrandService;
+  private _checkout!: CheckoutService;
+  private _products!: ProductService;
+  private _reviews!: ProductReviewService;
+  private _categories!: ProductCategoryService;
+  private _attributes!: ProductAttributeService;
+  private _attributesTerms!: ProductAttributeTermService;
+  private _collectionData!: ProductCollectionDataService;
 
-  readonly cart: CartService;
-  readonly cartItems: CartItemService;
-  readonly cartCoupons: CartCouponService;
+  private _cart!: CartService;
+  private _cartItems!: CartItemService;
+  private _cartCoupons!: CartCouponService;
 
-  constructor(config: Config) {
-    this.orders = new OrderService(config.baseUrl);
-    this.checkout = new CheckoutService(config.baseUrl);
+  private _initialized = false;
 
-    this.tags = new ProductTagService(config.baseUrl);
-    this.brands = new ProductBrandService(config.baseUrl);
-    this.reviews = new ProductReviewService(config.baseUrl);
-    this.products = new ProductService(config.baseUrl);
-    this.categories = new ProductCategoryService(config.baseUrl);
-    this.attributes = new ProductAttributeService(config.baseUrl);
-    this.attributesTerms = new ProductAttributeTermService(config.baseUrl);
-    this.collectionData = new ProductCollectionDataService(config.baseUrl);
+  public init = (config: StoreSdkConfig) => {
+    if (this._initialized) return;
 
-    this.cart = new CartService(config.baseUrl);
-    this.cartItems = new CartItemService(config.baseUrl);
-    this.cartCoupons = new CartCouponService(config.baseUrl);
-  }
+    this._tags = new ProductTagService(config.baseUrl);
+    this._orders = new OrderService(config.baseUrl);
+    this._brands = new ProductBrandService(config.baseUrl);
+    this._checkout = new CheckoutService(config.baseUrl);
+    this._reviews = new ProductReviewService(config.baseUrl);
+    this._products = new ProductService(config.baseUrl);
+    this._categories = new ProductCategoryService(config.baseUrl);
+    this._attributes = new ProductAttributeService(config.baseUrl);
+    this._attributesTerms = new ProductAttributeTermService(config.baseUrl);
+    this._collectionData = new ProductCollectionDataService(config.baseUrl);
+
+    this._cart = new CartService(config.baseUrl);
+    this._cartItems = new CartItemService(config.baseUrl);
+    this._cartCoupons = new CartCouponService(config.baseUrl);
+
+    this._initialized = true;
+  };
+
+  tags = () => {
+    this.throwIfNotInitized();
+    return this._tags;
+  };
+  orders = () => {
+    this.throwIfNotInitized();
+    return this._orders;
+  };
+  brands = () => {
+    this.throwIfNotInitized();
+    return this._brands;
+  };
+  checkout = () => {
+    this.throwIfNotInitized();
+    return this._checkout;
+  };
+  reviews = () => {
+    this.throwIfNotInitized();
+    return this._reviews;
+  };
+  products = () => {
+    this.throwIfNotInitized();
+    return this._products;
+  };
+  categories = () => {
+    this.throwIfNotInitized();
+    return this._categories;
+  };
+  attributes = () => {
+    this.throwIfNotInitized();
+    return this._attributes;
+  };
+  attributesTerms = () => {
+    this.throwIfNotInitized();
+    return this._attributesTerms;
+  };
+  collectionData = () => {
+    this.throwIfNotInitized();
+    return this._collectionData;
+  };
+
+  cart = () => {
+    this.throwIfNotInitized();
+    return this._cart;
+  };
+  cartItems = () => {
+    this.throwIfNotInitized();
+    return this._cartItems;
+  };
+  cartCoupons = () => {
+    this.throwIfNotInitized();
+    return this._cartCoupons;
+  };
+
+  private throwIfNotInitized = () => {
+    if (this._initialized) return;
+    throw new Error('SDK not initialized. Call StoreSdk.init(config) first.');
+  };
 }
+
+export const StoreSdk = new Sdk();
