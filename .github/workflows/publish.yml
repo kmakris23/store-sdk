@@ -35,7 +35,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm clean-install
+        run: npm install
 
       - name: Run build
         run: npx nx build core
