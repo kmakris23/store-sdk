@@ -24,8 +24,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-            fetch-depth: 0
-            filter: tree:0
+          fetch-depth: 0
+          filter: tree:0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -40,11 +40,5 @@ jobs:
       - name: Run build
         run: npx nx build core
 
-      - name: Publish Version
-        run: npx nx release version
-
-      - name: Publish Changelog
-        run: npx nx release changelog
-
       - name: Publish
-        run: npx nx release publish
+        run: npx nx release -y
