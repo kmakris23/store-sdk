@@ -1,4 +1,4 @@
-import { StoreSdk } from '@store-sdk/core/i';
+import { StoreSdk } from '@store-sdk/core';
 
 StoreSdk.init({ baseUrl: '' });
 StoreSdk.products().list();

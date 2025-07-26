@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { ProductAttributeResponse } from '../../types/store/product-attribute/product.attribute.response';
+import { ProductAttributeResponse } from '../../types/store/product-attribute/product.attribute.response.js';
 
 /**
  * Product Attributes API

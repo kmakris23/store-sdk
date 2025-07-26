@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { ProductRequest } from '../../types/store/product/product.request';
-import { ProductResponse } from '../../types/store/product/product.response';
-import { RequireAtLeastOne } from '../../utilities/common';
+import { ProductRequest } from '../../types/store/product/product.request.js';
+import { ProductResponse } from '../../types/store/product/product.response.js';
+import { RequireAtLeastOne } from '../../utilities/common.js';
 import qs from 'qs';
 
 /**

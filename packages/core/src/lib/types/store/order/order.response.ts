@@ -1,9 +1,9 @@
-import { CartItemResponse } from '../cart-item/cart.item.response';
-import { ErrorResponse } from '../error.response';
-import { OrderBillingResponse } from './order.billing.response';
-import { OrderCouponResponse } from './order.coupon.response';
-import { OrderShippingResponse } from './order.shipping.response';
-import { OrderTotalResponse } from './order.total.response';
+import { CartItemResponse } from '../cart-item/cart.item.response.js';
+import { ErrorResponse } from '../error.response.js';
+import { OrderBillingResponse } from './order.billing.response.js';
+import { OrderCouponResponse } from './order.coupon.response.js';
+import { OrderShippingResponse } from './order.shipping.response.js';
+import { OrderTotalResponse } from './order.total.response.js';
 
 export interface OrderResponse {
   id: number;

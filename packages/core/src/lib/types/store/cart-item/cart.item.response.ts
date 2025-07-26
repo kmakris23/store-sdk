@@ -1,8 +1,8 @@
-import { ImageResponse } from '../image.response';
-import { CartItemPriceResponse } from './cart.item.price.response';
-import { CartItemQuantityLimitsResponse } from './cart.item.quantity.limits.response';
-import { CartItemTotalResponse } from './cart.item.total.response';
-import { CartItemVariationResponse } from './cart.item.variation.response';
+import { ImageResponse } from '../image.response.js';
+import { CartItemPriceResponse } from './cart.item.price.response.js';
+import { CartItemQuantityLimitsResponse } from './cart.item.quantity.limits.response.js';
+import { CartItemTotalResponse } from './cart.item.total.response.js';
+import { CartItemVariationResponse } from './cart.item.variation.response.js';
 
 export interface CartItemResponse {
   key: string;

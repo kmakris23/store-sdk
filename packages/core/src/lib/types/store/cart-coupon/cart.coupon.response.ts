@@ -1,4 +1,4 @@
-import { CartCouponTotalResponse } from './cart.coupon.total.response';
+import { CartCouponTotalResponse } from './cart.coupon.total.response.js';
 
 export interface CartCouponResponse {
   code: string;

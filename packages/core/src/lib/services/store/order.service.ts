@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { OrderResponse } from '../../types/store/order/order.response';
+import { OrderResponse } from '../../types/store/order/order.response.js';
 
 /**
  * Order API

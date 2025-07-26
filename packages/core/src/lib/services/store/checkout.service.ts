@@ -1,8 +1,8 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { CheckoutResponse } from '../../types/store/checkout/checkout.response';
-import { CheckoutUpdateRequest } from '../../types/store/checkout/checkout.update.request';
-import { CheckoutCreateRequest } from '../../types/store/checkout/checkout.create.request';
-import { OrderRequest } from '../../types/store/order/order.request';
+import { CheckoutResponse } from '../../types/store/checkout/checkout.response.js';
+import { CheckoutUpdateRequest } from '../../types/store/checkout/checkout.update.request.js';
+import { CheckoutCreateRequest } from '../../types/store/checkout/checkout.create.request.js';
+import { OrderRequest } from '../../types/store/order/order.request.js';
 import qs from 'qs';
 
 /**

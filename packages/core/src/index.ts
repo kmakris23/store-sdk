@@ -1,2 +1,2 @@
-export * from './lib/sdk';
-export * from './lib/types/sdk.config';
+export * from './lib/sdk.js';
+export * from './lib/types/sdk.config.js';

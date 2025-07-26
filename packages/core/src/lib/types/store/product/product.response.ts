@@ -1,5 +1,5 @@
-import { ImageResponse } from '../image.response';
-import { ProductPriceResponse } from './product.price.response';
+import { ImageResponse } from '../image.response.js';
+import { ProductPriceResponse } from './product.price.response.js';
 
 export interface ProductResponse {
   id: number;
