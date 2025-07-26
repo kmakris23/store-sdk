@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { ProductBrandResponse } from '../../types/store/product-brand/product.brand.response';
+import { ProductBrandResponse } from '../../types/store/product-brand/product.brand.response.js';
 
 /**
  * Product Brands API

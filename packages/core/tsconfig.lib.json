@@ -7,11 +7,12 @@
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
     "emitDeclarationOnly": false,
     "declaration": true,
+    "declarationMap": true,
     "forceConsistentCasingInFileNames": true,
     "types": ["node"],
-    "composite": true
+    "composite": true,
   },
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "src/**/*"],
   "exclude": [
     "vite.config.ts",
     "vite.config.mts",

@@ -1,17 +1,17 @@
-import { StoreSdkConfig } from './types/sdk.config';
-import { CartCouponService } from './services/store/cart.coupon.service';
-import { CartItemService } from './services/store/cart.item.service';
-import { CartService } from './services/store/cart.service';
-import { CheckoutService } from './services/store/checkout.service';
-import { OrderService } from './services/store/order.service';
-import { ProductAttributeService } from './services/store/product.attribute.service';
-import { ProductAttributeTermService } from './services/store/product.attribute.term.service';
-import { ProductBrandService } from './services/store/product.brand.service';
-import { ProductCategoryService } from './services/store/product.category.service';
-import { ProductCollectionDataService } from './services/store/product.collection.data.service';
-import { ProductReviewService } from './services/store/product.review.service';
-import { ProductService } from './services/store/product.service';
-import { ProductTagService } from './services/store/product.tag.service';
+import { StoreSdkConfig } from './types/sdk.config.js';
+import { CartCouponService } from './services/store/cart.coupon.service.js';
+import { CartItemService } from './services/store/cart.item.service.js';
+import { CartService } from './services/store/cart.service.js';
+import { CheckoutService } from './services/store/checkout.service.js';
+import { OrderService } from './services/store/order.service.js';
+import { ProductAttributeService } from './services/store/product.attribute.service.js';
+import { ProductAttributeTermService } from './services/store/product.attribute.term.service.js';
+import { ProductBrandService } from './services/store/product.brand.service.js';
+import { ProductCategoryService } from './services/store/product.category.service.js';
+import { ProductCollectionDataService } from './services/store/product.collection.data.service.js';
+import { ProductReviewService } from './services/store/product.review.service.js';
+import { ProductService } from './services/store/product.service.js';
+import { ProductTagService } from './services/store/product.tag.service.js';
 
 class Sdk {
   private _tags!: ProductTagService;

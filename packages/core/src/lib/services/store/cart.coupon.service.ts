@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { CartCouponResponse } from '../../types/store/cart-coupon/cart.coupon.response';
+import { CartCouponResponse } from '../../types/store/cart-coupon/cart.coupon.response.js';
 
 /**
  * Cart Coupons API

@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { ProductReviewResponse } from '../../types/store/product-review/product.review.response';
-import { ProductReviewRequest } from '../../types/store/product-review/product.review.request';
+import { ProductReviewResponse } from '../../types/store/product-review/product.review.response.js';
+import { ProductReviewRequest } from '../../types/store/product-review/product.review.request.js';
 import qs from 'qs';
 
 /**

@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { ProductCollectionDataRequest } from '../../types/store/product-collection-data/product.collection.data.request';
-import { ProductCollectionDataResponse } from '../../types/store/product-collection-data/product.collection.data.response';
+import { ProductCollectionDataRequest } from '../../types/store/product-collection-data/product.collection.data.request.js';
+import { ProductCollectionDataResponse } from '../../types/store/product-collection-data/product.collection.data.response.js';
 import qs from 'qs';
 
 /**

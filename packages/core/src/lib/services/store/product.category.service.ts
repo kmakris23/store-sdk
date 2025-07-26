@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { ProductCategoryResponse } from '../../types/store/product-category/product.category.response';
+import { ProductCategoryResponse } from '../../types/store/product-category/product.category.response.js';
 
 /**
  * Product Categories API

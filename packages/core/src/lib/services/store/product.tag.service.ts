@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { ProductTagResponse } from '../../types/store/product-tag/product.tag.response';
+import { ProductTagResponse } from '../../types/store/product-tag/product.tag.response.js';
 
 /**
  * Product Tags API

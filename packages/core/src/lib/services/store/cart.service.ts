@@ -1,8 +1,8 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { CartResponse } from '../../types/store/cart/cart.response';
-import { CartItemAddRequest } from '../../types/store/cart-item/cart.item.add.request';
-import { CartItemEditRequest } from '../../types/store/cart-item/cart.item.edit.request';
-import { CartCustomerRequest } from '../../types/store/cart/cart.customer.request';
+import { CartResponse } from '../../types/store/cart/cart.response.js';
+import { CartItemAddRequest } from '../../types/store/cart-item/cart.item.add.request.js';
+import { CartItemEditRequest } from '../../types/store/cart-item/cart.item.edit.request.js';
+import { CartCustomerRequest } from '../../types/store/cart/cart.customer.request.js';
 import qs from 'qs';
 
 /**

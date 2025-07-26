@@ -1,5 +1,5 @@
-import { OrderBillingResponse } from './order.billing.response';
-import { OrderShippingResponse } from './order.shipping.response';
+import { OrderBillingResponse } from './order.billing.response.js';
+import { OrderShippingResponse } from './order.shipping.response.js';
 
 export interface OrderRequest {
   /**

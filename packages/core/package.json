@@ -17,10 +17,14 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "default": "./dist/index.js"
+      "require": "./dist/index.cjs"
+      
     }
   },
   "dependencies": {
     "tslib": "^2.3.0"
+  },
+  "scripts": {
+    "build": "tsup"
   }
 }

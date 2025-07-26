@@ -1,5 +1,5 @@
-import { CheckoutBillingResponse } from './checkout.billing.response';
-import { CheckoutShippingResponse } from './checkout.shipping';
+import { CheckoutBillingResponse } from './checkout.billing.response.js';
+import { CheckoutShippingResponse } from './checkout.shipping.js';
 
 export interface CheckoutResponse {
   order_id: number;

@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { ProductAttributeResponse } from '../../types/store/product-attribute/product.attribute.response';
-import { ProductAttributeTermRequest } from '../../types/store/product-attribute-term/product.attribute.term.request';
+import { ProductAttributeResponse } from '../../types/store/product-attribute/product.attribute.response.js';
+import { ProductAttributeTermRequest } from '../../types/store/product-attribute-term/product.attribute.term.request.js';
 import qs from 'qs';
 
 /**
