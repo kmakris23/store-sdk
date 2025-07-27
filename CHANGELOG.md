@@ -1,3 +1,13 @@
+## 0.0.14 (2025-07-27)
+
+### 🩹 Fixes
+
+- `tsup` config ([38d1e34](https://github.com/kmakris23/store-sdk/commit/38d1e34))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.0.13 (2025-07-27)
 
 This was a version bump only, there were no code changes.
