@@ -25,7 +25,11 @@ export class ProductAttributeService {
    */
   async list(): Promise<ApiResult<ProductAttributeResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return await doRequest<ProductAttributeResponse[]>(this.axiosInstance, url);
+    return await doRequest<ProductAttributeResponse[]>(
+      this.axiosInstance,
+      url,
+      { method: 'get' }
+    );
   }
 
   /**
@@ -35,6 +39,8 @@ export class ProductAttributeService {
    */
   async single(id: number): Promise<ApiResult<ProductAttributeResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${id}`;
-    return await doRequest<ProductAttributeResponse>(this.axiosInstance, url);
+    return await doRequest<ProductAttributeResponse>(this.axiosInstance, url, {
+      method: 'get',
+    });
   }
 }

@@ -29,7 +29,9 @@ export class CartService {
    */
   async get(): Promise<ApiResult<CartResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return await doRequest<CartResponse>(this.axiosInstance, url);
+    return await doRequest<CartResponse>(this.axiosInstance, url, {
+      method: 'get',
+    });
   }
 
   /**
@@ -40,7 +42,9 @@ export class CartService {
   async add(params: CartItemAddRequest): Promise<ApiResult<CartResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/add-item?${query}`;
-    return await doRequest<CartResponse>(this.axiosInstance, url);
+    return await doRequest<CartResponse>(this.axiosInstance, url, {
+      method: 'post',
+    });
   }
 
   /**
@@ -51,7 +55,9 @@ export class CartService {
   async update(params: CartItemEditRequest): Promise<ApiResult<CartResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/update-item?${query}`;
-    return await doRequest<CartResponse>(this.axiosInstance, url);
+    return await doRequest<CartResponse>(this.axiosInstance, url, {
+      method: 'post',
+    });
   }
 
   /**
@@ -61,7 +67,9 @@ export class CartService {
    */
   async remove(key: string): Promise<ApiResult<CartResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/remove-item?key=${key}`;
-    return await doRequest<CartResponse>(this.axiosInstance, url);
+    return await doRequest<CartResponse>(this.axiosInstance, url, {
+      method: 'post',
+    });
   }
 
   /**
@@ -71,7 +79,9 @@ export class CartService {
    */
   async applyCoupon(code: string): Promise<ApiResult<CartResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/apply-coupon/${code}`;
-    return await doRequest<CartResponse>(this.axiosInstance, url);
+    return await doRequest<CartResponse>(this.axiosInstance, url, {
+      method: 'post',
+    });
   }
 
   /**
@@ -81,7 +91,9 @@ export class CartService {
    */
   async removeCoupon(code: string): Promise<ApiResult<CartResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/remove-coupon/${code}`;
-    return await doRequest<CartResponse>(this.axiosInstance, url);
+    return await doRequest<CartResponse>(this.axiosInstance, url, {
+      method: 'post',
+    });
   }
 
   /**
@@ -93,7 +105,10 @@ export class CartService {
     body: CartCustomerRequest
   ): Promise<ApiResult<CartResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/update-customer`;
-    return await doRequest<CartResponse>(this.axiosInstance, url);
+    return await doRequest<CartResponse>(this.axiosInstance, url, {
+      method: 'post',
+      data: body,
+    });
   }
 
   /**
@@ -107,6 +122,8 @@ export class CartService {
     rateId: string
   ): Promise<ApiResult<CartResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/select-shipping-rate/package_id=${packageId}&rate_id=${rateId}`;
-    return await doRequest<CartResponse>(this.axiosInstance, url);
+    return await doRequest<CartResponse>(this.axiosInstance, url, {
+      method: 'post',
+    });
   }
 }

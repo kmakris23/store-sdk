@@ -33,7 +33,8 @@ export class ProductCollectionDataService {
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
     return await doRequest<ProductCollectionDataResponse>(
       this.axiosInstance,
-      url
+      url,
+      { method: 'get' }
     );
   }
 }

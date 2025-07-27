@@ -29,7 +29,9 @@ export class CheckoutService {
    */
   async get(): Promise<ApiResult<CheckoutResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/`;
-    return await doRequest<CheckoutResponse>(this.axiosInstance, url);
+    return await doRequest<CheckoutResponse>(this.axiosInstance, url, {
+      method: 'get',
+    });
   }
 
   /**
@@ -46,7 +48,9 @@ export class CheckoutService {
     const url = `${this.baseUrl}/${this.endpoint}/?__experimental_calc_totals=${
       experimental_calc_totals || false
     }&${query}`;
-    return await doRequest<CheckoutResponse>(this.axiosInstance, url);
+    return await doRequest<CheckoutResponse>(this.axiosInstance, url, {
+      method: 'put',
+    });
   }
 
   /**
@@ -59,7 +63,9 @@ export class CheckoutService {
   ): Promise<ApiResult<CheckoutResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/${query}`;
-    return await doRequest<CheckoutResponse>(this.axiosInstance, url);
+    return await doRequest<CheckoutResponse>(this.axiosInstance, url, {
+      method: 'post',
+    });
   }
 
   /**
@@ -73,6 +79,9 @@ export class CheckoutService {
     params: OrderRequest
   ): Promise<ApiResult<CheckoutResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${orderId}`;
-    return await doRequest<CheckoutResponse>(this.axiosInstance, url);
+    return await doRequest<CheckoutResponse>(this.axiosInstance, url, {
+      method: 'post',
+      data: params,
+    });
   }
 }
