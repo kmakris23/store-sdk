@@ -1,5 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ProductAttributeResponse } from '../../types/store/product-attribute/product.attribute.response.js';
+import { doRequest } from '../../utilities/axios.utility.js';
+import { ApiResult } from '../../types/api.js';
 
 /**
  * Product Attributes API
@@ -21,12 +23,9 @@ export class ProductAttributeService {
    * List Product Attributes
    * @returns {ProductAttributeResponse[]}
    */
-  async list(): Promise<ProductAttributeResponse[]> {
+  async list(): Promise<ApiResult<ProductAttributeResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    const response = await this.axiosInstance.get<ProductAttributeResponse[]>(
-      url
-    );
-    return response.data;
+    return await doRequest<ProductAttributeResponse[]>(this.axiosInstance, url);
   }
 
   /**
@@ -34,11 +33,8 @@ export class ProductAttributeService {
    * @param id The ID of the attribute to retrieve.
    * @returns {ProductAttributeResponse}
    */
-  async single(id: number): Promise<ProductAttributeResponse> {
+  async single(id: number): Promise<ApiResult<ProductAttributeResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${id}`;
-    const response = await this.axiosInstance.get<ProductAttributeResponse>(
-      url
-    );
-    return response.data;
+    return await doRequest<ProductAttributeResponse>(this.axiosInstance, url);
   }
 }

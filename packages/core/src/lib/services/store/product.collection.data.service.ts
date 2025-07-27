@@ -2,6 +2,8 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ProductCollectionDataRequest } from '../../types/store/product-collection-data/product.collection.data.request.js';
 import { ProductCollectionDataResponse } from '../../types/store/product-collection-data/product.collection.data.response.js';
 import qs from 'qs';
+import { doRequest } from '../../utilities/axios.utility.js';
+import { ApiResult } from '../../types/api.js';
 
 /**
  * Product Collection Data API
@@ -22,15 +24,16 @@ export class ProductCollectionDataService {
   /**
    * Calculate
    * @param params
-   * @returns {ProductCollectionDataResponse}
+   * @returns
    */
   async calculate(
     params?: ProductCollectionDataRequest
-  ): Promise<ProductCollectionDataResponse> {
+  ): Promise<ApiResult<ProductCollectionDataResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    const response =
-      await this.axiosInstance.get<ProductCollectionDataResponse>(url);
-    return response.data;
+    return await doRequest<ProductCollectionDataResponse>(
+      this.axiosInstance,
+      url
+    );
   }
 }

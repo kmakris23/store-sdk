@@ -3,6 +3,8 @@ import { ProductRequest } from '../../types/store/product/product.request.js';
 import { ProductResponse } from '../../types/store/product/product.response.js';
 import { RequireAtLeastOne } from '../../utilities/common.js';
 import qs from 'qs';
+import { doRequest } from '../../utilities/axios.utility.js';
+import { ApiResult } from '../../types/api.js';
 
 /**
  * Products API
@@ -23,9 +25,9 @@ export class ProductService {
   /**
    * List Products
    * @param params
-   * @returns {ProductResponse[]}
+   * @returns
    */
-  async list(params?: ProductRequest): Promise<ProductResponse[]> {
+  async list(params?: ProductRequest): Promise<ApiResult<ProductResponse[]>> {
     let unstable_tax = '';
     let unstable_tax_operator = '';
     if (params && params._unstable_tax_) {
@@ -51,20 +53,18 @@ export class ProductService {
     );
 
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    const response = await this.axiosInstance.get<ProductResponse[]>(url);
-    return response.data;
+    return await doRequest<ProductResponse[]>(this.axiosInstance, url);
   }
 
   /**
    * Single Product by ID or Slug
    * @param params
-   * @returns {ProductResponse}
+   * @returns
    */
   async single(
     params: RequireAtLeastOne<{ id: number; slug: string }>
-  ): Promise<ProductResponse> {
+  ): Promise<ApiResult<ProductResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${params.id || params.slug}`;
-    const response = await this.axiosInstance.get<ProductResponse>(url);
-    return response.data;
+    return await doRequest<ProductResponse>(this.axiosInstance, url);
   }
 }

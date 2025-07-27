@@ -4,6 +4,8 @@ import { CheckoutUpdateRequest } from '../../types/store/checkout/checkout.updat
 import { CheckoutCreateRequest } from '../../types/store/checkout/checkout.create.request.js';
 import { OrderRequest } from '../../types/store/order/order.request.js';
 import qs from 'qs';
+import { ApiResult } from '../../types/api.js';
+import { doRequest } from '../../utilities/axios.utility.js';
 
 /**
  * Checkout API
@@ -25,10 +27,9 @@ export class CheckoutService {
    * Get Checkout Data
    * @returns {CheckoutResponse}
    */
-  async get(): Promise<CheckoutResponse> {
+  async get(): Promise<ApiResult<CheckoutResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/`;
-    const response = await this.axiosInstance.get<CheckoutResponse>(url);
-    return response.data;
+    return await doRequest<CheckoutResponse>(this.axiosInstance, url);
   }
 
   /**
@@ -40,13 +41,12 @@ export class CheckoutService {
   async update(
     params?: CheckoutUpdateRequest,
     experimental_calc_totals = false
-  ): Promise<CheckoutResponse> {
+  ): Promise<ApiResult<CheckoutResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/?__experimental_calc_totals=${
       experimental_calc_totals || false
     }&${query}`;
-    const response = await this.axiosInstance.put<CheckoutResponse>(url);
-    return response.data;
+    return await doRequest<CheckoutResponse>(this.axiosInstance, url);
   }
 
   /**
@@ -54,11 +54,12 @@ export class CheckoutService {
    * @param params
    * @returns {CheckoutResponse}
    */
-  async create(params: CheckoutCreateRequest): Promise<CheckoutResponse> {
+  async create(
+    params: CheckoutCreateRequest
+  ): Promise<ApiResult<CheckoutResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/${query}`;
-    const response = await this.axiosInstance.post<CheckoutResponse>(url);
-    return response.data;
+    return await doRequest<CheckoutResponse>(this.axiosInstance, url);
   }
 
   /**
@@ -70,12 +71,8 @@ export class CheckoutService {
   async order(
     orderId: number,
     params: OrderRequest
-  ): Promise<CheckoutResponse> {
+  ): Promise<ApiResult<CheckoutResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${orderId}`;
-    const response = await this.axiosInstance.post<CheckoutResponse>(
-      url,
-      params
-    );
-    return response.data;
+    return await doRequest<CheckoutResponse>(this.axiosInstance, url);
   }
 }

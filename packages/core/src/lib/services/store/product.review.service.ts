@@ -2,6 +2,8 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ProductReviewResponse } from '../../types/store/product-review/product.review.response.js';
 import { ProductReviewRequest } from '../../types/store/product-review/product.review.request.js';
 import qs from 'qs';
+import { doRequest } from '../../utilities/axios.utility.js';
+import { ApiResult } from '../../types/api.js';
 
 /**
  * Product Reviews API
@@ -22,12 +24,13 @@ export class ProductReviewService {
   /**
    * List Product Reviews
    * @param params
-   * @returns {ProductReviewResponse[]}
+   * @returns
    */
-  async list(params?: ProductReviewRequest): Promise<ProductReviewResponse[]> {
+  async list(
+    params?: ProductReviewRequest
+  ): Promise<ApiResult<ProductReviewResponse[]>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    const response = await this.axiosInstance.get<ProductReviewResponse[]>(url);
-    return response.data;
+    return await doRequest<ProductReviewResponse[]>(this.axiosInstance, url);
   }
 }

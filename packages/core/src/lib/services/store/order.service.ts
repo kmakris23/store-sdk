@@ -1,5 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { OrderResponse } from '../../types/store/order/order.response.js';
+import { ApiResult } from '../../types/api.js';
+import { doRequest } from '../../utilities/axios.utility.js';
 
 /**
  * Order API
@@ -28,12 +30,11 @@ export class OrderService {
     key: string,
     orderId: string,
     billingEmail?: string
-  ): Promise<OrderResponse> {
+  ): Promise<ApiResult<OrderResponse>> {
     let url = `${this.baseUrl}/${this.endpoint}/${orderId}?key=${key}`;
     if (billingEmail) {
       url += `&billing_email=${billingEmail}`;
     }
-    const response = await this.axiosInstance.get<OrderResponse>(url);
-    return response.data;
+    return await doRequest<OrderResponse>(this.axiosInstance, url);
   }
 }

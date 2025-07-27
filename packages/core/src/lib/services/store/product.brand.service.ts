@@ -2,6 +2,8 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ProductBrandResponse } from '../../types/store/product-brand/product.brand.response.js';
 import { Paginated } from '../../types/store/paginated.js';
 import qs from 'qs';
+import { doRequest } from '../../utilities/axios.utility.js';
+import { ApiResult } from '../../types/api.js';
 
 /**
  * Product Brands API
@@ -21,23 +23,21 @@ export class ProductBrandService {
 
   /**
    * List Product Brands
-   * @returns {ProductBrandResponse[]}
+   * @returns
    */
-  async list(params?: Paginated): Promise<ProductBrandResponse[]> {
+  async list(params?: Paginated): Promise<ApiResult<ProductBrandResponse[]>> {
     const query = qs.stringify(params);
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    const response = await this.axiosInstance.get<ProductBrandResponse[]>(url);
-    return response.data;
+    return await doRequest<ProductBrandResponse[]>(this.axiosInstance, url);
   }
 
   /**
    * Single Product Brand
    * @param id The identifier of the brand to retrieve. Can be an brand ID or slug.
-   * @returns {ProductBrandResponse}
+   * @returns
    */
-  async single(id: number): Promise<ProductBrandResponse> {
+  async single(id: number): Promise<ApiResult<ProductBrandResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${id}`;
-    const response = await this.axiosInstance.get<ProductBrandResponse>(url);
-    return response.data;
+    return await doRequest<ProductBrandResponse>(this.axiosInstance, url);
   }
 }

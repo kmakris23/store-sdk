@@ -1,5 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { CartCouponResponse } from '../../types/store/cart-coupon/cart.coupon.response.js';
+import { doRequest } from '../../utilities/axios.utility.js';
+import { ApiResult } from '../../types/api.js';
 
 /**
  * Cart Coupons API
@@ -21,11 +23,9 @@ export class CartCouponService {
    * List Cart Coupons
    * @returns {CartCouponResponse[]}
    */
-  list(): Promise<CartCouponResponse[]> {
+  async list(): Promise<ApiResult<CartCouponResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return this.axiosInstance
-      .get<CartCouponResponse[]>(url)
-      .then((response) => response.data);
+    return await doRequest<CartCouponResponse[]>(this.axiosInstance, url);
   }
 
   /**
@@ -33,11 +33,9 @@ export class CartCouponService {
    * @param code The coupon code of the cart coupon to retrieve.
    * @returns {CartCouponResponse}
    */
-  single(code: string): Promise<CartCouponResponse> {
+  async single(code: string): Promise<ApiResult<CartCouponResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${code}`;
-    return this.axiosInstance
-      .get<CartCouponResponse>(url)
-      .then((response) => response.data);
+    return await doRequest<CartCouponResponse>(this.axiosInstance, url);
   }
 
   /**
@@ -45,11 +43,9 @@ export class CartCouponService {
    * @param code The coupon code you wish to apply to the cart.
    * @returns {CartCouponResponse}
    */
-  add(code: string): Promise<CartCouponResponse> {
+  async add(code: string): Promise<ApiResult<CartCouponResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}?code=${code}`;
-    return this.axiosInstance
-      .post<CartCouponResponse>(url)
-      .then((response) => response.data);
+    return await doRequest<CartCouponResponse>(this.axiosInstance, url);
   }
 
   /**
@@ -57,21 +53,17 @@ export class CartCouponService {
    * @param code The coupon code you wish to remove from the cart.
    * @returns {unknown}
    */
-  delete(code: string): Promise<unknown> {
+  async delete(code: string): Promise<ApiResult<unknown>> {
     const url = `${this.baseUrl}/${this.endpoint}/${code}`;
-    return this.axiosInstance
-      .delete<unknown>(url)
-      .then((response) => response.data);
+    return await doRequest<unknown>(this.axiosInstance, url);
   }
 
   /**
    * Delete/remove all coupons from the cart.
    * @returns {CartCouponResponse[]}
    */
-  clear(): Promise<CartCouponResponse[]> {
+  async clear(): Promise<ApiResult<CartCouponResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return this.axiosInstance
-      .delete<CartCouponResponse[]>(url)
-      .then((response) => response.data);
+    return await doRequest<CartCouponResponse[]>(this.axiosInstance, url);
   }
 }

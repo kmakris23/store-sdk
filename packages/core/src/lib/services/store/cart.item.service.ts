@@ -3,6 +3,8 @@ import { CartItemResponse } from '../../types/store/cart-item/cart.item.response
 import { CartItemAddRequest } from '../../types/store/cart-item/cart.item.add.request.js';
 import { CartItemEditRequest } from '../../types/store/cart-item/cart.item.edit.request.js';
 import qs from 'qs';
+import { ApiResult } from '../../types/api.js';
+import { doRequest } from '../../utilities/axios.utility.js';
 
 /**
  * Cart Items API
@@ -24,10 +26,9 @@ export class CartItemService {
    * List Cart Items
    * @returns {CartItemResponse[]}
    */
-  async list(): Promise<CartItemResponse[]> {
+  async list(): Promise<ApiResult<CartItemResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    const response = await this.axiosInstance.get<CartItemResponse[]>(url);
-    return response.data;
+    return await doRequest<CartItemResponse[]>(this.axiosInstance, url);
   }
 
   /**
@@ -35,10 +36,9 @@ export class CartItemService {
    * @param key The key of the cart item to retrieve.
    * @returns {CartItemResponse}
    */
-  async single(key: string): Promise<CartItemResponse> {
+  async single(key: string): Promise<ApiResult<CartItemResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${key}`;
-    const response = await this.axiosInstance.get<CartItemResponse>(url);
-    return response.data;
+    return await doRequest<CartItemResponse>(this.axiosInstance, url);
   }
 
   /**
@@ -46,11 +46,10 @@ export class CartItemService {
    * @param params
    * @returns {CartItemResponse}
    */
-  async add(params: CartItemAddRequest): Promise<CartItemResponse> {
+  async add(params: CartItemAddRequest): Promise<ApiResult<CartItemResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/${query}`;
-    const response = await this.axiosInstance.post<CartItemResponse>(url);
-    return response.data;
+    return await doRequest<CartItemResponse>(this.axiosInstance, url);
   }
 
   /**
@@ -58,11 +57,12 @@ export class CartItemService {
    * @param params
    * @returns {CartItemResponse}
    */
-  async update(params: CartItemEditRequest): Promise<CartItemResponse> {
+  async update(
+    params: CartItemEditRequest
+  ): Promise<ApiResult<CartItemResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/items/${query}`;
-    const response = await this.axiosInstance.post<CartItemResponse>(url);
-    return response.data;
+    return await doRequest<CartItemResponse>(this.axiosInstance, url);
   }
 
   /**
@@ -70,19 +70,17 @@ export class CartItemService {
    * @param key The key of the cart item to edit.
    * @returns {unknown}
    */
-  async remove(key: string): Promise<unknown> {
+  async remove(key: string): Promise<ApiResult<unknown>> {
     const url = `${this.baseUrl}/${this.endpoint}/items/${key}`;
-    const response = await this.axiosInstance.delete<unknown>(url);
-    return response.data;
+    return await doRequest<unknown>(this.axiosInstance, url);
   }
 
   /**
    * Delete All Cart Items
    * @returns {CartItemResponse[]}
    */
-  async clear(): Promise<CartItemResponse[]> {
+  async clear(): Promise<ApiResult<CartItemResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    const response = await this.axiosInstance.delete<CartItemResponse[]>(url);
-    return response.data;
+    return await doRequest<CartItemResponse[]>(this.axiosInstance, url);
   }
 }
