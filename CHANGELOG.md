@@ -1,3 +1,15 @@
+## 0.0.15 (2025-07-27)
+
+### 🩹 Fixes
+
+- convert service calls to `async` ([ed7f46c](https://github.com/kmakris23/store-sdk/commit/ed7f46c))
+- wrap responses around `ApiResult<T>` ([75b0afb](https://github.com/kmakris23/store-sdk/commit/75b0afb))
+- add missing request options ([e83da78](https://github.com/kmakris23/store-sdk/commit/e83da78))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.0.14 (2025-07-27)
 
 ### 🩹 Fixes
