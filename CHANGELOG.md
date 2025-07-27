@@ -1,3 +1,13 @@
+## 0.0.16 (2025-07-27)
+
+### 🩹 Fixes
+
+- update `ApiResult` type ([2cec47a](https://github.com/kmakris23/store-sdk/commit/2cec47a))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.0.15 (2025-07-27)
 
 ### 🩹 Fixes
