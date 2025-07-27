@@ -13,6 +13,6 @@ export interface ApiData<T> {
 }
 
 export interface ApiResult<T> {
-  data: T | null;
-  error: ApiError | null;
+  data?: T;
+  error?: ApiError;
 }
