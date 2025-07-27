@@ -48,3 +48,4 @@ vitest.config.*.timestamp*
 .vscode
 .env
 .npmrc
+.angular
