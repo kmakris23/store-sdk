@@ -25,7 +25,7 @@ export class ProductService {
    * @param params
    * @returns {ProductResponse[]}
    */
-  list(params?: ProductRequest): Promise<ProductResponse[]> {
+  async list(params?: ProductRequest): Promise<ProductResponse[]> {
     let unstable_tax = '';
     let unstable_tax_operator = '';
     if (params && params._unstable_tax_) {
@@ -51,18 +51,20 @@ export class ProductService {
     );
 
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    return this.axiosInstance.get<ProductRequest, ProductResponse[]>(url);
+    const response = await this.axiosInstance.get<ProductResponse[]>(url);
+    return response.data;
   }
 
   /**
    * Single Product by ID or Slug
-   * @param params 
+   * @param params
    * @returns {ProductResponse}
    */
-  single(
+  async single(
     params: RequireAtLeastOne<{ id: number; slug: string }>
   ): Promise<ProductResponse> {
     const url = `${this.baseUrl}/${this.endpoint}/${params.id || params.slug}`;
-    return this.axiosInstance.get<ProductRequest, ProductResponse>(url);
+    const response = await this.axiosInstance.get<ProductResponse>(url);
+    return response.data;
   }
 }

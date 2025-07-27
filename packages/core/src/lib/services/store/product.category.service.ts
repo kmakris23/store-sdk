@@ -24,10 +24,15 @@ export class ProductCategoryService {
    * @param params
    * @returns {ProductCategoryResponse[]}
    */
-  list(params?: ProductCategoryRequest): Promise<ProductCategoryResponse[]> {
+  async list(
+    params?: ProductCategoryRequest
+  ): Promise<ProductCategoryResponse[]> {
     const query = qs.stringify(params);
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    return this.axiosInstance.get<unknown, ProductCategoryResponse[]>(url);
+    const response = await this.axiosInstance.get<ProductCategoryResponse[]>(
+      url
+    );
+    return response.data;
   }
 
   /**
@@ -35,8 +40,9 @@ export class ProductCategoryService {
    * @param id The ID of the category to retrieve.
    * @returns {ProductCategoryResponse}
    */
-  single(id: number): Promise<ProductCategoryResponse> {
+  async single(id: number): Promise<ProductCategoryResponse> {
     const url = `${this.baseUrl}/${this.endpoint}/${id}`;
-    return this.axiosInstance.get<unknown, ProductCategoryResponse>(url);
+    const response = await this.axiosInstance.get<ProductCategoryResponse>(url);
+    return response.data;
   }
 }

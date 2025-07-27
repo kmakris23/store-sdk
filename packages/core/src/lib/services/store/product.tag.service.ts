@@ -21,12 +21,13 @@ export class ProductTagService {
 
   /**
    * List Product Tags
-   * @param params 
+   * @param params
    * @returns {ProductTagResponse[]}
    */
-  list(params: ProductTagRequest): Promise<ProductTagResponse[]> {
+  async list(params: ProductTagRequest): Promise<ProductTagResponse[]> {
     const query = qs.stringify(params);
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    return this.axiosInstance.get<unknown, ProductTagResponse[]>(url);
+    const response = await this.axiosInstance.get<ProductTagResponse[]>(url);
+    return response.data;
   }
 }

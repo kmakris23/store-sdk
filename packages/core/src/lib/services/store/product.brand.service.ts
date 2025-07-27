@@ -23,10 +23,11 @@ export class ProductBrandService {
    * List Product Brands
    * @returns {ProductBrandResponse[]}
    */
-  list(params?: Paginated): Promise<ProductBrandResponse[]> {
+  async list(params?: Paginated): Promise<ProductBrandResponse[]> {
     const query = qs.stringify(params);
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    return this.axiosInstance.get<unknown, ProductBrandResponse[]>(url);
+    const response = await this.axiosInstance.get<ProductBrandResponse[]>(url);
+    return response.data;
   }
 
   /**
@@ -34,8 +35,9 @@ export class ProductBrandService {
    * @param id The identifier of the brand to retrieve. Can be an brand ID or slug.
    * @returns {ProductBrandResponse}
    */
-  single(id: number): Promise<ProductBrandResponse> {
+  async single(id: number): Promise<ProductBrandResponse> {
     const url = `${this.baseUrl}/${this.endpoint}/${id}`;
-    return this.axiosInstance.get<unknown, ProductBrandResponse>(url);
+    const response = await this.axiosInstance.get<ProductBrandResponse>(url);
+    return response.data;
   }
 }

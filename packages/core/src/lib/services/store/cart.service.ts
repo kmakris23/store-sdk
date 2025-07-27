@@ -25,9 +25,10 @@ export class CartService {
    * Get Cart
    * @returns {CartResponse}
    */
-  get(): Promise<CartResponse> {
+  async get(): Promise<CartResponse> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return this.axiosInstance.get<unknown, CartResponse>(url);
+    const response = await this.axiosInstance.get<CartResponse>(url);
+    return response.data;
   }
 
   /**
@@ -35,10 +36,11 @@ export class CartService {
    * @param params
    * @returns {CartResponse}
    */
-  add(params: CartItemAddRequest): Promise<CartResponse> {
+  async add(params: CartItemAddRequest): Promise<CartResponse> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/add-item?${query}`;
-    return this.axiosInstance.post<CartItemAddRequest, CartResponse>(url);
+    const response = await this.axiosInstance.post<CartResponse>(url);
+    return response.data;
   }
 
   /**
@@ -46,10 +48,11 @@ export class CartService {
    * @param params
    * @returns {CartResponse}
    */
-  update(params: CartItemEditRequest): Promise<CartResponse> {
+  async update(params: CartItemEditRequest): Promise<CartResponse> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/update-item?${query}`;
-    return this.axiosInstance.post<CartItemEditRequest, CartResponse>(url);
+    const response = await this.axiosInstance.post<CartResponse>(url);
+    return response.data;
   }
 
   /**
@@ -57,9 +60,10 @@ export class CartService {
    * @param key
    * @returns {CartResponse}
    */
-  remove(key: string): Promise<CartResponse> {
+  async remove(key: string): Promise<CartResponse> {
     const url = `${this.baseUrl}/${this.endpoint}/remove-item?key=${key}`;
-    return this.axiosInstance.post<string, CartResponse>(url);
+    const response = await this.axiosInstance.post<CartResponse>(url);
+    return response.data;
   }
 
   /**
@@ -67,9 +71,10 @@ export class CartService {
    * @param code The coupon code you wish to apply to the cart.
    * @returns {CartResponse}
    */
-  applyCoupon(code: string): Promise<CartResponse> {
+  async applyCoupon(code: string): Promise<CartResponse> {
     const url = `${this.baseUrl}/${this.endpoint}/apply-coupon/${code}`;
-    return this.axiosInstance.post<string, CartResponse>(url);
+    const response = await this.axiosInstance.post<CartResponse>(url);
+    return response.data;
   }
 
   /**
@@ -77,9 +82,10 @@ export class CartService {
    * @param code The coupon code you wish to remove from the cart.
    * @returns {CartResponse}
    */
-  removeCoupon(code: string): Promise<CartResponse> {
+  async removeCoupon(code: string): Promise<CartResponse> {
     const url = `${this.baseUrl}/${this.endpoint}/remove-coupon/${code}`;
-    return this.axiosInstance.post<string, CartResponse>(url);
+    const response = await this.axiosInstance.post<CartResponse>(url);
+    return response.data;
   }
 
   /**
@@ -87,12 +93,10 @@ export class CartService {
    * @param body
    * @returns {CartResponse}
    */
-  updateCustomer(body: CartCustomerRequest): Promise<CartResponse> {
+  async updateCustomer(body: CartCustomerRequest): Promise<CartResponse> {
     const url = `${this.baseUrl}/${this.endpoint}/update-customer`;
-    return this.axiosInstance.post<CartCustomerRequest, CartResponse>(
-      url,
-      body
-    );
+    const response = await this.axiosInstance.post<CartResponse>(url, body);
+    return response.data;
   }
 
   /**
@@ -101,11 +105,12 @@ export class CartService {
    * @param rateId The chosen rate ID for the package.
    * @returns {CartResponse}s
    */
-  selectShippingRate(packageId: number, rateId: string): Promise<CartResponse> {
+  async selectShippingRate(
+    packageId: number,
+    rateId: string
+  ): Promise<CartResponse> {
     const url = `${this.baseUrl}/${this.endpoint}/select-shipping-rate/package_id=${packageId}&rate_id=${rateId}`;
-    return this.axiosInstance.post<
-      { packageId: number; rateId: string },
-      CartResponse
-    >(url);
+    const response = await this.axiosInstance.post<CartResponse>(url);
+    return response.data;
   }
 }

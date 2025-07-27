@@ -25,9 +25,10 @@ export class CheckoutService {
    * Get Checkout Data
    * @returns {CheckoutResponse}
    */
-  get(): Promise<CheckoutResponse> {
+  async get(): Promise<CheckoutResponse> {
     const url = `${this.baseUrl}/${this.endpoint}/`;
-    return this.axiosInstance.get<unknown, CheckoutResponse>(url);
+    const response = await this.axiosInstance.get<CheckoutResponse>(url);
+    return response.data;
   }
 
   /**
@@ -36,7 +37,7 @@ export class CheckoutService {
    * @param experimental_calc_totals This is used to determine if the cart totals should be recalculated. This should be set to true if the cart totals are being updated in response to a PUT request, false otherwise.
    * @returns {CheckoutResponse}
    */
-  update(
+  async update(
     params?: CheckoutUpdateRequest,
     experimental_calc_totals = false
   ): Promise<CheckoutResponse> {
@@ -44,7 +45,8 @@ export class CheckoutService {
     const url = `${this.baseUrl}/${this.endpoint}/?__experimental_calc_totals=${
       experimental_calc_totals || false
     }&${query}`;
-    return this.axiosInstance.put<CheckoutUpdateRequest, CheckoutResponse>(url);
+    const response = await this.axiosInstance.put<CheckoutResponse>(url);
+    return response.data;
   }
 
   /**
@@ -52,12 +54,11 @@ export class CheckoutService {
    * @param params
    * @returns {CheckoutResponse}
    */
-  create(params: CheckoutCreateRequest): Promise<CheckoutResponse> {
+  async create(params: CheckoutCreateRequest): Promise<CheckoutResponse> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/${query}`;
-    return this.axiosInstance.post<CheckoutCreateRequest, CheckoutResponse>(
-      url
-    );
+    const response = await this.axiosInstance.post<CheckoutResponse>(url);
+    return response.data;
   }
 
   /**
@@ -66,8 +67,15 @@ export class CheckoutService {
    * @param params
    * @returns
    */
-  order(orderId: number, params: OrderRequest): Promise<CheckoutResponse> {
+  async order(
+    orderId: number,
+    params: OrderRequest
+  ): Promise<CheckoutResponse> {
     const url = `${this.baseUrl}/${this.endpoint}/${orderId}`;
-    return this.axiosInstance.post<OrderRequest, CheckoutResponse>(url, params);
+    const response = await this.axiosInstance.post<CheckoutResponse>(
+      url,
+      params
+    );
+    return response.data;
   }
 }

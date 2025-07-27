@@ -21,9 +21,12 @@ export class ProductAttributeService {
    * List Product Attributes
    * @returns {ProductAttributeResponse[]}
    */
-  list(): Promise<ProductAttributeResponse[]> {
+  async list(): Promise<ProductAttributeResponse[]> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return this.axiosInstance.get<unknown, ProductAttributeResponse[]>(url);
+    const response = await this.axiosInstance.get<ProductAttributeResponse[]>(
+      url
+    );
+    return response.data;
   }
 
   /**
@@ -31,8 +34,11 @@ export class ProductAttributeService {
    * @param id The ID of the attribute to retrieve.
    * @returns {ProductAttributeResponse}
    */
-  single(id: number): Promise<ProductAttributeResponse> {
+  async single(id: number): Promise<ProductAttributeResponse> {
     const url = `${this.baseUrl}/${this.endpoint}/${id}`;
-    return this.axiosInstance.get<unknown, ProductAttributeResponse>(url);
+    const response = await this.axiosInstance.get<ProductAttributeResponse>(
+      url
+    );
+    return response.data;
   }
 }

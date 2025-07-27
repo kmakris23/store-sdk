@@ -19,12 +19,12 @@ export class OrderService {
 
   /**
    * Get Order
-   * @param key 
-   * @param orderId 
-   * @param billingEmail 
+   * @param key
+   * @param orderId
+   * @param billingEmail
    * @returns {OrderResponse}
    */
-  get(
+  async get(
     key: string,
     orderId: string,
     billingEmail?: string
@@ -33,9 +33,7 @@ export class OrderService {
     if (billingEmail) {
       url += `&billing_email=${billingEmail}`;
     }
-    return this.axiosInstance.get<
-      { key: string; order: string; billingEmail?: string },
-      OrderResponse
-    >(url);
+    const response = await this.axiosInstance.get<OrderResponse>(url);
+    return response.data;
   }
 }

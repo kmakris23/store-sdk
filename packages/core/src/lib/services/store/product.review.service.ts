@@ -24,9 +24,10 @@ export class ProductReviewService {
    * @param params
    * @returns {ProductReviewResponse[]}
    */
-  list(params?: ProductReviewRequest): Promise<ProductReviewResponse[]> {
+  async list(params?: ProductReviewRequest): Promise<ProductReviewResponse[]> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    return this.axiosInstance.get<unknown, ProductReviewResponse[]>(url);
+    const response = await this.axiosInstance.get<ProductReviewResponse[]>(url);
+    return response.data;
   }
 }

@@ -24,9 +24,10 @@ export class CartItemService {
    * List Cart Items
    * @returns {CartItemResponse[]}
    */
-  list(): Promise<CartItemResponse[]> {
+  async list(): Promise<CartItemResponse[]> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return this.axiosInstance.get<unknown, CartItemResponse[]>(url);
+    const response = await this.axiosInstance.get<CartItemResponse[]>(url);
+    return response.data;
   }
 
   /**
@@ -34,9 +35,10 @@ export class CartItemService {
    * @param key The key of the cart item to retrieve.
    * @returns {CartItemResponse}
    */
-  single(key: string): Promise<CartItemResponse> {
+  async single(key: string): Promise<CartItemResponse> {
     const url = `${this.baseUrl}/${this.endpoint}/${key}`;
-    return this.axiosInstance.get<unknown, CartItemResponse>(url);
+    const response = await this.axiosInstance.get<CartItemResponse>(url);
+    return response.data;
   }
 
   /**
@@ -44,10 +46,11 @@ export class CartItemService {
    * @param params
    * @returns {CartItemResponse}
    */
-  add(params: CartItemAddRequest): Promise<CartItemResponse> {
+  async add(params: CartItemAddRequest): Promise<CartItemResponse> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/${query}`;
-    return this.axiosInstance.post<CartItemAddRequest, CartItemResponse>(url);
+    const response = await this.axiosInstance.post<CartItemResponse>(url);
+    return response.data;
   }
 
   /**
@@ -55,10 +58,11 @@ export class CartItemService {
    * @param params
    * @returns {CartItemResponse}
    */
-  update(params: CartItemEditRequest): Promise<CartItemResponse> {
+  async update(params: CartItemEditRequest): Promise<CartItemResponse> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/items/${query}`;
-    return this.axiosInstance.post<CartItemEditRequest, CartItemResponse>(url);
+    const response = await this.axiosInstance.post<CartItemResponse>(url);
+    return response.data;
   }
 
   /**
@@ -66,17 +70,19 @@ export class CartItemService {
    * @param key The key of the cart item to edit.
    * @returns {unknown}
    */
-  remove(key: string): Promise<unknown> {
+  async remove(key: string): Promise<unknown> {
     const url = `${this.baseUrl}/${this.endpoint}/items/${key}`;
-    return this.axiosInstance.delete<string, unknown>(url);
+    const response = await this.axiosInstance.delete<unknown>(url);
+    return response.data;
   }
 
   /**
    * Delete All Cart Items
    * @returns {CartItemResponse[]}
    */
-  clear(): Promise<CartItemResponse[]> {
+  async clear(): Promise<CartItemResponse[]> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return this.axiosInstance.delete<string, CartItemResponse[]>(url);
+    const response = await this.axiosInstance.delete<CartItemResponse[]>(url);
+    return response.data;
   }
 }

@@ -24,11 +24,13 @@ export class ProductCollectionDataService {
    * @param params
    * @returns {ProductCollectionDataResponse}
    */
-  calculate(
+  async calculate(
     params?: ProductCollectionDataRequest
   ): Promise<ProductCollectionDataResponse> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    return this.axiosInstance.get<unknown, ProductCollectionDataResponse>(url);
+    const response =
+      await this.axiosInstance.get<ProductCollectionDataResponse>(url);
+    return response.data;
   }
 }

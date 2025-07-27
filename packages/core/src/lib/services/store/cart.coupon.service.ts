@@ -23,7 +23,9 @@ export class CartCouponService {
    */
   list(): Promise<CartCouponResponse[]> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return this.axiosInstance.get<unknown, CartCouponResponse[]>(url);
+    return this.axiosInstance
+      .get<CartCouponResponse[]>(url)
+      .then((response) => response.data);
   }
 
   /**
@@ -33,7 +35,9 @@ export class CartCouponService {
    */
   single(code: string): Promise<CartCouponResponse> {
     const url = `${this.baseUrl}/${this.endpoint}/${code}`;
-    return this.axiosInstance.get<string, CartCouponResponse>(url);
+    return this.axiosInstance
+      .get<CartCouponResponse>(url)
+      .then((response) => response.data);
   }
 
   /**
@@ -43,7 +47,9 @@ export class CartCouponService {
    */
   add(code: string): Promise<CartCouponResponse> {
     const url = `${this.baseUrl}/${this.endpoint}?code=${code}`;
-    return this.axiosInstance.post<string, CartCouponResponse>(url);
+    return this.axiosInstance
+      .post<CartCouponResponse>(url)
+      .then((response) => response.data);
   }
 
   /**
@@ -53,7 +59,9 @@ export class CartCouponService {
    */
   delete(code: string): Promise<unknown> {
     const url = `${this.baseUrl}/${this.endpoint}/${code}`;
-    return this.axiosInstance.delete<string, unknown>(url);
+    return this.axiosInstance
+      .delete<unknown>(url)
+      .then((response) => response.data);
   }
 
   /**
@@ -62,6 +70,8 @@ export class CartCouponService {
    */
   clear(): Promise<CartCouponResponse[]> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return this.axiosInstance.delete<string, CartCouponResponse[]>(url);
+    return this.axiosInstance
+      .delete<CartCouponResponse[]>(url)
+      .then((response) => response.data);
   }
 }

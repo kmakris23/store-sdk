@@ -25,12 +25,15 @@ export class ProductAttributeTermService {
    * @param params
    * @returns {ProductAttributeResponse[]}
    */
-  list(
+  async list(
     attributeId: number,
     params?: ProductAttributeTermRequest
   ): Promise<ProductAttributeResponse[]> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/${attributeId}/terms?${query}`;
-    return this.axiosInstance.get<unknown, ProductAttributeResponse[]>(url);
+    const response = await this.axiosInstance.get<ProductAttributeResponse[]>(
+      url
+    );
+    return response.data;
   }
 }
