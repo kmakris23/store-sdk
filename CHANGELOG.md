@@ -1,3 +1,13 @@
+## 0.0.9 (2025-07-27)
+
+### 🩹 Fixes
+
+- update `tsup` config ([3c60ab2](https://github.com/kmakris23/store-sdk/commit/3c60ab2))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.0.8 (2025-07-26)
 
 ### 🚀 Features
