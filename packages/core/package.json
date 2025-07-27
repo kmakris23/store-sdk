@@ -1,6 +1,6 @@
 {
   "name": "@store-sdk/core",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "repository": {
     "url": "https://github.com/kmakris23/store-sdk",
     "directory": ""
