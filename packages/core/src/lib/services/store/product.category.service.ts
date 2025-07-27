@@ -1,5 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ProductCategoryResponse } from '../../types/store/product-category/product.category.response.js';
+import { ProductCategoryRequest } from '../../types/store/product-category/product.category.request.js';
+import qs from 'qs';
 
 /**
  * Product Categories API
@@ -19,10 +21,12 @@ export class ProductCategoryService {
 
   /**
    * List Product Categories
+   * @param params
    * @returns {ProductCategoryResponse[]}
    */
-  list(): Promise<ProductCategoryResponse[]> {
-    const url = `${this.baseUrl}/${this.endpoint}`;
+  list(params?: ProductCategoryRequest): Promise<ProductCategoryResponse[]> {
+    const query = qs.stringify(params);
+    const url = `${this.baseUrl}/${this.endpoint}?${query}`;
     return this.axiosInstance.get<unknown, ProductCategoryResponse[]>(url);
   }
 

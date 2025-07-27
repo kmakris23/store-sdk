@@ -1,5 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ProductBrandResponse } from '../../types/store/product-brand/product.brand.response.js';
+import { Paginated } from '../../types/store/paginated.js';
+import qs from 'qs';
 
 /**
  * Product Brands API
@@ -21,8 +23,9 @@ export class ProductBrandService {
    * List Product Brands
    * @returns {ProductBrandResponse[]}
    */
-  list(): Promise<ProductBrandResponse[]> {
-    const url = `${this.baseUrl}/${this.endpoint}`;
+  list(params?: Paginated): Promise<ProductBrandResponse[]> {
+    const query = qs.stringify(params);
+    const url = `${this.baseUrl}/${this.endpoint}?${query}`;
     return this.axiosInstance.get<unknown, ProductBrandResponse[]>(url);
   }
 

@@ -14,3 +14,4 @@ export * from './product-tag/index.js';
 
 export * from './image.response.js';
 export * from './error.response.js';
+export * from './paginated.js';

@@ -1,4 +1,6 @@
-export interface ProductRequest {
+import { Paginated } from "../paginated.js";
+
+export interface ProductRequest extends Paginated {
   /**
    * Limit results to those matching a string.
    */
