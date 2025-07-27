@@ -8,5 +8,10 @@ export default defineConfig({
   clean: true,
   target: 'es2020',
   treeshake: true,
-  external: ['axios', 'qs', 'date-fns']
+  external: ['axios', 'qs', 'date-fns'],
+  outExtension({ format }) {
+    return {
+      js: format === 'esm' ? '.mjs' : '.cjs',
+    };
+  },
 });
