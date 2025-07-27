@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
-import { CartItemService } from '../../lib/services/store/cart.item.service';
-import { cartItemData } from '../services/cart.item.data';
-import { CartItemResponse } from '../../lib/types/store/cart-item/cart.item.response';
+import { CartItemService } from '../../lib/services/store/cart.item.service.js';
+import { cartItemData } from '../services/cart.item.data.js';
+import { CartItemResponse } from '../../lib/types/store/cart-item/cart.item.response.js';
 import qs from 'qs';
-import { CartItemAddRequest } from '../../lib/types/store/cart-item/cart.item.add.request';
+import { CartItemAddRequest } from '../../lib/types/store/cart-item/cart.item.add.request.js';
 
 const mockResponse = cartItemData as CartItemResponse[];
 

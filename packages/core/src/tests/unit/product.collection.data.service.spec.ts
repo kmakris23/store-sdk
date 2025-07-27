@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
 import qs from 'qs';
-import { ProductCollectionDataService } from '../../lib/services/store/product.collection.data.service';
-import { ProductCollectionDataRequest } from '../../lib/types/store/product-collection-data/product.collection.data.request';
+import { ProductCollectionDataService } from '../../lib/services/store/product.collection.data.service.js';
+import { ProductCollectionDataRequest } from '../../lib/types/store/product-collection-data/product.collection.data.request.js';
 
 
 vi.mock('axios');

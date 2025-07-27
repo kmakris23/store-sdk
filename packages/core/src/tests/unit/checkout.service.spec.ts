@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
 import qs from 'qs';
-import { CheckoutService } from '../../lib/services/store/checkout.service';
-import { CheckoutUpdateRequest } from '../../lib/types/store/checkout/checkout.update.request';
-import { CheckoutCreateRequest } from '../../lib/types/store/checkout/checkout.create.request';
-import { OrderRequest } from '../../lib/types/store/order/order.request';
+import { CheckoutService } from '../../lib/services/store/checkout.service.js';
+import { CheckoutUpdateRequest } from '../../lib/types/store/checkout/checkout.update.request.js';
+import { CheckoutCreateRequest } from '../../lib/types/store/checkout/checkout.create.request.js';
+import { OrderRequest } from '../../lib/types/store/order/order.request.js';
 
 vi.mock('axios');
 

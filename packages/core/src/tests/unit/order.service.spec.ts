@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
-import { OrderService } from '../../lib/services/store/order.service';
+import { OrderService } from '../../lib/services/store/order.service.js';
 
 vi.mock('axios');
 

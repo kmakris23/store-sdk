@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
 import qs from 'qs';
-import { ProductReviewService } from '../../lib/services/store/product.review.service';
-import { ProductReviewRequest } from '../../lib/types/store/product-review/product.review.request';
-import { ProductReviewResponse } from '../../lib/types/store/product-review/product.review.response';
+import { ProductReviewService } from '../../lib/services/store/product.review.service.js';
+import { ProductReviewRequest } from '../../lib/types/store/product-review/product.review.request.js';
+import { ProductReviewResponse } from '../../lib/types/store/product-review/product.review.response.js';
 
 vi.mock('axios');
 

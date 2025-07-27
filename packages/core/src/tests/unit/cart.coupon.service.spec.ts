@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
-import { CartCouponService } from '../../lib/services/store/cart.coupon.service';
-import { cartCouponListMock } from '../services/cart.coupon.list.data';
+import { CartCouponService } from '../../lib/services/store/cart.coupon.service.js';
+import { cartCouponListMock } from '../services/cart.coupon.list.data.js';
 
 const cartCoupotGetData = cartCouponListMock;
 
@@ -27,6 +27,7 @@ describe('CartCouponService', () => {
     axiosMockInstance.get.mockResolvedValue(mockData);
 
     const result = await service.list();
+    console.log(result)
     expect(axiosMockInstance.get).toHaveBeenCalledWith(
       `${baseUrl}/wp-json/wc/store/v1/cart/coupons`
     );

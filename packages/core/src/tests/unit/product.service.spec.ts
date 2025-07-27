@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
-import { ProductService } from '../../lib/services/store/product.service';
-import { ProductRequest } from '../../lib/types/store/product/product.request';
-import { ProductResponse } from '../../lib/types/store/product/product.response';
-import { RequireAtLeastOne } from '../../lib/utilities/common';
+import { ProductService } from '../../lib/services/store/product.service.js';
+import { ProductRequest } from '../../lib/types/store/product/product.request.js';
+import { ProductResponse } from '../../lib/types/store/product/product.response.js';
+import { RequireAtLeastOne } from '../../lib/utilities/common.js';
 
 vi.mock('axios');
 

@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
 import qs from 'qs';
-import { CartService } from '../../lib/services/store/cart.service';
-import { CartItemEditRequest } from '../../lib/types/store/cart-item/cart.item.edit.request';
-import { CartCustomerRequest } from '../../lib/types/store/cart/cart.customer.request';
+import { CartService } from '../../lib/services/store/cart.service.js';
+import { CartItemEditRequest } from '../../lib/types/store/cart-item/cart.item.edit.request.js';
+import { CartCustomerRequest } from '../../lib/types/store/cart/cart.customer.request.js';
 
 vi.mock('axios');
 

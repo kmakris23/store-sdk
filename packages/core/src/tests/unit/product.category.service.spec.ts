@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
-import { ProductCategoryService } from '../../lib/services/store/product.category.service';
-import { ProductCategoryResponse } from '../../lib/types/store/product-category/product.category.response';
+import { ProductCategoryService } from '../../lib/services/store/product.category.service.js';
+import { ProductCategoryResponse } from '../../lib/types/store/product-category/product.category.response.js';
 
 vi.mock('axios');
 
