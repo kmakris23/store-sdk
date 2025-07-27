@@ -37,7 +37,7 @@ export class CartService {
    */
   add(params: CartItemAddRequest): Promise<CartResponse> {
     const query = qs.stringify(params, { encode: true });
-    const url = `${this.baseUrl}/${this.endpoint}/${query}`;
+    const url = `${this.baseUrl}/${this.endpoint}/add-item?${query}`;
     return this.axiosInstance.post<CartItemAddRequest, CartResponse>(url);
   }
 
@@ -48,7 +48,7 @@ export class CartService {
    */
   update(params: CartItemEditRequest): Promise<CartResponse> {
     const query = qs.stringify(params, { encode: true });
-    const url = `${this.baseUrl}/${this.endpoint}/${query}`;
+    const url = `${this.baseUrl}/${this.endpoint}/update-item?${query}`;
     return this.axiosInstance.post<CartItemEditRequest, CartResponse>(url);
   }
 
@@ -58,7 +58,7 @@ export class CartService {
    * @returns {CartResponse}
    */
   remove(key: string): Promise<CartResponse> {
-    const url = `${this.baseUrl}/${this.endpoint}/${key}`;
+    const url = `${this.baseUrl}/${this.endpoint}/remove-item?key=${key}`;
     return this.axiosInstance.post<string, CartResponse>(url);
   }
 
