@@ -1,3 +1,13 @@
+## 0.0.10 (2025-07-27)
+
+### 🩹 Fixes
+
+- disable workflow and test ([44bf0eb](https://github.com/kmakris23/store-sdk/commit/44bf0eb))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.0.9 (2025-07-27)
 
 ### 🩹 Fixes
