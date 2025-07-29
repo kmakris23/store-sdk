@@ -1,3 +1,17 @@
+## 0.2.0 (2025-07-29)
+
+### 🚀 Features
+
+- simpify requests, track `cart`, `nonce` and `cart` changes ([3276260](https://github.com/kmakris23/store-sdk/commit/3276260))
+
+### 🩹 Fixes
+
+- add missing cart response properties ([239b1e9](https://github.com/kmakris23/store-sdk/commit/239b1e9))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.1.1 (2025-07-29)
 
 ### 🩹 Fixes
