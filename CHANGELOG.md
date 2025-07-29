@@ -1,3 +1,13 @@
+## 0.2.1 (2025-07-29)
+
+### 🩹 Fixes
+
+- add missing `setToken` and `getToken` functions ([7d51f3b](https://github.com/kmakris23/store-sdk/commit/7d51f3b))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.2.0 (2025-07-29)
 
 ### 🚀 Features
