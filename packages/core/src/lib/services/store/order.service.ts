@@ -29,8 +29,8 @@ export class OrderService extends BaseService {
     }
 
     const options: AxiosRequestConfig = {};
-    this.addNonceHeader(options);
-    this.addCartTokenHeader(options);
+    await this.addNonceHeader(options);
+    await this.addCartTokenHeader(options);
 
     const { data, error } = await this.doGet<OrderResponse>(url, options);
     return { data, error };

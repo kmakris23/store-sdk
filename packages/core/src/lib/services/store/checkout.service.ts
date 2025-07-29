@@ -22,8 +22,8 @@ export class CheckoutService extends BaseService {
     const url = `${this.baseUrl}/${this.endpoint}/`;
 
     const options: AxiosRequestConfig = {};
-    this.addNonceHeader(options);
-    this.addCartTokenHeader(options);
+    await this.addNonceHeader(options);
+    await this.addCartTokenHeader(options);
 
     const { data, error } = await this.doGet<CheckoutResponse>(url, options);
     return { data, error };
@@ -42,8 +42,8 @@ export class CheckoutService extends BaseService {
     const query = qs.stringify(params, { encode: true });
 
     const options: AxiosRequestConfig = {};
-    this.addNonceHeader(options);
-    this.addCartTokenHeader(options);
+    await this.addNonceHeader(options);
+    await this.addCartTokenHeader(options);
 
     const url = `${this.baseUrl}/${this.endpoint}/?__experimental_calc_totals=${
       experimental_calc_totals || false
@@ -68,8 +68,8 @@ export class CheckoutService extends BaseService {
     const url = `${this.baseUrl}/${this.endpoint}/${query}`;
 
     const options: AxiosRequestConfig = {};
-    this.addNonceHeader(options);
-    this.addCartTokenHeader(options);
+    await this.addNonceHeader(options);
+    await this.addCartTokenHeader(options);
 
     const { data, error } = await this.doPost<CheckoutResponse, unknown>(
       url,

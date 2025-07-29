@@ -19,8 +19,8 @@ export class CartItemService extends BaseService {
     const url = `${this.baseUrl}/${this.endpoint}`;
 
     const options: AxiosRequestConfig = {};
-    this.addNonceHeader(options);
-    this.addCartTokenHeader(options);
+    await this.addNonceHeader(options);
+    await this.addCartTokenHeader(options);
 
     const { data, error } = await this.doGet<CartItemResponse[]>(url, options);
     return { data, error };
@@ -35,8 +35,8 @@ export class CartItemService extends BaseService {
     const url = `${this.baseUrl}/${this.endpoint}/${key}`;
 
     const options: AxiosRequestConfig = {};
-    this.addNonceHeader(options);
-    this.addCartTokenHeader(options);
+    await this.addNonceHeader(options);
+    await this.addCartTokenHeader(options);
 
     const { data, error } = await this.doGet<CartItemResponse>(url, options);
     return { data, error };
@@ -52,8 +52,8 @@ export class CartItemService extends BaseService {
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
 
     const options: AxiosRequestConfig = {};
-    this.addNonceHeader(options);
-    this.addCartTokenHeader(options);
+    await this.addNonceHeader(options);
+    await this.addCartTokenHeader(options);
 
     const { data, error } = await this.doPost<CartItemResponse, unknown>(
       url,
@@ -77,8 +77,8 @@ export class CartItemService extends BaseService {
     const url = `${this.baseUrl}/${this.endpoint}/${key}?${query}`;
 
     const options: AxiosRequestConfig = {};
-    this.addNonceHeader(options);
-    this.addCartTokenHeader(options);
+    await this.addNonceHeader(options);
+    await this.addCartTokenHeader(options);
 
     const { data, error } = await this.doPut<CartItemResponse, unknown>(
       url,
@@ -97,8 +97,8 @@ export class CartItemService extends BaseService {
     const url = `${this.baseUrl}/${this.endpoint}/${key}`;
 
     const options: AxiosRequestConfig = {};
-    this.addNonceHeader(options);
-    this.addCartTokenHeader(options);
+    await this.addNonceHeader(options);
+    await this.addCartTokenHeader(options);
 
     const { data, error } = await this.doDelete<unknown>(url, options);
     return { data, error };
@@ -112,8 +112,8 @@ export class CartItemService extends BaseService {
     const url = `${this.baseUrl}/${this.endpoint}`;
 
     const options: AxiosRequestConfig = {};
-    this.addNonceHeader(options);
-    this.addCartTokenHeader(options);
+    await this.addNonceHeader(options);
+    await this.addCartTokenHeader(options);
 
     const { data, error } = await this.doDelete<CartItemResponse[]>(
       url,
