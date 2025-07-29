@@ -17,7 +17,12 @@ export class CartItemService extends BaseService {
    */
   async list(): Promise<ApiResult<CartItemResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    const { data, error } = await this.doGet<CartItemResponse[]>(url);
+
+    const options: AxiosRequestConfig = {};
+    this.addNonceHeader(options);
+    this.addCartTokenHeader(options);
+
+    const { data, error } = await this.doGet<CartItemResponse[]>(url, options);
     return { data, error };
   }
 
@@ -28,7 +33,12 @@ export class CartItemService extends BaseService {
    */
   async single(key: string): Promise<ApiResult<CartItemResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${key}`;
-    const { data, error } = await this.doGet<CartItemResponse>(url);
+
+    const options: AxiosRequestConfig = {};
+    this.addNonceHeader(options);
+    this.addCartTokenHeader(options);
+
+    const { data, error } = await this.doGet<CartItemResponse>(url, options);
     return { data, error };
   }
 

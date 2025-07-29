@@ -1,10 +1,11 @@
 import { OrderResponse } from '../../types/store/order/order.response.js';
 import { ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
+import { AxiosRequestConfig } from 'axios';
 
 /**
  * Order API
- * 
+ *
  * The order API returns the pay-for-order order.
  */
 export class OrderService extends BaseService {
@@ -26,7 +27,12 @@ export class OrderService extends BaseService {
     if (billingEmail) {
       url += `&billing_email=${billingEmail}`;
     }
-    const { data, error } = await this.doGet<OrderResponse>(url);
+
+    const options: AxiosRequestConfig = {};
+    this.addNonceHeader(options);
+    this.addCartTokenHeader(options);
+
+    const { data, error } = await this.doGet<OrderResponse>(url, options);
     return { data, error };
   }
 }

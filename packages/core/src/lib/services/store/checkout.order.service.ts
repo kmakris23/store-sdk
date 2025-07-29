@@ -1,10 +1,11 @@
+import { AxiosRequestConfig } from 'axios';
 import { ApiResult } from '../../types/api.js';
 import { CheckoutResponse, OrderRequest } from '../../types/store/index.js';
 import { BaseService } from '../base.service.js';
 
 /**
  * Checkout order API
- * 
+ *
  * The checkout order API facilitates the processing of existing orders and handling payments.
  */
 export class CheckoutOrderService extends BaseService {
@@ -21,9 +22,15 @@ export class CheckoutOrderService extends BaseService {
     params: OrderRequest
   ): Promise<ApiResult<CheckoutResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${orderId}`;
+
+    const options: AxiosRequestConfig = {};
+    this.addNonceHeader(options);
+    this.addCartTokenHeader(options);
+
     const { data, error } = await this.doPost<CheckoutResponse, OrderRequest>(
       url,
-      params
+      params,
+      options
     );
     return { data, error };
   }

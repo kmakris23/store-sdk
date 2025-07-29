@@ -21,7 +21,14 @@ export class CartService extends BaseService {
   async get(): Promise<ApiResult<CartResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
 
-    const { data, error, headers } = await this.doGet<CartResponse>(url);
+    const options: AxiosRequestConfig = {};
+    this.addNonceHeader(options);
+    this.addCartTokenHeader(options);
+
+    const { data, error, headers } = await this.doGet<CartResponse>(
+      url,
+      options
+    );
 
     super.cartChanged(data);
     if (headers) {
