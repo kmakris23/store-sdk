@@ -1,5 +1,5 @@
 import { AxiosError, AxiosInstance } from 'axios';
-import { ApiError, ApiResult } from '../types/api.js';
+import { ApiError, AxiosApiResult } from '../types/api.js';
 
 type HttpMethod = 'get' | 'post' | 'put' | 'delete';
 
@@ -14,7 +14,7 @@ export const doRequest = async <T>(
   instance: AxiosInstance,
   url: string,
   options: RequestOptions = {}
-): Promise<ApiResult<T>> => {
+): Promise<AxiosApiResult<T>> => {
   const { method = 'get', data, params, headers } = options;
 
   try {
@@ -26,9 +26,15 @@ export const doRequest = async <T>(
       headers,
     });
 
-    return { data: response.data, error: null };
+    return {
+      data: response.data,
+      headers: response.headers,
+    } as AxiosApiResult<T>;
   } catch (error) {
     const axiosError = error as AxiosError<ApiError>;
-    return { data: null, error: axiosError.response?.data ?? null };
+    return {
+      error: axiosError.response?.data ?? null,
+      headers: axiosError.response?.headers,
+    } as AxiosApiResult<T>;
   }
 };

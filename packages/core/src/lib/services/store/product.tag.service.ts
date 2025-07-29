@@ -31,8 +31,13 @@ export class ProductTagService {
   ): Promise<ApiResult<ProductTagResponse[]>> {
     const query = qs.stringify(params);
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    return await doRequest<ProductTagResponse[]>(this.axiosInstance, url, {
-      method: 'get',
-    });
+    const { data, error } = await doRequest<ProductTagResponse[]>(
+      this.axiosInstance,
+      url,
+      {
+        method: 'get',
+      }
+    );
+    return { data, error };
   }
 }

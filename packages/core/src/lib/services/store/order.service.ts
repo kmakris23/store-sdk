@@ -35,8 +35,13 @@ export class OrderService {
     if (billingEmail) {
       url += `&billing_email=${billingEmail}`;
     }
-    return await doRequest<OrderResponse>(this.axiosInstance, url, {
-      method: 'get',
-    });
+    const { data, error } = await doRequest<OrderResponse>(
+      this.axiosInstance,
+      url,
+      {
+        method: 'get',
+      }
+    );
+    return { data, error };
   }
 }

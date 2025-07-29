@@ -31,10 +31,11 @@ export class ProductCollectionDataService {
   ): Promise<ApiResult<ProductCollectionDataResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    return await doRequest<ProductCollectionDataResponse>(
+    const { data, error } = await doRequest<ProductCollectionDataResponse>(
       this.axiosInstance,
       url,
       { method: 'get' }
     );
+    return { data, error };
   }
 }

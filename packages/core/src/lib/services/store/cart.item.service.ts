@@ -28,9 +28,14 @@ export class CartItemService {
    */
   async list(): Promise<ApiResult<CartItemResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return await doRequest<CartItemResponse[]>(this.axiosInstance, url, {
-      method: 'get',
-    });
+    const { data, error } = await doRequest<CartItemResponse[]>(
+      this.axiosInstance,
+      url,
+      {
+        method: 'get',
+      }
+    );
+    return { data, error };
   }
 
   /**
@@ -40,9 +45,14 @@ export class CartItemService {
    */
   async single(key: string): Promise<ApiResult<CartItemResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${key}`;
-    return await doRequest<CartItemResponse>(this.axiosInstance, url, {
-      method: 'get',
-    });
+    const { data, error } = await doRequest<CartItemResponse>(
+      this.axiosInstance,
+      url,
+      {
+        method: 'get',
+      }
+    );
+    return { data, error };
   }
 
   /**
@@ -53,9 +63,14 @@ export class CartItemService {
   async add(params: CartItemAddRequest): Promise<ApiResult<CartItemResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/${query}`;
-    return await doRequest<CartItemResponse>(this.axiosInstance, url, {
-      method: 'post',
-    });
+    const { data, error } = await doRequest<CartItemResponse>(
+      this.axiosInstance,
+      url,
+      {
+        method: 'post',
+      }
+    );
+    return { data, error };
   }
 
   /**
@@ -68,9 +83,14 @@ export class CartItemService {
   ): Promise<ApiResult<CartItemResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/items/${query}`;
-    return await doRequest<CartItemResponse>(this.axiosInstance, url, {
-      method: 'post',
-    });
+    const { data, error } = await doRequest<CartItemResponse>(
+      this.axiosInstance,
+      url,
+      {
+        method: 'post',
+      }
+    );
+    return { data, error };
   }
 
   /**
@@ -80,9 +100,10 @@ export class CartItemService {
    */
   async remove(key: string): Promise<ApiResult<unknown>> {
     const url = `${this.baseUrl}/${this.endpoint}/items/${key}`;
-    return await doRequest<unknown>(this.axiosInstance, url, {
+    const { data, error } = await doRequest<unknown>(this.axiosInstance, url, {
       method: 'delete',
     });
+    return { data, error };
   }
 
   /**
@@ -91,8 +112,13 @@ export class CartItemService {
    */
   async clear(): Promise<ApiResult<CartItemResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return await doRequest<CartItemResponse[]>(this.axiosInstance, url, {
-      method: 'delete',
-    });
+    const { data, error } = await doRequest<CartItemResponse[]>(
+      this.axiosInstance,
+      url,
+      {
+        method: 'delete',
+      }
+    );
+    return { data, error };
   }
 }

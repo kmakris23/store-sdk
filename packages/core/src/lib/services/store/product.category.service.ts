@@ -31,9 +31,14 @@ export class ProductCategoryService {
   ): Promise<ApiResult<ProductCategoryResponse[]>> {
     const query = qs.stringify(params);
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    return await doRequest<ProductCategoryResponse[]>(this.axiosInstance, url, {
-      method: 'get',
-    });
+    const { data, error } = await doRequest<ProductCategoryResponse[]>(
+      this.axiosInstance,
+      url,
+      {
+        method: 'get',
+      }
+    );
+    return { data, error };
   }
 
   /**
@@ -43,8 +48,13 @@ export class ProductCategoryService {
    */
   async single(id: number): Promise<ApiResult<ProductCategoryResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${id}`;
-    return await doRequest<ProductCategoryResponse>(this.axiosInstance, url, {
-      method: 'get',
-    });
+    const { data, error } = await doRequest<ProductCategoryResponse>(
+      this.axiosInstance,
+      url,
+      {
+        method: 'get',
+      }
+    );
+    return { data, error };
   }
 }

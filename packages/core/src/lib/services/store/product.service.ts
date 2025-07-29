@@ -53,9 +53,14 @@ export class ProductService {
     );
 
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    return await doRequest<ProductResponse[]>(this.axiosInstance, url, {
-      method: 'get',
-    });
+    const { data, error } = await doRequest<ProductResponse[]>(
+      this.axiosInstance,
+      url,
+      {
+        method: 'get',
+      }
+    );
+    return { data, error };
   }
 
   /**
@@ -67,8 +72,13 @@ export class ProductService {
     params: RequireAtLeastOne<{ id: number; slug: string }>
   ): Promise<ApiResult<ProductResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${params.id || params.slug}`;
-    return await doRequest<ProductResponse>(this.axiosInstance, url, {
-      method: 'get',
-    });
+    const { data, error } = await doRequest<ProductResponse>(
+      this.axiosInstance,
+      url,
+      {
+        method: 'get',
+      }
+    );
+    return { data, error };
   }
 }

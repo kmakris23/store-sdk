@@ -28,9 +28,14 @@ export class ProductBrandService {
   async list(params?: Paginated): Promise<ApiResult<ProductBrandResponse[]>> {
     const query = qs.stringify(params);
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    return await doRequest<ProductBrandResponse[]>(this.axiosInstance, url, {
-      method: 'get',
-    });
+    const { data, error } = await doRequest<ProductBrandResponse[]>(
+      this.axiosInstance,
+      url,
+      {
+        method: 'get',
+      }
+    );
+    return { data, error };
   }
 
   /**
@@ -40,8 +45,13 @@ export class ProductBrandService {
    */
   async single(id: number): Promise<ApiResult<ProductBrandResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${id}`;
-    return await doRequest<ProductBrandResponse>(this.axiosInstance, url, {
-      method: 'get',
-    });
+    const { data, error } = await doRequest<ProductBrandResponse>(
+      this.axiosInstance,
+      url,
+      {
+        method: 'get',
+      }
+    );
+    return { data, error };
   }
 }

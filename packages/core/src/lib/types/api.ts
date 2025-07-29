@@ -1,3 +1,5 @@
+import { RawAxiosResponseHeaders, AxiosResponseHeaders } from 'axios';
+
 export interface ApiError {
   code: string;
   message: string;
@@ -15,4 +17,8 @@ export interface ApiData<T> {
 export interface ApiResult<T> {
   data?: T;
   error?: ApiError;
+}
+
+export interface AxiosApiResult<T> extends ApiResult<T> {
+  headers?: RawAxiosResponseHeaders | AxiosResponseHeaders;
 }

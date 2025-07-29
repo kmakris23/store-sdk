@@ -33,10 +33,11 @@ export class ProductAttributeTermService {
   ): Promise<ApiResult<ProductAttributeResponse[]>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/${attributeId}/terms?${query}`;
-    return await doRequest<ProductAttributeResponse[]>(
+    const { data, error } = await doRequest<ProductAttributeResponse[]>(
       this.axiosInstance,
       url,
       { method: 'get' }
     );
+    return { data, error };
   }
 }

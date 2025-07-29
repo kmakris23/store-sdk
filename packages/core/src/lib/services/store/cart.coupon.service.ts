@@ -25,9 +25,14 @@ export class CartCouponService {
    */
   async list(): Promise<ApiResult<CartCouponResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return await doRequest<CartCouponResponse[]>(this.axiosInstance, url, {
-      method: 'get',
-    });
+    const { data, error } = await doRequest<CartCouponResponse[]>(
+      this.axiosInstance,
+      url,
+      {
+        method: 'get',
+      }
+    );
+    return { data, error };
   }
 
   /**
@@ -37,9 +42,14 @@ export class CartCouponService {
    */
   async single(code: string): Promise<ApiResult<CartCouponResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${code}`;
-    return await doRequest<CartCouponResponse>(this.axiosInstance, url, {
-      method: 'get',
-    });
+    const { data, error } = await doRequest<CartCouponResponse>(
+      this.axiosInstance,
+      url,
+      {
+        method: 'get',
+      }
+    );
+    return { data, error };
   }
 
   /**
@@ -49,9 +59,14 @@ export class CartCouponService {
    */
   async add(code: string): Promise<ApiResult<CartCouponResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}?code=${code}`;
-    return await doRequest<CartCouponResponse>(this.axiosInstance, url, {
-      method: 'post',
-    });
+    const { data, error } = await doRequest<CartCouponResponse>(
+      this.axiosInstance,
+      url,
+      {
+        method: 'post',
+      }
+    );
+    return { data, error };
   }
 
   /**
@@ -61,9 +76,10 @@ export class CartCouponService {
    */
   async delete(code: string): Promise<ApiResult<unknown>> {
     const url = `${this.baseUrl}/${this.endpoint}/${code}`;
-    return await doRequest<unknown>(this.axiosInstance, url, {
+    const { data, error } = await doRequest<unknown>(this.axiosInstance, url, {
       method: 'delete',
     });
+    return { data, error };
   }
 
   /**
@@ -72,8 +88,13 @@ export class CartCouponService {
    */
   async clear(): Promise<ApiResult<CartCouponResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    return await doRequest<CartCouponResponse[]>(this.axiosInstance, url, {
-      method: 'delete',
-    });
+    const { data, error } = await doRequest<CartCouponResponse[]>(
+      this.axiosInstance,
+      url,
+      {
+        method: 'delete',
+      }
+    );
+    return { data, error };
   }
 }
