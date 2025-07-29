@@ -1,3 +1,14 @@
+## 0.2.2 (2025-07-29)
+
+### 🩹 Fixes
+
+- update `nonce` and `cartToken` only when missing ([368f6dc](https://github.com/kmakris23/store-sdk/commit/368f6dc))
+- add missing request headers ([75d7e5f](https://github.com/kmakris23/store-sdk/commit/75d7e5f))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.2.1 (2025-07-29)
 
 ### 🩹 Fixes
