@@ -25,8 +25,8 @@ export class CartService extends BaseService {
 
     super.cartChanged(data);
     if (headers) {
-      super.nonceChanged(headers['nonce']);
-      super.cartTokenChanged(headers['cart-token']);
+      await super.nonceChanged(headers['nonce']);
+      await super.cartTokenChanged(headers['cart-token']);
     }
     return { data, error };
   }

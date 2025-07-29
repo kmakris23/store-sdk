@@ -112,18 +112,24 @@ export class BaseService {
       this.events.emit('cartChanged', newCart);
     }
   }
-  protected nonceChanged(nonce?: string) {
+  protected async nonceChanged(nonce?: string) {
     if (!nonce) return;
-    if (this.state.nonce) return;
+    if (this.state.nonce === nonce) return;
 
     this.state.nonce = nonce;
+    if (this.config.nonce?.setToken) {
+      await this.config.nonce?.setToken(nonce);
+    }
     this.events.emit('nonceChanged', nonce);
   }
-  protected cartTokenChanged(cartToken?: string) {
+  protected async cartTokenChanged(cartToken?: string) {
     if (!cartToken) return;
-    if (this.state.cartToken) return;
+    if (this.state.cartToken === cartToken) return;
 
     this.state.cartToken = cartToken;
+    if (this.config.cartToken?.setToken) {
+      await this.config.cartToken?.setToken(cartToken);
+    }
     this.events.emit('cartTokenChanged', cartToken);
   }
 }
