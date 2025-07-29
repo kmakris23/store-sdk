@@ -6,6 +6,9 @@ import { StoreSdkEventEmitter } from '../sdk.event.emitter.js';
 import { CartResponse } from '../types/store/index.js';
 
 export class BaseService {
+  protected NONCE_HEADER = 'nonce';
+  protected CART_TOKEN_HEADER = 'cart-token';
+
   protected readonly state: StoreSdkState;
   protected readonly config: StoreSdkConfig;
   protected readonly events: StoreSdkEventEmitter;
