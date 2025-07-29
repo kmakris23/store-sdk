@@ -31,49 +31,49 @@ class Sdk {
   private _cartItems!: CartItemService;
   private _cartCoupons!: CartCouponService;
 
-  private _state: StoreSdkState = {};
+  state: StoreSdkState = {};
 
   private _initialized = false;
 
   events = new StoreSdkEventEmitter();
-  private _internalEvents = new StoreSdkEventEmitter();
 
   public async init(config: StoreSdkConfig): Promise<void> {
     if (this._initialized) return;
 
-    this._tags = new ProductTagService(config.baseUrl);
-    this._orders = new OrderService(config.baseUrl);
-    this._brands = new ProductBrandService(config.baseUrl);
-    this._checkout = new CheckoutService(config.baseUrl);
-    this._reviews = new ProductReviewService(config.baseUrl);
-    this._products = new ProductService(config.baseUrl);
-    this._categories = new ProductCategoryService(config.baseUrl);
-    this._attributes = new ProductAttributeService(config.baseUrl);
-    this._attributesTerms = new ProductAttributeTermService(config.baseUrl);
-    this._collectionData = new ProductCollectionDataService(config.baseUrl);
+    this._tags = new ProductTagService(this.state, config, this.events);
+    this._orders = new OrderService(this.state, config, this.events);
+    this._brands = new ProductBrandService(this.state, config, this.events);
+    this._checkout = new CheckoutService(this.state, config, this.events);
+    this._reviews = new ProductReviewService(this.state, config, this.events);
+    this._products = new ProductService(this.state, config, this.events);
+    this._categories = new ProductCategoryService(
+      this.state,
+      config,
+      this.events
+    );
+    this._attributes = new ProductAttributeService(
+      this.state,
+      config,
+      this.events
+    );
+    this._attributesTerms = new ProductAttributeTermService(
+      this.state,
+      config,
+      this.events
+    );
+    this._collectionData = new ProductCollectionDataService(
+      this.state,
+      config,
+      this.events
+    );
 
-    this._cart = new CartService(this._internalEvents, config, this._state, {});
-    this._cartItems = new CartItemService(config.baseUrl);
-    this._cartCoupons = new CartCouponService(config.baseUrl);
+    this._cart = new CartService(this.state, config, this.events);
+    this._cartItems = new CartItemService(this.state, config, this.events);
+    this._cartCoupons = new CartCouponService(this.state, config, this.events);
 
     this._initialized = true;
 
-    this._internalEvents.on('cartTokenChanged', (cartToken: string) => {
-      this.setCartToken(cartToken);
-      this.events.emit('cartTokenChanged', cartToken);
-    });
-
     await this._cart.get();
-  }
-
-  setNonce(nonce: string) {
-    this._state.nonce = nonce;
-  }
-  setCartHash(cartHash: string) {
-    this._state.cartHash = cartHash;
-  }
-  setCartToken(cartToken: string) {
-    this._state.cartToken = cartToken;
   }
 
   /**

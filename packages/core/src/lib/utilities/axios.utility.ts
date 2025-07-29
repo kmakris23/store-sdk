@@ -1,19 +1,10 @@
-import { AxiosError, AxiosInstance } from 'axios';
+import { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ApiError, AxiosApiResult } from '../types/api.js';
-
-type HttpMethod = 'get' | 'post' | 'put' | 'delete';
-
-interface RequestOptions {
-  method?: HttpMethod;
-  data?: any;
-  params?: Record<string, any>;
-  headers?: Record<string, string>;
-}
 
 export const doRequest = async <T>(
   instance: AxiosInstance,
   url: string,
-  options: RequestOptions = {}
+  options: AxiosRequestConfig = {}
 ): Promise<AxiosApiResult<T>> => {
   const { method = 'get', data, params, headers } = options;
 

@@ -1,23 +1,12 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ProductAttributeResponse } from '../../types/store/product-attribute/product.attribute.response.js';
-import { doRequest } from '../../utilities/axios.utility.js';
 import { ApiResult } from '../../types/api.js';
+import { BaseService } from '../base.service.js';
 
 /**
  * Product Attributes API
  */
-export class ProductAttributeService {
-  private readonly baseUrl: string;
+export class ProductAttributeService extends BaseService {
   private readonly endpoint = 'wp-json/wc/store/v1/products/attributes';
-  private readonly axiosInstance: AxiosInstance;
-
-  constructor(baseURL: string, config?: AxiosRequestConfig) {
-    this.baseUrl = baseURL;
-    this.axiosInstance = axios.create({
-      baseURL,
-      ...config,
-    });
-  }
 
   /**
    * List Product Attributes
@@ -25,11 +14,7 @@ export class ProductAttributeService {
    */
   async list(): Promise<ApiResult<ProductAttributeResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    const { data, error } = await doRequest<ProductAttributeResponse[]>(
-      this.axiosInstance,
-      url,
-      { method: 'get' }
-    );
+    const { data, error } = await this.doGet<ProductAttributeResponse[]>(url);
     return { data, error };
   }
 
@@ -40,13 +25,7 @@ export class ProductAttributeService {
    */
   async single(id: number): Promise<ApiResult<ProductAttributeResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${id}`;
-    const { data, error } = await doRequest<ProductAttributeResponse>(
-      this.axiosInstance,
-      url,
-      {
-        method: 'get',
-      }
-    );
+    const { data, error } = await this.doGet<ProductAttributeResponse>(url);
     return { data, error };
   }
 }

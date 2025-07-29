@@ -6,7 +6,7 @@ export interface CartItemAddRequest {
   /**
    * Quantity of this item in the cart.
    */
-  quantity: number;
+  quantity?: number;
   /**
    * Chosen attributes (for variations) containing an array of objects with keys `attribute` and `value`.
    */

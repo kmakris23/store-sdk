@@ -1,35 +1,57 @@
 import { StoreSdkEvent } from './sdk.events.js';
 
-export class StoreSdkEventEmitter {
-  private handlers: {
-    [K in keyof StoreSdkEvent]?: Set<(payload: StoreSdkEvent[K]) => void>;
+type Handler<T> = (payload?: T) => void;
+export class StoreSdkEventEmitter<TEvents = StoreSdkEvent> {
+  private listeners: {
+    [K in keyof TEvents]?: Set<Handler<TEvents[K] >>;
   } = {};
 
-  on<K extends keyof StoreSdkEvent>(
-    event: K,
-    handler: (payload: StoreSdkEvent[K]) => void
-  ): void {
-    if (!this.handlers[event]) {
-      this.handlers[event] = new Set();
+  private onceListeners: {
+    [K in keyof TEvents]?: Set<Handler<TEvents[K]>>;
+  } = {};
+
+  on<K extends keyof TEvents>(event: K, handler: Handler<TEvents[K]>): void {
+    if (!this.listeners[event]) this.listeners[event] = new Set();
+    this.listeners[event]?.add(handler);
+  }
+
+  once<K extends keyof TEvents>(event: K, handler: Handler<TEvents[K]>): void {
+    if (!this.onceListeners[event]) this.onceListeners[event] = new Set();
+    this.onceListeners[event]?.add(handler);
+  }
+
+  off<K extends keyof TEvents>(event: K, handler: Handler<TEvents[K]>): void {
+    this.listeners[event]?.delete(handler);
+    this.onceListeners[event]?.delete(handler);
+  }
+
+  emit<K extends keyof TEvents>(event: K, payload?: TEvents[K]): void {
+    // Call persistent listeners
+    this.listeners[event]?.forEach((handler) => {
+      handler(payload);
+    });
+
+    // Call once listeners and then clear them
+    const onceHandlers = this.onceListeners[event];
+    if (onceHandlers) {
+      onceHandlers.forEach((handler) => {
+        handler(payload);
+      });
+      onceHandlers.clear();
     }
-    this.handlers[event]?.add(handler);
   }
 
-  off<K extends keyof StoreSdkEvent>(
-    event: K,
-    handler: (payload: StoreSdkEvent[K]) => void
-  ): void {
-    this.handlers[event]?.delete(handler);
-  }
-
-  emit<K extends keyof StoreSdkEvent>(
-    event: K,
-    payload: StoreSdkEvent[K]
-  ): void {
-    this.handlers[event]?.forEach((handler) => handler(payload));
-  }
-
-  clear<K extends keyof StoreSdkEvent>(event: K): void {
-    delete this.handlers[event];
+  clear<K extends keyof TEvents>(event?: K): void {
+    if (event) {
+      this.listeners[event]?.clear();
+      this.onceListeners[event]?.clear();
+    } else {
+      for (const key in this.listeners) {
+        this.listeners[key as keyof TEvents]?.clear();
+      }
+      for (const key in this.onceListeners) {
+        this.onceListeners[key as keyof TEvents]?.clear();
+      }
+    }
   }
 }

@@ -1,25 +1,16 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ProductReviewResponse } from '../../types/store/product-review/product.review.response.js';
 import { ProductReviewRequest } from '../../types/store/product-review/product.review.request.js';
 import qs from 'qs';
-import { doRequest } from '../../utilities/axios.utility.js';
 import { ApiResult } from '../../types/api.js';
+import { BaseService } from '../base.service.js';
 
 /**
  * Product Reviews API
+ * 
+ * This endpoint returns product reviews (comments) and can also show results from either specific products or specific categories.
  */
-export class ProductReviewService {
-  private readonly baseUrl: string;
+export class ProductReviewService extends BaseService {
   private readonly endpoint = 'wp-json/wc/store/v1/products/reviews';
-  private readonly axiosInstance: AxiosInstance;
-
-  constructor(baseURL: string, config?: AxiosRequestConfig) {
-    this.baseUrl = baseURL;
-    this.axiosInstance = axios.create({
-      baseURL,
-      ...config,
-    });
-  }
 
   /**
    * List Product Reviews
@@ -31,13 +22,7 @@ export class ProductReviewService {
   ): Promise<ApiResult<ProductReviewResponse[]>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    const { data, error } = await doRequest<ProductReviewResponse[]>(
-      this.axiosInstance,
-      url,
-      {
-        method: 'get',
-      }
-    );
+    const { data, error } = await this.doGet<ProductReviewResponse[]>(url);
     return { data, error };
   }
 }

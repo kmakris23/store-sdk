@@ -1,23 +1,12 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { CartCouponResponse } from '../../types/store/cart-coupon/cart.coupon.response.js';
-import { doRequest } from '../../utilities/axios.utility.js';
 import { ApiResult } from '../../types/api.js';
+import { BaseService } from '../base.service.js';
 
 /**
  * Cart Coupons API
  */
-export class CartCouponService {
-  private readonly baseUrl: string;
+export class CartCouponService extends BaseService {
   private readonly endpoint = 'wp-json/wc/store/v1/cart/coupons';
-  private readonly axiosInstance: AxiosInstance;
-
-  constructor(baseURL: string, config?: AxiosRequestConfig) {
-    this.baseUrl = baseURL;
-    this.axiosInstance = axios.create({
-      baseURL,
-      ...config,
-    });
-  }
 
   /**
    * List Cart Coupons
@@ -25,13 +14,7 @@ export class CartCouponService {
    */
   async list(): Promise<ApiResult<CartCouponResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    const { data, error } = await doRequest<CartCouponResponse[]>(
-      this.axiosInstance,
-      url,
-      {
-        method: 'get',
-      }
-    );
+    const { data, error } = await this.doGet<CartCouponResponse[]>(url);
     return { data, error };
   }
 
@@ -42,13 +25,7 @@ export class CartCouponService {
    */
   async single(code: string): Promise<ApiResult<CartCouponResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${code}`;
-    const { data, error } = await doRequest<CartCouponResponse>(
-      this.axiosInstance,
-      url,
-      {
-        method: 'get',
-      }
-    );
+    const { data, error } = await this.doGet<CartCouponResponse>(url);
     return { data, error };
   }
 
@@ -59,13 +36,7 @@ export class CartCouponService {
    */
   async add(code: string): Promise<ApiResult<CartCouponResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}?code=${code}`;
-    const { data, error } = await doRequest<CartCouponResponse>(
-      this.axiosInstance,
-      url,
-      {
-        method: 'post',
-      }
-    );
+    const { data, error } = await this.doPost<CartCouponResponse, unknown>(url);
     return { data, error };
   }
 
@@ -76,9 +47,7 @@ export class CartCouponService {
    */
   async delete(code: string): Promise<ApiResult<unknown>> {
     const url = `${this.baseUrl}/${this.endpoint}/${code}`;
-    const { data, error } = await doRequest<unknown>(this.axiosInstance, url, {
-      method: 'delete',
-    });
+    const { data, error } = await this.doDelete<unknown>(url);
     return { data, error };
   }
 
@@ -88,13 +57,7 @@ export class CartCouponService {
    */
   async clear(): Promise<ApiResult<CartCouponResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    const { data, error } = await doRequest<CartCouponResponse[]>(
-      this.axiosInstance,
-      url,
-      {
-        method: 'delete',
-      }
-    );
+    const { data, error } = await this.doDelete<CartCouponResponse[]>(url);
     return { data, error };
   }
 }

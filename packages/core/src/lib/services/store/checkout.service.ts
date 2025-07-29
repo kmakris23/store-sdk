@@ -1,27 +1,18 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { CheckoutResponse } from '../../types/store/checkout/checkout.response.js';
 import { CheckoutUpdateRequest } from '../../types/store/checkout/checkout.update.request.js';
 import { CheckoutCreateRequest } from '../../types/store/checkout/checkout.create.request.js';
-import { OrderRequest } from '../../types/store/order/order.request.js';
 import qs from 'qs';
 import { ApiResult } from '../../types/api.js';
-import { doRequest } from '../../utilities/axios.utility.js';
+import { BaseService } from '../base.service.js';
+import { AxiosRequestConfig } from 'axios';
 
 /**
  * Checkout API
+ * 
+ * The checkout API facilitates the creation of orders (from the current cart) and handling payments for payment methods.
  */
-export class CheckoutService {
-  private readonly baseUrl: string;
+export class CheckoutService extends BaseService {
   private readonly endpoint = 'wp-json/wc/store/v1/checkout';
-  private readonly axiosInstance: AxiosInstance;
-
-  constructor(baseURL: string, config?: AxiosRequestConfig) {
-    this.baseUrl = baseURL;
-    this.axiosInstance = axios.create({
-      baseURL,
-      ...config,
-    });
-  }
 
   /**
    * Get Checkout Data
@@ -29,13 +20,12 @@ export class CheckoutService {
    */
   async get(): Promise<ApiResult<CheckoutResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/`;
-    const { data, error } = await doRequest<CheckoutResponse>(
-      this.axiosInstance,
-      url,
-      {
-        method: 'get',
-      }
-    );
+
+    const options: AxiosRequestConfig = {};
+    this.addNonceHeader(options);
+    this.addCartTokenHeader(options);
+
+    const { data, error } = await this.doGet<CheckoutResponse>(url, options);
     return { data, error };
   }
 
@@ -50,15 +40,18 @@ export class CheckoutService {
     experimental_calc_totals = false
   ): Promise<ApiResult<CheckoutResponse>> {
     const query = qs.stringify(params, { encode: true });
+
+    const options: AxiosRequestConfig = {};
+    this.addNonceHeader(options);
+    this.addCartTokenHeader(options);
+
     const url = `${this.baseUrl}/${this.endpoint}/?__experimental_calc_totals=${
       experimental_calc_totals || false
     }&${query}`;
-    const { data, error } = await doRequest<CheckoutResponse>(
-      this.axiosInstance,
+    const { data, error } = await this.doPut<CheckoutResponse, unknown>(
       url,
-      {
-        method: 'put',
-      }
+      undefined,
+      options
     );
     return { data, error };
   }
@@ -68,39 +61,20 @@ export class CheckoutService {
    * @param params
    * @returns {CheckoutResponse}
    */
-  async create(
+  async processOrderAndPayment(
     params: CheckoutCreateRequest
   ): Promise<ApiResult<CheckoutResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/${query}`;
-    const { data, error } = await doRequest<CheckoutResponse>(
-      this.axiosInstance,
-      url,
-      {
-        method: 'post',
-      }
-    );
-    return { data, error };
-  }
 
-  /**
-   * Process Order and Payment
-   * @param orderId
-   * @param params
-   * @returns
-   */
-  async order(
-    orderId: number,
-    params: OrderRequest
-  ): Promise<ApiResult<CheckoutResponse>> {
-    const url = `${this.baseUrl}/${this.endpoint}/${orderId}`;
-    const { data, error } = await doRequest<CheckoutResponse>(
-      this.axiosInstance,
+    const options: AxiosRequestConfig = {};
+    this.addNonceHeader(options);
+    this.addCartTokenHeader(options);
+
+    const { data, error } = await this.doPost<CheckoutResponse, unknown>(
       url,
-      {
-        method: 'post',
-        data: params,
-      }
+      undefined,
+      options
     );
     return { data, error };
   }

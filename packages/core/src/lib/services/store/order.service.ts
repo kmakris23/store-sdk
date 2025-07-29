@@ -1,23 +1,14 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { OrderResponse } from '../../types/store/order/order.response.js';
 import { ApiResult } from '../../types/api.js';
-import { doRequest } from '../../utilities/axios.utility.js';
+import { BaseService } from '../base.service.js';
 
 /**
  * Order API
+ * 
+ * The order API returns the pay-for-order order.
  */
-export class OrderService {
-  private readonly baseUrl: string;
+export class OrderService extends BaseService {
   private readonly endpoint = 'wp-json/wc/store/v1/order';
-  private readonly axiosInstance: AxiosInstance;
-
-  constructor(baseURL: string, config?: AxiosRequestConfig) {
-    this.baseUrl = baseURL;
-    this.axiosInstance = axios.create({
-      baseURL,
-      ...config,
-    });
-  }
 
   /**
    * Get Order
@@ -35,13 +26,7 @@ export class OrderService {
     if (billingEmail) {
       url += `&billing_email=${billingEmail}`;
     }
-    const { data, error } = await doRequest<OrderResponse>(
-      this.axiosInstance,
-      url,
-      {
-        method: 'get',
-      }
-    );
+    const { data, error } = await this.doGet<OrderResponse>(url);
     return { data, error };
   }
 }

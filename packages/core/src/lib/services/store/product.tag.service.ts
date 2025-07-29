@@ -1,25 +1,14 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ProductTagResponse } from '../../types/store/product-tag/product.tag.response.js';
 import { ProductTagRequest } from '../../types/store/product-tag/product.tag.request.js';
 import qs from 'qs';
-import { doRequest } from '../../utilities/axios.utility.js';
 import { ApiResult } from '../../types/api.js';
+import { BaseService } from '../base.service.js';
 
 /**
  * Product Tags API
  */
-export class ProductTagService {
-  private readonly baseUrl: string;
+export class ProductTagService extends BaseService {
   private readonly endpoint = 'wp-json/wc/store/v1/products/tags';
-  private readonly axiosInstance: AxiosInstance;
-
-  constructor(baseURL: string, config?: AxiosRequestConfig) {
-    this.baseUrl = baseURL;
-    this.axiosInstance = axios.create({
-      baseURL,
-      ...config,
-    });
-  }
 
   /**
    * List Product Tags
@@ -31,13 +20,7 @@ export class ProductTagService {
   ): Promise<ApiResult<ProductTagResponse[]>> {
     const query = qs.stringify(params);
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    const { data, error } = await doRequest<ProductTagResponse[]>(
-      this.axiosInstance,
-      url,
-      {
-        method: 'get',
-      }
-    );
+    const { data, error } = await this.doGet<ProductTagResponse[]>(url);
     return { data, error };
   }
 }

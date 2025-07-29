@@ -1,26 +1,17 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ProductRequest } from '../../types/store/product/product.request.js';
 import { ProductResponse } from '../../types/store/product/product.response.js';
 import { RequireAtLeastOne } from '../../utilities/common.js';
 import qs from 'qs';
-import { doRequest } from '../../utilities/axios.utility.js';
 import { ApiResult } from '../../types/api.js';
+import { BaseService } from '../base.service.js';
 
 /**
  * Products API
+ * 
+ * The store products API provides public product data so it can be rendered on the client side.
  */
-export class ProductService {
-  private readonly baseUrl: string;
+export class ProductService extends BaseService {
   private readonly endpoint = 'wp-json/wc/store/v1/products';
-  private readonly axiosInstance: AxiosInstance;
-
-  constructor(baseURL: string, config?: AxiosRequestConfig) {
-    this.baseUrl = baseURL;
-    this.axiosInstance = axios.create({
-      baseURL,
-      ...config,
-    });
-  }
 
   /**
    * List Products
@@ -53,13 +44,7 @@ export class ProductService {
     );
 
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    const { data, error } = await doRequest<ProductResponse[]>(
-      this.axiosInstance,
-      url,
-      {
-        method: 'get',
-      }
-    );
+    const { data, error } = await this.doGet<ProductResponse[]>(url);
     return { data, error };
   }
 
@@ -72,13 +57,7 @@ export class ProductService {
     params: RequireAtLeastOne<{ id: number; slug: string }>
   ): Promise<ApiResult<ProductResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${params.id || params.slug}`;
-    const { data, error } = await doRequest<ProductResponse>(
-      this.axiosInstance,
-      url,
-      {
-        method: 'get',
-      }
-    );
+    const { data, error } = await this.doGet<ProductResponse>(url);
     return { data, error };
   }
 }

@@ -1,26 +1,15 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { CartItemResponse } from '../../types/store/cart-item/cart.item.response.js';
 import { CartItemAddRequest } from '../../types/store/cart-item/cart.item.add.request.js';
-import { CartItemEditRequest } from '../../types/store/cart-item/cart.item.edit.request.js';
 import qs from 'qs';
 import { ApiResult } from '../../types/api.js';
-import { doRequest } from '../../utilities/axios.utility.js';
+import { BaseService } from '../base.service.js';
+import { AxiosRequestConfig } from 'axios';
 
 /**
  * Cart Items API
  */
-export class CartItemService {
-  private readonly baseUrl: string;
+export class CartItemService extends BaseService {
   private readonly endpoint = 'wp-json/wc/store/v1/cart/items';
-  private readonly axiosInstance: AxiosInstance;
-
-  constructor(baseURL: string, config?: AxiosRequestConfig) {
-    this.baseUrl = baseURL;
-    this.axiosInstance = axios.create({
-      baseURL,
-      ...config,
-    });
-  }
 
   /**
    * List Cart Items
@@ -28,13 +17,7 @@ export class CartItemService {
    */
   async list(): Promise<ApiResult<CartItemResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    const { data, error } = await doRequest<CartItemResponse[]>(
-      this.axiosInstance,
-      url,
-      {
-        method: 'get',
-      }
-    );
+    const { data, error } = await this.doGet<CartItemResponse[]>(url);
     return { data, error };
   }
 
@@ -45,13 +28,7 @@ export class CartItemService {
    */
   async single(key: string): Promise<ApiResult<CartItemResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${key}`;
-    const { data, error } = await doRequest<CartItemResponse>(
-      this.axiosInstance,
-      url,
-      {
-        method: 'get',
-      }
-    );
+    const { data, error } = await this.doGet<CartItemResponse>(url);
     return { data, error };
   }
 
@@ -62,33 +39,41 @@ export class CartItemService {
    */
   async add(params: CartItemAddRequest): Promise<ApiResult<CartItemResponse>> {
     const query = qs.stringify(params, { encode: true });
-    const url = `${this.baseUrl}/${this.endpoint}/${query}`;
-    const { data, error } = await doRequest<CartItemResponse>(
-      this.axiosInstance,
+    const url = `${this.baseUrl}/${this.endpoint}?${query}`;
+
+    const options: AxiosRequestConfig = {};
+    this.addNonceHeader(options);
+    this.addCartTokenHeader(options);
+
+    const { data, error } = await this.doPost<CartItemResponse, unknown>(
       url,
-      {
-        method: 'post',
-      }
+      undefined,
+      options
     );
     return { data, error };
   }
 
   /**
    * Edit Single Cart Item
-   * @param params
+   * @param key The key of the cart item to edit.
+   * @param quantity Quantity of this item in the cart.
    * @returns {CartItemResponse}
    */
   async update(
-    params: CartItemEditRequest
+    key: string,
+    quantity: number
   ): Promise<ApiResult<CartItemResponse>> {
-    const query = qs.stringify(params, { encode: true });
-    const url = `${this.baseUrl}/${this.endpoint}/items/${query}`;
-    const { data, error } = await doRequest<CartItemResponse>(
-      this.axiosInstance,
+    const query = qs.stringify({ quantity: quantity }, { encode: true });
+    const url = `${this.baseUrl}/${this.endpoint}/${key}?${query}`;
+
+    const options: AxiosRequestConfig = {};
+    this.addNonceHeader(options);
+    this.addCartTokenHeader(options);
+
+    const { data, error } = await this.doPut<CartItemResponse, unknown>(
       url,
-      {
-        method: 'post',
-      }
+      undefined,
+      options
     );
     return { data, error };
   }
@@ -99,10 +84,13 @@ export class CartItemService {
    * @returns {unknown}
    */
   async remove(key: string): Promise<ApiResult<unknown>> {
-    const url = `${this.baseUrl}/${this.endpoint}/items/${key}`;
-    const { data, error } = await doRequest<unknown>(this.axiosInstance, url, {
-      method: 'delete',
-    });
+    const url = `${this.baseUrl}/${this.endpoint}/${key}`;
+
+    const options: AxiosRequestConfig = {};
+    this.addNonceHeader(options);
+    this.addCartTokenHeader(options);
+
+    const { data, error } = await this.doDelete<unknown>(url, options);
     return { data, error };
   }
 
@@ -112,12 +100,14 @@ export class CartItemService {
    */
   async clear(): Promise<ApiResult<CartItemResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    const { data, error } = await doRequest<CartItemResponse[]>(
-      this.axiosInstance,
+
+    const options: AxiosRequestConfig = {};
+    this.addNonceHeader(options);
+    this.addCartTokenHeader(options);
+
+    const { data, error } = await this.doDelete<CartItemResponse[]>(
       url,
-      {
-        method: 'delete',
-      }
+      options
     );
     return { data, error };
   }
