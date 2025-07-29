@@ -1,3 +1,13 @@
+## 0.1.0 (2025-07-29)
+
+### 🚀 Features
+
+- event emitters and api updates ([ed4f58d](https://github.com/kmakris23/store-sdk/commit/ed4f58d))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.0.16 (2025-07-27)
 
 ### 🩹 Fixes
