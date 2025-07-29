@@ -7,7 +7,7 @@ import { BaseService } from '../base.service.js';
 
 /**
  * Products API
- * 
+ *
  * The store products API provides public product data so it can be rendered on the client side.
  */
 export class ProductService extends BaseService {
@@ -19,8 +19,8 @@ export class ProductService extends BaseService {
    * @returns
    */
   async list(params?: ProductRequest): Promise<ApiResult<ProductResponse[]>> {
-    let unstable_tax = '';
-    let unstable_tax_operator = '';
+    let unstable_tax: string | undefined = undefined;
+    let unstable_tax_operator: string | undefined = undefined;
     if (params && params._unstable_tax_) {
       params._unstable_tax_?.forEach((item) => {
         Object.keys(item).forEach((key) => {
@@ -39,7 +39,7 @@ export class ProductService extends BaseService {
       params._unstable_tax_operator = [];
     }
     const query = qs.stringify(
-      { params, unstable_tax, unstable_tax_operator },
+      { ...params, unstable_tax, unstable_tax_operator },
       { encode: false }
     );
 
