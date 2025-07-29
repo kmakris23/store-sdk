@@ -1,3 +1,13 @@
+## 0.2.4 (2025-07-29)
+
+### 🩹 Fixes
+
+- use `await` ([0c1fafd](https://github.com/kmakris23/store-sdk/commit/0c1fafd))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.2.3 (2025-07-29)
 
 ### 🩹 Fixes
