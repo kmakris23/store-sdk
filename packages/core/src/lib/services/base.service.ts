@@ -114,7 +114,11 @@ export class BaseService {
   }
   protected async nonceChanged(nonce?: string) {
     if (!nonce) return;
-    if (this.state.nonce === nonce) return;
+
+    const oldToken = this.config.nonce?.getToken
+      ? await this.config.nonce?.getToken()
+      : this.state.nonce;
+    if (oldToken) return;
 
     this.state.nonce = nonce;
     if (this.config.nonce?.setToken) {
@@ -124,7 +128,11 @@ export class BaseService {
   }
   protected async cartTokenChanged(cartToken?: string) {
     if (!cartToken) return;
-    if (this.state.cartToken === cartToken) return;
+
+    const oldToken = this.config.cartToken?.getToken
+      ? await this.config.cartToken?.getToken()
+      : this.state.cartToken;
+    if (oldToken) return;
 
     this.state.cartToken = cartToken;
     if (this.config.cartToken?.setToken) {
