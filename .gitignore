@@ -49,3 +49,4 @@ vitest.config.*.timestamp*
 .env
 .npmrc
 .angular
+environment.development.ts

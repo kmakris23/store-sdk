@@ -13,7 +13,6 @@ export class App implements OnInit {
   protected title = 'example-angular';
 
   async ngOnInit() {
-    StoreSdk.init({ baseUrl: 'https://example.com' });
     const products = await StoreSdk.products.list();
     console.log(products);
   }
