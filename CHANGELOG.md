@@ -1,3 +1,13 @@
+## 0.1.1 (2025-07-29)
+
+### 🩹 Fixes
+
+- bump version ([6089119](https://github.com/kmakris23/store-sdk/commit/6089119))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.1.0 (2025-07-29)
 
 ### 🚀 Features
