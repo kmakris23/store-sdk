@@ -1,3 +1,13 @@
+## 0.2.3 (2025-07-29)
+
+### 🩹 Fixes
+
+- query parameters ([9af8088](https://github.com/kmakris23/store-sdk/commit/9af8088))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.2.2 (2025-07-29)
 
 ### 🩹 Fixes
