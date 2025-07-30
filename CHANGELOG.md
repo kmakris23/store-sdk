@@ -1,3 +1,13 @@
+## 0.2.6 (2025-07-30)
+
+### 🩹 Fixes
+
+- pass correct axios instance options ([ae3f1ce](https://github.com/kmakris23/store-sdk/commit/ae3f1ce))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.2.5 (2025-07-30)
 
 ### 🩹 Fixes
