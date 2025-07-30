@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, CreateAxiosDefaults } from 'axios';
 import { doRequest } from '../utilities/axios.utility.js';
 import { StoreSdkConfig } from '../types/sdk.config.js';
 import { StoreSdkState } from '../types/sdk.state.js';
@@ -26,10 +26,10 @@ export class BaseService {
     this.baseUrl = config.baseUrl;
   }
 
-  protected createInstance() {
+  protected createInstance(options: CreateAxiosDefaults = {}) {
     return axios.create({
       baseURL: this.config.baseUrl,
-      ...this.config,
+      ...options,
     });
   }
 
