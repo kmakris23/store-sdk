@@ -1,3 +1,13 @@
+## 0.2.5 (2025-07-30)
+
+### 🩹 Fixes
+
+- `cartChanged` value comparison ([a221a2a](https://github.com/kmakris23/store-sdk/commit/a221a2a))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.2.4 (2025-07-29)
 
 ### 🩹 Fixes
