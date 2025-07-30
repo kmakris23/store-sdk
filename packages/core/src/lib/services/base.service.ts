@@ -108,7 +108,7 @@ export class BaseService {
 
   protected cartChanged(newCart?: CartResponse) {
     const cartEqual =
-      JSON.stringify(newCart) !== JSON.stringify(this.state.cart);
+      JSON.stringify(newCart) === JSON.stringify(this.state.cart);
 
     if (!cartEqual) {
       this.state.cart = newCart;
