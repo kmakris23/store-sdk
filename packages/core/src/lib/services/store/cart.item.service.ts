@@ -55,11 +55,14 @@ export class CartItemService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
+    super.cartLoading(true);
     const { data, error } = await this.doPost<CartItemResponse, unknown>(
       url,
       undefined,
       options
     );
+
+    super.cartLoading(false);
     return { data, error };
   }
 
@@ -80,11 +83,14 @@ export class CartItemService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
+    super.cartLoading(true);
     const { data, error } = await this.doPut<CartItemResponse, unknown>(
       url,
       undefined,
       options
     );
+
+    super.cartLoading(false);
     return { data, error };
   }
 
@@ -100,7 +106,10 @@ export class CartItemService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
+    super.cartLoading(true);
     const { data, error } = await this.doDelete<unknown>(url, options);
+
+    super.cartLoading(false);
     return { data, error };
   }
 
@@ -115,10 +124,13 @@ export class CartItemService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
+    super.cartLoading(true);
     const { data, error } = await this.doDelete<CartItemResponse[]>(
       url,
       options
     );
+
+    super.cartLoading(false);
     return { data, error };
   }
 }

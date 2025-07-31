@@ -106,6 +106,9 @@ export class BaseService {
     return axiosRequestConfig;
   }
 
+  protected cartLoading(loading: boolean) {
+    this.events.emit('cartLoading', loading);
+  }
   protected cartChanged(newCart?: CartResponse) {
     const cartEqual =
       JSON.stringify(newCart) === JSON.stringify(this.state.cart);

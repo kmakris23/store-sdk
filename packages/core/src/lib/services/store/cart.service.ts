@@ -51,12 +51,14 @@ export class CartService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
+    super.cartLoading(true);
     const { data, error } = await this.doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
 
+    super.cartLoading(false);
     super.cartChanged(data);
     return { data, error };
   }
@@ -72,18 +74,20 @@ export class CartService extends BaseService {
     quantity: number
   ): Promise<ApiResult<CartResponse>> {
     const query = qs.stringify({ key, quantity }, { encode: true });
+    const url = `${this.baseUrl}/${this.endpoint}/update-item?${query}`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
-    const url = `${this.baseUrl}/${this.endpoint}/update-item?${query}`;
+    super.cartLoading(true);
     const { data, error } = await this.doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
 
+    super.cartLoading(false);
     super.cartChanged(data);
     return { data, error };
   }
@@ -100,12 +104,14 @@ export class CartService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
+    super.cartLoading(true);
     const { data, error } = await this.doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
 
+    super.cartLoading(false);
     super.cartChanged(data);
     return { data, error };
   }
@@ -122,12 +128,14 @@ export class CartService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
+    super.cartLoading(true);
     const { data, error } = await this.doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
 
+    super.cartLoading(false);
     super.cartChanged(data);
     return { data, error };
   }
@@ -144,12 +152,14 @@ export class CartService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
+    super.cartLoading(true);
     const { data, error } = await this.doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
 
+    super.cartLoading(false);
     super.cartChanged(data);
     return { data, error };
   }
@@ -168,11 +178,13 @@ export class CartService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
+    super.cartLoading(true);
     const { data, error } = await this.doPost<
       CartResponse,
       CartCustomerRequest
     >(url, body, options);
 
+    super.cartLoading(false);
     super.cartChanged(data);
     return { data, error };
   }
