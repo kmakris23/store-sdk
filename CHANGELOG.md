@@ -1,3 +1,13 @@
+## 0.3.0 (2025-07-31)
+
+### 🚀 Features
+
+- add `cartLoading` event ([5909a7e](https://github.com/kmakris23/store-sdk/commit/5909a7e))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.2.6 (2025-07-30)
 
 ### 🩹 Fixes
