@@ -1,6 +1,6 @@
 {
   "name": "@store-sdk/hippoo",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "repository": {
     "url": "https://github.com/kmakris23/store-sdk",
     "directory": ""
@@ -28,7 +28,7 @@
     "tslib": "^2.3.0"
   },
   "peerDependencies": {
-    "@store-sdk/core": "^0.3.0"
+    "@store-sdk/core": "^0.4.0"
   },
   "scripts": {
     "build": "tsup",
