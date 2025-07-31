@@ -25,11 +25,9 @@ export const appConfig: ApplicationConfig = {
               const key = localStorage.getItem('cart_token');
               const promise = Promise.resolve(key);
               const result = (await promise) as string;
-              console.log('getToken', result);
               return result;
             },
             setToken: async (cartToken) => {
-              console.log('setToken', cartToken);
               const promise = Promise.resolve(
                 localStorage.setItem('cart_token', cartToken)
               );
