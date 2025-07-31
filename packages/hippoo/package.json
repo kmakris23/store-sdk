@@ -1,0 +1,37 @@
+{
+  "name": "@store-sdk/hippoo",
+  "version": "0.3.0",
+  "repository": {
+    "url": "https://github.com/kmakris23/store-sdk",
+    "directory": ""
+  },
+  "license": "MIT",
+  "author": "Kostas Makris <kostasmakris23@gmail.com>",
+  "keywords": [
+    "woocommerce",
+    "sdk",
+    "store-api",
+    "typescript"
+  ],
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "peerDependencies": {
+    "@store-sdk/core": "^0.3.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  }
+}

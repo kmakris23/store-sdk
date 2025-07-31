@@ -2,6 +2,7 @@ import { AxiosRequestConfig } from 'axios';
 import { ApiResult } from '../../types/api.js';
 import { CheckoutResponse, OrderRequest } from '../../types/store/index.js';
 import { BaseService } from '../base.service.js';
+import { doPost } from '../../utilities/axios.utility.js';
 
 /**
  * Checkout order API
@@ -27,7 +28,7 @@ export class CheckoutOrderService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
-    const { data, error } = await this.doPost<CheckoutResponse, OrderRequest>(
+    const { data, error } = await doPost<CheckoutResponse, OrderRequest>(
       url,
       params,
       options

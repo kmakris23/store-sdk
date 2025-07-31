@@ -4,6 +4,12 @@ import qs from 'qs';
 import { ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
 import { AxiosRequestConfig } from 'axios';
+import {
+  doDelete,
+  doGet,
+  doPost,
+  doPut,
+} from '../../utilities/axios.utility.js';
 
 /**
  * Cart Items API
@@ -22,7 +28,7 @@ export class CartItemService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
-    const { data, error } = await this.doGet<CartItemResponse[]>(url, options);
+    const { data, error } = await doGet<CartItemResponse[]>(url, options);
     return { data, error };
   }
 
@@ -38,7 +44,7 @@ export class CartItemService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
-    const { data, error } = await this.doGet<CartItemResponse>(url, options);
+    const { data, error } = await doGet<CartItemResponse>(url, options);
     return { data, error };
   }
 
@@ -56,7 +62,7 @@ export class CartItemService extends BaseService {
     await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
-    const { data, error } = await this.doPost<CartItemResponse, unknown>(
+    const { data, error } = await doPost<CartItemResponse, unknown>(
       url,
       undefined,
       options
@@ -84,7 +90,7 @@ export class CartItemService extends BaseService {
     await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
-    const { data, error } = await this.doPut<CartItemResponse, unknown>(
+    const { data, error } = await doPut<CartItemResponse, unknown>(
       url,
       undefined,
       options
@@ -107,7 +113,7 @@ export class CartItemService extends BaseService {
     await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
-    const { data, error } = await this.doDelete<unknown>(url, options);
+    const { data, error } = await doDelete<unknown>(url, options);
 
     super.cartLoading(false);
     return { data, error };
@@ -125,10 +131,7 @@ export class CartItemService extends BaseService {
     await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
-    const { data, error } = await this.doDelete<CartItemResponse[]>(
-      url,
-      options
-    );
+    const { data, error } = await doDelete<CartItemResponse[]>(url, options);
 
     super.cartLoading(false);
     return { data, error };

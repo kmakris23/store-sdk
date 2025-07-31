@@ -3,6 +3,7 @@ import { ProductAttributeTermRequest } from '../../types/store/product-attribute
 import qs from 'qs';
 import { ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
+import { doGet } from '../../utilities/axios.utility.js';
 
 /**
  * Product Attribute Terms API
@@ -22,7 +23,7 @@ export class ProductAttributeTermService extends BaseService {
   ): Promise<ApiResult<ProductAttributeResponse[]>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}/${attributeId}/terms?${query}`;
-    const { data, error } = await this.doGet<ProductAttributeResponse[]>(url);
+    const { data, error } = await doGet<ProductAttributeResponse[]>(url);
     return { data, error };
   }
 }

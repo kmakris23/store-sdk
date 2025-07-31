@@ -1,9 +1,8 @@
-import axios, { AxiosRequestConfig, CreateAxiosDefaults } from 'axios';
-import { doRequest } from '../utilities/axios.utility.js';
-import { StoreSdkConfig } from '../types/sdk.config.js';
-import { StoreSdkState } from '../types/sdk.state.js';
 import { StoreSdkEventEmitter } from '../sdk.event.emitter.js';
 import { CartResponse } from '../types/store/index.js';
+import { StoreSdkState } from '../types/sdk.state.js';
+import { AxiosRequestConfig } from 'axios';
+import { StoreSdkConfig } from '../types/sdk.config.js';
 
 export class BaseService {
   protected NONCE_HEADER = 'nonce';
@@ -21,55 +20,9 @@ export class BaseService {
     events: StoreSdkEventEmitter
   ) {
     this.state = state;
-    this.config = config;
     this.events = events;
+    this.config = config;
     this.baseUrl = config.baseUrl;
-  }
-
-  protected createInstance(options: CreateAxiosDefaults = {}) {
-    return axios.create({
-      baseURL: this.config.baseUrl,
-      ...options,
-    });
-  }
-
-  protected async doGet<T>(url: string, options: AxiosRequestConfig = {}) {
-    const axiosInstance = this.createInstance();
-    return await doRequest<T>(axiosInstance, url, {
-      ...options,
-      method: 'get',
-    });
-  }
-  protected async doPost<T, TData>(
-    url: string,
-    data?: TData,
-    options: AxiosRequestConfig = {}
-  ) {
-    const axiosInstance = this.createInstance();
-    return await doRequest<T>(axiosInstance, url, {
-      ...options,
-      method: 'post',
-      data: data,
-    });
-  }
-  protected async doPut<T, TData>(
-    url: string,
-    data?: TData,
-    options: AxiosRequestConfig = {}
-  ) {
-    const axiosInstance = this.createInstance();
-    return await doRequest<T>(axiosInstance, url, {
-      ...options,
-      method: 'put',
-      data: data,
-    });
-  }
-  protected async doDelete<T>(url: string, options: AxiosRequestConfig = {}) {
-    const axiosInstance = this.createInstance();
-    return await doRequest<T>(axiosInstance, url, {
-      ...options,
-      method: 'delete',
-    });
   }
 
   protected async addNonceHeader(axiosRequestConfig: AxiosRequestConfig) {

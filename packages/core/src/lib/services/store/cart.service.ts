@@ -5,6 +5,7 @@ import qs from 'qs';
 import { ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
 import { AxiosRequestConfig } from 'axios';
+import { doGet, doPost } from '../../utilities/axios.utility.js';
 
 /**
  * Cart API
@@ -25,10 +26,7 @@ export class CartService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
-    const { data, error, headers } = await this.doGet<CartResponse>(
-      url,
-      options
-    );
+    const { data, error, headers } = await doGet<CartResponse>(url, options);
 
     super.cartChanged(data);
     if (headers) {
@@ -52,7 +50,7 @@ export class CartService extends BaseService {
     await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
-    const { data, error } = await this.doPost<CartResponse, unknown>(
+    const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
@@ -81,7 +79,7 @@ export class CartService extends BaseService {
     await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
-    const { data, error } = await this.doPost<CartResponse, unknown>(
+    const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
@@ -105,7 +103,7 @@ export class CartService extends BaseService {
     await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
-    const { data, error } = await this.doPost<CartResponse, unknown>(
+    const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
@@ -129,7 +127,7 @@ export class CartService extends BaseService {
     await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
-    const { data, error } = await this.doPost<CartResponse, unknown>(
+    const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
@@ -153,7 +151,7 @@ export class CartService extends BaseService {
     await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
-    const { data, error } = await this.doPost<CartResponse, unknown>(
+    const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
@@ -179,10 +177,11 @@ export class CartService extends BaseService {
     await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
-    const { data, error } = await this.doPost<
-      CartResponse,
-      CartCustomerRequest
-    >(url, body, options);
+    const { data, error } = await doPost<CartResponse, CartCustomerRequest>(
+      url,
+      body,
+      options
+    );
 
     super.cartLoading(false);
     super.cartChanged(data);
@@ -205,7 +204,7 @@ export class CartService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
-    const { data, error } = await this.doPost<CartResponse, unknown>(
+    const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options

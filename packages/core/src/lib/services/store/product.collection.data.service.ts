@@ -3,6 +3,7 @@ import { ProductCollectionDataResponse } from '../../types/store/product-collect
 import qs from 'qs';
 import { ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
+import { doGet } from '../../utilities/axios.utility.js';
 
 /**
  * Product Collection Data API
@@ -24,9 +25,7 @@ export class ProductCollectionDataService extends BaseService {
   ): Promise<ApiResult<ProductCollectionDataResponse>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    const { data, error } = await this.doGet<ProductCollectionDataResponse>(
-      url
-    );
+    const { data, error } = await doGet<ProductCollectionDataResponse>(url);
     return { data, error };
   }
 }

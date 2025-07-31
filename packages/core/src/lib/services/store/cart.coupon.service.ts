@@ -1,6 +1,7 @@
 import { CartCouponResponse } from '../../types/store/cart-coupon/cart.coupon.response.js';
 import { ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
+import { doDelete, doGet, doPost } from '../../utilities/axios.utility.js';
 
 /**
  * Cart Coupons API
@@ -14,7 +15,7 @@ export class CartCouponService extends BaseService {
    */
   async list(): Promise<ApiResult<CartCouponResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    const { data, error } = await this.doGet<CartCouponResponse[]>(url);
+    const { data, error } = await doGet<CartCouponResponse[]>(url);
     return { data, error };
   }
 
@@ -25,7 +26,7 @@ export class CartCouponService extends BaseService {
    */
   async single(code: string): Promise<ApiResult<CartCouponResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${code}`;
-    const { data, error } = await this.doGet<CartCouponResponse>(url);
+    const { data, error } = await doGet<CartCouponResponse>(url);
     return { data, error };
   }
 
@@ -36,7 +37,7 @@ export class CartCouponService extends BaseService {
    */
   async add(code: string): Promise<ApiResult<CartCouponResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}?code=${code}`;
-    const { data, error } = await this.doPost<CartCouponResponse, unknown>(url);
+    const { data, error } = await doPost<CartCouponResponse, unknown>(url);
     return { data, error };
   }
 
@@ -47,7 +48,7 @@ export class CartCouponService extends BaseService {
    */
   async delete(code: string): Promise<ApiResult<unknown>> {
     const url = `${this.baseUrl}/${this.endpoint}/${code}`;
-    const { data, error } = await this.doDelete<unknown>(url);
+    const { data, error } = await doDelete<unknown>(url);
     return { data, error };
   }
 
@@ -57,7 +58,7 @@ export class CartCouponService extends BaseService {
    */
   async clear(): Promise<ApiResult<CartCouponResponse[]>> {
     const url = `${this.baseUrl}/${this.endpoint}`;
-    const { data, error } = await this.doDelete<CartCouponResponse[]>(url);
+    const { data, error } = await doDelete<CartCouponResponse[]>(url);
     return { data, error };
   }
 }
