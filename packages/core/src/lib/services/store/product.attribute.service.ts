@@ -14,7 +14,7 @@ export class ProductAttributeService extends BaseService {
    * @returns {ProductAttributeResponse[]}
    */
   async list(): Promise<ApiResult<ProductAttributeResponse[]>> {
-    const url = `${this.baseUrl}/${this.endpoint}`;
+    const url = `/${this.endpoint}`;
     const { data, error } = await doGet<ProductAttributeResponse[]>(url);
     return { data, error };
   }
@@ -25,7 +25,7 @@ export class ProductAttributeService extends BaseService {
    * @returns {ProductAttributeResponse}
    */
   async single(id: number): Promise<ApiResult<ProductAttributeResponse>> {
-    const url = `${this.baseUrl}/${this.endpoint}/${id}`;
+    const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doGet<ProductAttributeResponse>(url);
     return { data, error };
   }

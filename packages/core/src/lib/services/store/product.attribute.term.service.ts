@@ -22,7 +22,7 @@ export class ProductAttributeTermService extends BaseService {
     params?: ProductAttributeTermRequest
   ): Promise<ApiResult<ProductAttributeResponse[]>> {
     const query = qs.stringify(params, { encode: true });
-    const url = `${this.baseUrl}/${this.endpoint}/${attributeId}/terms?${query}`;
+    const url = `/${this.endpoint}/${attributeId}/terms?${query}`;
     const { data, error } = await doGet<ProductAttributeResponse[]>(url);
     return { data, error };
   }

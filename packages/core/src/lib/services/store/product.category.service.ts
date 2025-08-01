@@ -20,7 +20,7 @@ export class ProductCategoryService extends BaseService {
     params?: ProductCategoryRequest
   ): Promise<ApiResult<ProductCategoryResponse[]>> {
     const query = qs.stringify(params);
-    const url = `${this.baseUrl}/${this.endpoint}?${query}`;
+    const url = `/${this.endpoint}?${query}`;
     const { data, error } = await doGet<ProductCategoryResponse[]>(url);
     return { data, error };
   }
@@ -31,7 +31,7 @@ export class ProductCategoryService extends BaseService {
    * @returns
    */
   async single(id: number): Promise<ApiResult<ProductCategoryResponse>> {
-    const url = `${this.baseUrl}/${this.endpoint}/${id}`;
+    const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doGet<ProductCategoryResponse>(url);
     return { data, error };
   }

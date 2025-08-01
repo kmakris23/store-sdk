@@ -17,7 +17,7 @@ export class ProductBrandService extends BaseService {
    */
   async list(params?: Paginated): Promise<ApiResult<ProductBrandResponse[]>> {
     const query = qs.stringify(params);
-    const url = `${this.baseUrl}/${this.endpoint}?${query}`;
+    const url = `/${this.endpoint}?${query}`;
     const { data, error } = await doGet<ProductBrandResponse[]>(url);
     return { data, error };
   }
@@ -28,7 +28,7 @@ export class ProductBrandService extends BaseService {
    * @returns
    */
   async single(id: number): Promise<ApiResult<ProductBrandResponse>> {
-    const url = `${this.baseUrl}/${this.endpoint}/${id}`;
+    const url = `/${this.endpoint}/${id}`;
     const { data, error } = await doGet<ProductBrandResponse>(url);
     return { data, error };
   }

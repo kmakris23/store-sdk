@@ -22,7 +22,7 @@ export class ProductReviewService extends BaseService {
     params?: ProductReviewRequest
   ): Promise<ApiResult<ProductReviewResponse[]>> {
     const query = qs.stringify(params, { encode: true });
-    const url = `${this.baseUrl}/${this.endpoint}?${query}`;
+    const url = `/${this.endpoint}?${query}`;
     const { data, error } = await doGet<ProductReviewResponse[]>(url);
     return { data, error };
   }

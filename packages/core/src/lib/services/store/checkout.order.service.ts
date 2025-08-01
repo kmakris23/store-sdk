@@ -22,7 +22,7 @@ export class CheckoutOrderService extends BaseService {
     orderId: number,
     params: OrderRequest
   ): Promise<ApiResult<CheckoutResponse>> {
-    const url = `${this.baseUrl}/${this.endpoint}/${orderId}`;
+    const url = `/${this.endpoint}/${orderId}`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);

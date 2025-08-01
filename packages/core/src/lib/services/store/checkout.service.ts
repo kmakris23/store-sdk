@@ -20,7 +20,7 @@ export class CheckoutService extends BaseService {
    * @returns {CheckoutResponse}
    */
   async get(): Promise<ApiResult<CheckoutResponse>> {
-    const url = `${this.baseUrl}/${this.endpoint}/`;
+    const url = `/${this.endpoint}/`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
@@ -46,7 +46,7 @@ export class CheckoutService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
-    const url = `${this.baseUrl}/${this.endpoint}/?__experimental_calc_totals=${
+    const url = `/${this.endpoint}/?__experimental_calc_totals=${
       experimental_calc_totals || false
     }&${query}`;
     const { data, error } = await doPut<CheckoutResponse, unknown>(
@@ -66,7 +66,7 @@ export class CheckoutService extends BaseService {
     params: CheckoutCreateRequest
   ): Promise<ApiResult<CheckoutResponse>> {
     const query = qs.stringify(params, { encode: true });
-    const url = `${this.baseUrl}/${this.endpoint}/${query}`;
+    const url = `/${this.endpoint}/${query}`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);

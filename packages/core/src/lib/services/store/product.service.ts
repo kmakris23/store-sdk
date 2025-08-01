@@ -44,7 +44,7 @@ export class ProductService extends BaseService {
       { encode: false }
     );
 
-    const url = `${this.baseUrl}/${this.endpoint}?${query}`;
+    const url = `/${this.endpoint}?${query}`;
     const { data, error } = await doGet<ProductResponse[]>(url);
     return { data, error };
   }
@@ -57,7 +57,7 @@ export class ProductService extends BaseService {
   async single(
     params: RequireAtLeastOne<{ id: number; slug: string }>
   ): Promise<ApiResult<ProductResponse>> {
-    const url = `${this.baseUrl}/${this.endpoint}/${params.id || params.slug}`;
+    const url = `/${this.endpoint}/${params.id || params.slug}`;
     const { data, error } = await doGet<ProductResponse>(url);
     return { data, error };
   }

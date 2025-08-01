@@ -20,7 +20,7 @@ export class ProductTagService extends BaseService {
     params?: ProductTagRequest
   ): Promise<ApiResult<ProductTagResponse[]>> {
     const query = qs.stringify(params);
-    const url = `${this.baseUrl}/${this.endpoint}?${query}`;
+    const url = `/${this.endpoint}?${query}`;
     const { data, error } = await doGet<ProductTagResponse[]>(url);
     return { data, error };
   }

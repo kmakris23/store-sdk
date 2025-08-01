@@ -1,3 +1,5 @@
+import { StoreSdkPlugin } from '../plugins/plugin.js';
+
 export interface StoreSdkConfig {
   baseUrl: string;
   nonce?: {
@@ -10,4 +12,5 @@ export interface StoreSdkConfig {
     getToken?: () => Promise<string>;
     setToken?: (cartToken: string) => Promise<void>;
   };
+  plugins?: StoreSdkPlugin[];
 }

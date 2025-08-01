@@ -12,8 +12,6 @@ export class BaseService {
   protected readonly config: StoreSdkConfig;
   protected readonly events: StoreSdkEventEmitter;
 
-  protected readonly baseUrl: string;
-
   constructor(
     state: StoreSdkState,
     config: StoreSdkConfig,
@@ -22,7 +20,6 @@ export class BaseService {
     this.state = state;
     this.events = events;
     this.config = config;
-    this.baseUrl = config.baseUrl;
   }
 
   protected async addNonceHeader(axiosRequestConfig: AxiosRequestConfig) {
@@ -36,7 +33,7 @@ export class BaseService {
 
     axiosRequestConfig.headers = {
       ...axiosRequestConfig.headers,
-      ['Nonce']: nonce,
+      [this.NONCE_HEADER]: nonce,
     };
 
     return axiosRequestConfig;
@@ -53,7 +50,7 @@ export class BaseService {
 
     axiosRequestConfig.headers = {
       ...axiosRequestConfig.headers,
-      ['Cart-Token']: cartToken,
+      [this.CART_TOKEN_HEADER]: cartToken,
     };
 
     return axiosRequestConfig;

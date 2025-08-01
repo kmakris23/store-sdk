@@ -24,7 +24,7 @@ export class ProductCollectionDataService extends BaseService {
     params?: ProductCollectionDataRequest
   ): Promise<ApiResult<ProductCollectionDataResponse>> {
     const query = qs.stringify(params, { encode: true });
-    const url = `${this.baseUrl}/${this.endpoint}?${query}`;
+    const url = `/${this.endpoint}?${query}`;
     const { data, error } = await doGet<ProductCollectionDataResponse>(url);
     return { data, error };
   }

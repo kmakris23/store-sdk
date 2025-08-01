@@ -22,7 +22,7 @@ export class CartItemService extends BaseService {
    * @returns {CartItemResponse[]}
    */
   async list(): Promise<ApiResult<CartItemResponse[]>> {
-    const url = `${this.baseUrl}/${this.endpoint}`;
+    const url = `/${this.endpoint}`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
@@ -38,7 +38,7 @@ export class CartItemService extends BaseService {
    * @returns {CartItemResponse}
    */
   async single(key: string): Promise<ApiResult<CartItemResponse>> {
-    const url = `${this.baseUrl}/${this.endpoint}/${key}`;
+    const url = `/${this.endpoint}/${key}`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
@@ -55,7 +55,7 @@ export class CartItemService extends BaseService {
    */
   async add(params: CartItemAddRequest): Promise<ApiResult<CartItemResponse>> {
     const query = qs.stringify(params, { encode: true });
-    const url = `${this.baseUrl}/${this.endpoint}?${query}`;
+    const url = `/${this.endpoint}?${query}`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
@@ -83,7 +83,7 @@ export class CartItemService extends BaseService {
     quantity: number
   ): Promise<ApiResult<CartItemResponse>> {
     const query = qs.stringify({ quantity: quantity }, { encode: true });
-    const url = `${this.baseUrl}/${this.endpoint}/${key}?${query}`;
+    const url = `/${this.endpoint}/${key}?${query}`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
@@ -106,7 +106,7 @@ export class CartItemService extends BaseService {
    * @returns {unknown}
    */
   async remove(key: string): Promise<ApiResult<unknown>> {
-    const url = `${this.baseUrl}/${this.endpoint}/${key}`;
+    const url = `/${this.endpoint}/${key}`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
@@ -124,7 +124,7 @@ export class CartItemService extends BaseService {
    * @returns {CartItemResponse[]}
    */
   async clear(): Promise<ApiResult<CartItemResponse[]>> {
-    const url = `${this.baseUrl}/${this.endpoint}`;
+    const url = `/${this.endpoint}`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);

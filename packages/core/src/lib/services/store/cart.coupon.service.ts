@@ -14,7 +14,7 @@ export class CartCouponService extends BaseService {
    * @returns {CartCouponResponse[]}
    */
   async list(): Promise<ApiResult<CartCouponResponse[]>> {
-    const url = `${this.baseUrl}/${this.endpoint}`;
+    const url = `/${this.endpoint}`;
     const { data, error } = await doGet<CartCouponResponse[]>(url);
     return { data, error };
   }
@@ -25,7 +25,7 @@ export class CartCouponService extends BaseService {
    * @returns {CartCouponResponse}
    */
   async single(code: string): Promise<ApiResult<CartCouponResponse>> {
-    const url = `${this.baseUrl}/${this.endpoint}/${code}`;
+    const url = `/${this.endpoint}/${code}`;
     const { data, error } = await doGet<CartCouponResponse>(url);
     return { data, error };
   }
@@ -36,7 +36,7 @@ export class CartCouponService extends BaseService {
    * @returns {CartCouponResponse}
    */
   async add(code: string): Promise<ApiResult<CartCouponResponse>> {
-    const url = `${this.baseUrl}/${this.endpoint}?code=${code}`;
+    const url = `/${this.endpoint}?code=${code}`;
     const { data, error } = await doPost<CartCouponResponse, unknown>(url);
     return { data, error };
   }
@@ -47,7 +47,7 @@ export class CartCouponService extends BaseService {
    * @returns {unknown}
    */
   async delete(code: string): Promise<ApiResult<unknown>> {
-    const url = `${this.baseUrl}/${this.endpoint}/${code}`;
+    const url = `/${this.endpoint}/${code}`;
     const { data, error } = await doDelete<unknown>(url);
     return { data, error };
   }
@@ -57,7 +57,7 @@ export class CartCouponService extends BaseService {
    * @returns {CartCouponResponse[]}
    */
   async clear(): Promise<ApiResult<CartCouponResponse[]>> {
-    const url = `${this.baseUrl}/${this.endpoint}`;
+    const url = `/${this.endpoint}`;
     const { data, error } = await doDelete<CartCouponResponse[]>(url);
     return { data, error };
   }

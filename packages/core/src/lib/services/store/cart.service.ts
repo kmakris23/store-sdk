@@ -20,7 +20,7 @@ export class CartService extends BaseService {
    * @returns {CartResponse}
    */
   async get(): Promise<ApiResult<CartResponse>> {
-    const url = `${this.baseUrl}/${this.endpoint}`;
+    const url = `/${this.endpoint}`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
@@ -43,7 +43,7 @@ export class CartService extends BaseService {
    */
   async add(params: CartItemAddRequest): Promise<ApiResult<CartResponse>> {
     const query = qs.stringify(params, { encode: true });
-    const url = `${this.baseUrl}/${this.endpoint}/add-item?${query}`;
+    const url = `/${this.endpoint}/add-item?${query}`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
@@ -72,7 +72,7 @@ export class CartService extends BaseService {
     quantity: number
   ): Promise<ApiResult<CartResponse>> {
     const query = qs.stringify({ key, quantity }, { encode: true });
-    const url = `${this.baseUrl}/${this.endpoint}/update-item?${query}`;
+    const url = `/${this.endpoint}/update-item?${query}`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
@@ -96,7 +96,7 @@ export class CartService extends BaseService {
    * @returns {CartResponse}
    */
   async remove(key: string): Promise<ApiResult<CartResponse>> {
-    const url = `${this.baseUrl}/${this.endpoint}/remove-item?key=${key}`;
+    const url = `/${this.endpoint}/remove-item?key=${key}`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
@@ -120,7 +120,7 @@ export class CartService extends BaseService {
    * @returns {CartResponse}
    */
   async applyCoupon(code: string): Promise<ApiResult<CartResponse>> {
-    const url = `${this.baseUrl}/${this.endpoint}/apply-coupon/${code}`;
+    const url = `/${this.endpoint}/apply-coupon/${code}`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
@@ -144,7 +144,7 @@ export class CartService extends BaseService {
    * @returns {CartResponse}
    */
   async removeCoupon(code: string): Promise<ApiResult<CartResponse>> {
-    const url = `${this.baseUrl}/${this.endpoint}/remove-coupon/${code}`;
+    const url = `/${this.endpoint}/remove-coupon/${code}`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
@@ -170,7 +170,7 @@ export class CartService extends BaseService {
   async updateCustomer(
     body: CartCustomerRequest
   ): Promise<ApiResult<CartResponse>> {
-    const url = `${this.baseUrl}/${this.endpoint}/update-customer`;
+    const url = `/${this.endpoint}/update-customer`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
@@ -198,7 +198,7 @@ export class CartService extends BaseService {
     packageId: number,
     rateId: string
   ): Promise<ApiResult<CartResponse>> {
-    const url = `${this.baseUrl}/${this.endpoint}/select-shipping-rate/package_id=${packageId}&rate_id=${rateId}`;
+    const url = `/${this.endpoint}/select-shipping-rate/package_id=${packageId}&rate_id=${rateId}`;
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
