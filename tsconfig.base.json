@@ -19,7 +19,10 @@
     "baseUrl": ".",
     "paths": {
       "@store-sdk/core": ["packages/core/src/index.ts"],
-      "@store-sdk/hippoo": ["packages/hippoo/src/index.ts"]
+      "@store-sdk/hippoo": ["packages/hippoo/src/index.ts"],
+      "@store-sdk/jwt-authentication-for-wp-rest-api": [
+        "packages/jwt-authentication-for-wp-rest-api/src/index.ts"
+      ]
     }
   }
 }
