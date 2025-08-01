@@ -14,7 +14,7 @@
     "typescript"
   ],
   "description": "TypeScript-first SDK for integrating with the WooCommerce Store API",
-  "type": "module",
+  "type": "commonjs",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -27,8 +27,7 @@
   },
   "peerDependencies": {
     "axios": "^1.11.0",
-    "qs": "^6.14.0",
-    "date-fns": "^4.1.0"
+    "qs": "^6.14.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

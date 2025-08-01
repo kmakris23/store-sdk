@@ -1,4 +1,16 @@
 {
   "name": "@store-sdk/hippoo",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json"
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/hippoo",
+        "main": "packages/hippoo/src/index.ts",
+        "tsConfig": "packages/hippoo/tsconfig.lib.json",
+        "assets": ["packages/hippoo/*.md"]
+      }
+    }
+  }
 }

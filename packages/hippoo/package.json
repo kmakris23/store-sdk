@@ -13,7 +13,8 @@
     "store-api",
     "typescript"
   ],
-  "type": "module",
+  "description": "JWT Authentication for WP REST API",
+  "type": "commonjs",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",

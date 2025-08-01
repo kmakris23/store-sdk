@@ -1,11 +1,9 @@
-# hippoo
+> ⚠️ **This project is currently under active development.**
+>
+> Features, APIs, and documentation may change frequently until a stable version is released.
 
-This library was generated with [Nx](https://nx.dev).
+## 📦 Installation
 
-## Building
-
-Run `nx build hippoo` to build the library.
-
-## Running unit tests
-
-Run `nx test hippoo` to execute the unit tests via [Vitest](https://vitest.dev/).
+```bash
+npm install @store-sdk/hippoo
+```
