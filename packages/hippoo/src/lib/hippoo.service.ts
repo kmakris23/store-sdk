@@ -1,4 +1,4 @@
-import { ApiResult, doPost, StoreSdkConfig } from '@store-sdk/core';
+import { ApiResult, doPost } from '@store-sdk/core';
 import { LoginResponse } from './types/login/login.response.js';
 import { LoginRequest } from './types/login/login.request.js';
 import { SignupRequest } from './types/signup/signup.request.js';
@@ -8,12 +8,13 @@ import { RefreshTokenResponse } from './types/refresh-token/refresh.token.respon
 import { ResetPasswordRequest } from './types/reset-password/reset.password.request.js';
 import { ResetPasswordConfirmRequest } from './types/reset-password/reset.password.confirm.request.js';
 import { LoginSocialRequest } from './types/login/login.social.request.js';
+import { HippoConfig } from './types/hippoo.config.js';
 
 export class HippoService {
-  private readonly config: StoreSdkConfig;
+  private readonly config: HippoConfig;
   private readonly baseUrl: string;
 
-  constructor(baseUrl: string, config: StoreSdkConfig) {
+  constructor(baseUrl: string, config: HippoConfig) {
     this.baseUrl = baseUrl;
     this.config = config;
   }
@@ -32,11 +33,11 @@ export class HippoService {
       request
     );
 
-    if (this.config.jwt?.setToken) {
-      this.config.jwt.setToken(data?.token ?? '');
+    if (this.config.setToken) {
+      this.config.setToken(data?.token ?? '');
     }
-    if (this.config.jwt?.seRefreshtToken) {
-      this.config.jwt.seRefreshtToken(data?.refresh_token ?? '');
+    if (this.config.seRefreshtToken) {
+      this.config.seRefreshtToken(data?.refresh_token ?? '');
     }
 
     return { data, error };
@@ -55,11 +56,11 @@ export class HippoService {
       request
     );
 
-    if (this.config.jwt?.setToken) {
-      this.config.jwt.setToken(data?.token ?? '');
+    if (this.config.setToken) {
+      this.config.setToken(data?.token ?? '');
     }
-    if (this.config.jwt?.seRefreshtToken) {
-      this.config.jwt.seRefreshtToken(data?.refresh_token ?? '');
+    if (this.config.seRefreshtToken) {
+      this.config.seRefreshtToken(data?.refresh_token ?? '');
     }
 
     return { data, error };
@@ -80,11 +81,11 @@ export class HippoService {
       RefreshTokenRequest
     >(url, request);
 
-    if (this.config.jwt?.setToken) {
-      this.config.jwt.setToken(data?.token ?? '');
+    if (this.config.setToken) {
+      this.config.setToken(data?.token ?? '');
     }
-    if (this.config.jwt?.seRefreshtToken) {
-      this.config.jwt.seRefreshtToken(data?.refresh_token ?? '');
+    if (this.config.seRefreshtToken) {
+      this.config.seRefreshtToken(data?.refresh_token ?? '');
     }
 
     return { data, error };
@@ -140,7 +141,7 @@ export class HippoService {
 
   /**
    * Social Login
-   * 
+   *
    * Supports Google, Apple, Facebook.
    * If the email doesn’t exist, a new user will be registered
    * @param request

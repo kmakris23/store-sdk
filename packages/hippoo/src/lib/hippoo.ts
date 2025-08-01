@@ -1,6 +1,11 @@
-import { Sdk, StoreSdkConfig, StoreSdkPlugin } from '@store-sdk/core';
+import {
+  httpClient,
+  Sdk,
+  StoreSdkConfig,
+  StoreSdkPlugin,
+} from '@store-sdk/core';
 import { HippoService } from './hippoo.service.js';
-import { HippoConfig } from './types/sdk.config.hippoo.js';
+import { HippoConfig } from './types/hippoo.config.js';
 
 declare module '@store-sdk/core' {
   interface Sdk {
@@ -9,14 +14,33 @@ declare module '@store-sdk/core' {
   interface StoreSdkState {
     isAuthenticated?: boolean;
   }
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type
-  interface StoreSdkConfig extends HippoConfig {}
 }
-class HippoooSdk implements StoreSdkPlugin {
+class HippooPlugin implements StoreSdkPlugin {
   private _hippoo!: HippoService;
+  private readonly _config: HippoConfig;
+
+  constructor(config: HippoConfig) {
+    this._config = config;
+  }
 
   async init(config: StoreSdkConfig): Promise<void> {
-    this._hippoo = new HippoService(config.baseUrl, config);
+    this._hippoo = new HippoService(config.baseUrl, this._config);
+
+    httpClient.default.interceptors.request.use(
+      async (axiosConfig) => {
+        if (this._config.getToken) {
+          const bearerToken = await this._config.getToken();
+          if (bearerToken) {
+            axiosConfig.headers['Authorization'] = `Bearer ${bearerToken}`;
+          }
+        }
+
+        return axiosConfig;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
   }
 
   extend(sdk: Sdk) {
@@ -30,4 +54,6 @@ class HippoooSdk implements StoreSdkPlugin {
   }
 }
 
-export const StoreSdkHippooo = new HippoooSdk();
+export const useHippo = (config: HippoConfig) => {
+  return new HippooPlugin(config);
+};
