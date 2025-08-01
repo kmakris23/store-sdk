@@ -15,7 +15,6 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "customConditions": ["development"],
     "baseUrl": ".",
     "paths": {
       "@store-sdk/core": ["packages/core/src/index.ts"],

@@ -1,6 +1,7 @@
 {
   "name": "@store-sdk/hippoo",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "implicitDependencies": ["@store-sdk/core"],
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",

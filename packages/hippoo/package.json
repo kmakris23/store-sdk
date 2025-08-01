@@ -14,7 +14,7 @@
     "typescript"
   ],
   "description": "JWT Authentication for WP REST API",
-  "type": "commonjs",
+  "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -29,7 +29,11 @@
     "tslib": "^2.3.0"
   },
   "peerDependencies": {
+    "axios": "^1.11.0",
     "@store-sdk/core": "^0.4.0"
+  },
+  "devDependencies": {
+    "@store-sdk/core": "*"
   },
   "scripts": {
     "build": "tsup",
