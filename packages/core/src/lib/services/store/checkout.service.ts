@@ -5,10 +5,11 @@ import qs from 'qs';
 import { ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
 import { AxiosRequestConfig } from 'axios';
+import { doGet, doPut, doPost } from '../../utilities/axios.utility.js';
 
 /**
  * Checkout API
- * 
+ *
  * The checkout API facilitates the creation of orders (from the current cart) and handling payments for payment methods.
  */
 export class CheckoutService extends BaseService {
@@ -25,7 +26,7 @@ export class CheckoutService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
-    const { data, error } = await this.doGet<CheckoutResponse>(url, options);
+    const { data, error } = await doGet<CheckoutResponse>(url, options);
     return { data, error };
   }
 
@@ -48,7 +49,7 @@ export class CheckoutService extends BaseService {
     const url = `${this.baseUrl}/${this.endpoint}/?__experimental_calc_totals=${
       experimental_calc_totals || false
     }&${query}`;
-    const { data, error } = await this.doPut<CheckoutResponse, unknown>(
+    const { data, error } = await doPut<CheckoutResponse, unknown>(
       url,
       undefined,
       options
@@ -71,7 +72,7 @@ export class CheckoutService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
-    const { data, error } = await this.doPost<CheckoutResponse, unknown>(
+    const { data, error } = await doPost<CheckoutResponse, unknown>(
       url,
       undefined,
       options

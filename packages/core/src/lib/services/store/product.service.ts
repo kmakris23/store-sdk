@@ -4,6 +4,7 @@ import { RequireAtLeastOne } from '../../utilities/common.js';
 import qs from 'qs';
 import { ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
+import { doGet } from '../../utilities/axios.utility.js';
 
 /**
  * Products API
@@ -44,7 +45,7 @@ export class ProductService extends BaseService {
     );
 
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    const { data, error } = await this.doGet<ProductResponse[]>(url);
+    const { data, error } = await doGet<ProductResponse[]>(url);
     return { data, error };
   }
 
@@ -57,7 +58,7 @@ export class ProductService extends BaseService {
     params: RequireAtLeastOne<{ id: number; slug: string }>
   ): Promise<ApiResult<ProductResponse>> {
     const url = `${this.baseUrl}/${this.endpoint}/${params.id || params.slug}`;
-    const { data, error } = await this.doGet<ProductResponse>(url);
+    const { data, error } = await doGet<ProductResponse>(url);
     return { data, error };
   }
 }

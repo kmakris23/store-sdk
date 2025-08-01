@@ -2,6 +2,7 @@ import { OrderResponse } from '../../types/store/order/order.response.js';
 import { ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
 import { AxiosRequestConfig } from 'axios';
+import { doGet } from '../../utilities/axios.utility.js';
 
 /**
  * Order API
@@ -32,7 +33,7 @@ export class OrderService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
-    const { data, error } = await this.doGet<OrderResponse>(url, options);
+    const { data, error } = await doGet<OrderResponse>(url, options);
     return { data, error };
   }
 }

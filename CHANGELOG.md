@@ -1,3 +1,13 @@
+## 0.4.0 (2025-07-31)
+
+### 🚀 Features
+
+- plugins and hippoo integration ([db49ba2](https://github.com/kmakris23/store-sdk/commit/db49ba2))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.3.0 (2025-07-31)
 
 ### 🚀 Features

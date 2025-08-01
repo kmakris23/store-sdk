@@ -1,5 +1,5 @@
 {
-  "name": "@store-sdk/core",
+  "name": "@store-sdk/hippoo",
   "version": "0.4.0",
   "repository": {
     "url": "https://github.com/kmakris23/store-sdk",
@@ -13,7 +13,6 @@
     "store-api",
     "typescript"
   ],
-  "description": "TypeScript-first SDK for integrating with the WooCommerce Store API",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -25,13 +24,11 @@
       "require": "./dist/index.cjs"
     }
   },
-  "peerDependencies": {
-    "axios": "^1.11.0",
-    "qs": "^6.14.0",
-    "date-fns": "^4.1.0"
-  },
   "dependencies": {
     "tslib": "^2.3.0"
+  },
+  "peerDependencies": {
+    "@store-sdk/core": "^0.4.0"
   },
   "scripts": {
     "build": "tsup",

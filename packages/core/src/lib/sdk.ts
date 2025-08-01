@@ -14,8 +14,9 @@ import { ProductService } from './services/store/product.service.js';
 import { ProductTagService } from './services/store/product.tag.service.js';
 import { StoreSdkState } from './types/sdk.state.js';
 import { StoreSdkEventEmitter } from './sdk.event.emitter.js';
+import { StoreSdkPlugin } from './plugins/plugin.js';
 
-class Sdk {
+export class Sdk {
   private _tags!: ProductTagService;
   private _orders!: OrderService;
   private _brands!: ProductBrandService;
@@ -30,6 +31,8 @@ class Sdk {
   private _cart!: CartService;
   private _cartItems!: CartItemService;
   private _cartCoupons!: CartCouponService;
+
+  private _plugins!: StoreSdkPlugin[];
 
   state: StoreSdkState = {};
 
@@ -71,9 +74,23 @@ class Sdk {
     this._cartItems = new CartItemService(this.state, config, this.events);
     this._cartCoupons = new CartCouponService(this.state, config, this.events);
 
+    // Initialize plugins
+    if (this._plugins && this._plugins.length > 0) {
+      for (const plugin of this._plugins) {
+        await plugin.init(config);
+        if (plugin.extend) {
+          plugin.extend(this, config);
+        }
+      }
+    }
+
     this._initialized = true;
 
     await this._cart.get();
+  }
+
+  public plugins(plugins: StoreSdkPlugin[]) {
+    this._plugins = plugins;
   }
 
   /**

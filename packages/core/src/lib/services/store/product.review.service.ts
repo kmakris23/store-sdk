@@ -3,10 +3,11 @@ import { ProductReviewRequest } from '../../types/store/product-review/product.r
 import qs from 'qs';
 import { ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
+import { doGet } from '../../utilities/axios.utility.js';
 
 /**
  * Product Reviews API
- * 
+ *
  * This endpoint returns product reviews (comments) and can also show results from either specific products or specific categories.
  */
 export class ProductReviewService extends BaseService {
@@ -22,7 +23,7 @@ export class ProductReviewService extends BaseService {
   ): Promise<ApiResult<ProductReviewResponse[]>> {
     const query = qs.stringify(params, { encode: true });
     const url = `${this.baseUrl}/${this.endpoint}?${query}`;
-    const { data, error } = await this.doGet<ProductReviewResponse[]>(url);
+    const { data, error } = await doGet<ProductReviewResponse[]>(url);
     return { data, error };
   }
 }

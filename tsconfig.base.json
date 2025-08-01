@@ -18,7 +18,8 @@
     "customConditions": ["development"],
     "baseUrl": ".",
     "paths": {
-      "@store-sdk/core": ["packages/core/src/index.ts"]
+      "@store-sdk/core": ["packages/core/src/index.ts"],
+      "@store-sdk/hippoo": ["packages/hippoo/src/index.ts"]
     }
   }
 }
