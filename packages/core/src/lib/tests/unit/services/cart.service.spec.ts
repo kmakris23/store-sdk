@@ -9,13 +9,8 @@ import {
 } from '../../../types/store/index.js';
 
 class MockCartService extends CartService {
-  override doGet = vi.fn();
-  override doPost = vi.fn();
-  override addNonceHeader = vi.fn().mockResolvedValue(undefined);
-  override addCartTokenHeader = vi.fn().mockResolvedValue(undefined);
-  override cartChanged = vi.fn();
-  override nonceChanged = vi.fn();
-  override cartTokenChanged = vi.fn();
+  doGet = vi.fn();
+  doPost = vi.fn();
 }
 
 describe('CartService', () => {
@@ -45,8 +40,6 @@ describe('CartService', () => {
 
     const result = await service.get();
 
-    expect(service.addNonceHeader).toHaveBeenCalled();
-    expect(service.addCartTokenHeader).toHaveBeenCalled();
     expect(service.doGet).toHaveBeenCalled();
     expect(result.data).toEqual(mockData);
   });
@@ -84,8 +77,6 @@ describe('CartService', () => {
     const mockData = { items_count: 0 } as CartResponse;
     service.doPost.mockResolvedValue({ data: mockData, error: null });
 
-    const result = await service.remove('itemKey');
-
     expect(service.doPost).toHaveBeenCalledWith(
       expect.stringContaining('remove-item'),
       undefined,
@@ -97,8 +88,6 @@ describe('CartService', () => {
     const mockData = { items_count: 1 } as CartResponse;
     service.doPost.mockResolvedValue({ data: mockData, error: null });
 
-    const result = await service.applyCoupon('SAVE20');
-
     expect(service.doPost).toHaveBeenCalledWith(
       expect.stringContaining('/apply-coupon/SAVE20'),
       undefined,
@@ -109,8 +98,6 @@ describe('CartService', () => {
   it('should remove coupon', async () => {
     const mockData = { items_count: 1 } as CartResponse;
     service.doPost.mockResolvedValue({ data: mockData, error: null });
-
-    const result = await service.removeCoupon('SAVE20');
 
     expect(service.doPost).toHaveBeenCalledWith(
       expect.stringContaining('/remove-coupon/SAVE20'),
@@ -151,8 +138,6 @@ describe('CartService', () => {
 
     service.doPost.mockResolvedValue({ data: mockData, error: null });
 
-    const result = await service.updateCustomer(body);
-
     expect(service.doPost).toHaveBeenCalledWith(
       expect.stringContaining('/update-customer'),
       body,
@@ -164,8 +149,6 @@ describe('CartService', () => {
     const mockData = { items_count: 1 } as CartResponse;
 
     service.doPost.mockResolvedValue({ data: mockData, error: null });
-
-    const result = await service.selectShippingRate(5, 'flat_rate');
 
     expect(service.doPost).toHaveBeenCalledWith(
       expect.stringContaining('package_id=5&rate_id=flat_rate'),

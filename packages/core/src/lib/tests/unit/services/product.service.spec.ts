@@ -6,7 +6,7 @@ import { StoreSdkConfig } from '../../../types/sdk.config.js';
 import { StoreSdkState } from '../../../types/sdk.state.js';
 
 class MockProductService extends ProductService {
-  override doGet = vi.fn();
+  doGet = vi.fn();
 }
 
 describe('ProductService', () => {

@@ -9,9 +9,9 @@ import {
 } from '../../../types/store/index.js';
 
 class MockCheckoutService extends CheckoutService {
-  override doGet = vi.fn();
-  override doPut = vi.fn();
-  override doPost = vi.fn();
+  doGet = vi.fn();
+  doPut = vi.fn();
+  doPost = vi.fn();
 }
 
 describe('CheckoutService', () => {

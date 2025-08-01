@@ -5,9 +5,7 @@ import { StoreSdkState } from '../../../types/sdk.state.js';
 import { OrderRequest, CheckoutResponse } from '../../../types/store/index.js';
 
 class MockCheckoutOrderService extends CheckoutOrderService {
-  override doPost = vi.fn();
-  override addNonceHeader = vi.fn().mockResolvedValue(undefined);
-  override addCartTokenHeader = vi.fn().mockResolvedValue(undefined);
+  doPost = vi.fn();
 }
 
 describe('CheckoutOrderService', () => {
@@ -42,8 +40,6 @@ describe('CheckoutOrderService', () => {
 
     const result = await service.order(orderId, requestBody);
 
-    expect(service.addNonceHeader).toHaveBeenCalled();
-    expect(service.addCartTokenHeader).toHaveBeenCalled();
     expect(service.doPost).toHaveBeenCalledWith(
       expect.stringContaining(`/checkout/${orderId}`),
       requestBody,

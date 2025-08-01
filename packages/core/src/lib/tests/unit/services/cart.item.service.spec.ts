@@ -10,10 +10,10 @@ import { StoreSdkState } from '../../../types/sdk.state.js';
 import { ApiResult } from '../../../types/api.js';
 
 class MockCartItemService extends CartItemService {
-  override doGet = vi.fn();
-  override doPost = vi.fn();
-  override doPut = vi.fn();
-  override doDelete = vi.fn();
+  doGet = vi.fn();
+  doPost = vi.fn();
+  doPut = vi.fn();
+  doDelete = vi.fn();
 }
 
 vi.mock('axios');
