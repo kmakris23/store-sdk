@@ -20,7 +20,7 @@
   "include": [],
   "references": [
     {
-      "path": "../../packages/hippoo"
+      "path": "../../packages/jwt-authentication-for-wp-rest-api"
     },
     {
       "path": "../../packages/core"

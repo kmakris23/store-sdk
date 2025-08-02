@@ -24,7 +24,7 @@
   ],
   "references": [
     {
-      "path": "../../packages/hippoo/tsconfig.lib.json"
+      "path": "../../packages/jwt-authentication-for-wp-rest-api/tsconfig.lib.json"
     },
     {
       "path": "../../packages/core/tsconfig.lib.json"

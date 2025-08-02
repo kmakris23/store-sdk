@@ -34,8 +34,13 @@
   "nx": {
     "name": "jwt-authentication-for-wp-rest-api"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "@store-sdk/core": "^0.4.0"
+  },
   "dependencies": {
     "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@store-sdk/core": "*"
   }
 }

@@ -4,29 +4,29 @@ import {
   StoreSdkConfig,
   StoreSdkPlugin,
 } from '@store-sdk/core';
-import { HippoService } from './hippoo.service.js';
-import { HippoConfig } from './types/hippoo.config.js';
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { AuthService } from './auth.service.js';
+import { AuthConfig } from './auth.config.js';
 
 declare module '@store-sdk/core' {
   interface Sdk {
-    hippoo: HippoService;
+    auth: AuthService;
   }
   interface StoreSdkState {
     isAuthenticated?: boolean;
   }
 }
 
-class HippooPlugin implements StoreSdkPlugin {
-  private _hippoo!: HippoService;
-  private readonly _config: HippoConfig;
+class AuthPlugin implements StoreSdkPlugin {
+  private _auth!: AuthService;
+  private readonly _config: AuthConfig;
 
-  constructor(config: HippoConfig) {
+  constructor(config: AuthConfig) {
     this._config = config;
   }
 
   async init(config: StoreSdkConfig): Promise<void> {
-    this._hippoo = new HippoService(config.baseUrl, this._config);
+    this._auth = new AuthService(config.baseUrl, this._config);
 
     httpClient.default.interceptors.request.use(
       async (axiosConfig: InternalAxiosRequestConfig) => {
@@ -46,19 +46,16 @@ class HippooPlugin implements StoreSdkPlugin {
   }
 
   extend(sdk: Sdk) {
-    (sdk as any)._hippoo = this._hippoo;
+    (sdk as any)._hippoo = this._auth;
 
-    Object.defineProperty(sdk, 'hippoo', {
-      get: () => this._hippoo,
+    Object.defineProperty(sdk, 'auth', {
+      get: () => this._auth,
       configurable: false,
       enumerable: true,
     });
   }
 }
 
-export const useHippo = (config: HippoConfig) => {
-  console.warn(
-    '⚠️ Warning: `useHippo({})` is not stable or ready yet. Use with caution.'
-  );
-  return new HippooPlugin(config);
+export const useAuth = (config: AuthConfig) => {
+  return new AuthPlugin(config);
 };

@@ -1,1 +1,1 @@
-export * from './lib/jwt-authentication-for-wp-rest-api.js';
+export * from './lib/auth.js';
