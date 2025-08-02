@@ -8,6 +8,15 @@ import { HippoService } from './hippoo.service.js';
 import { HippoConfig } from './types/hippoo.config.js';
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
+declare module '@store-sdk/core' {
+  interface Sdk {
+    hippoo: HippoService;
+  }
+  interface StoreSdkState {
+    isAuthenticated?: boolean;
+  }
+}
+
 class HippooPlugin implements StoreSdkPlugin {
   private _hippoo!: HippoService;
   private readonly _config: HippoConfig;
