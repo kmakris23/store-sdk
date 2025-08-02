@@ -6,15 +6,8 @@ import {
 } from '@store-sdk/core';
 import { HippoService } from './hippoo.service.js';
 import { HippoConfig } from './types/hippoo.config.js';
+import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
-declare module '@store-sdk/core' {
-  interface Sdk {
-    hippoo: HippoService;
-  }
-  interface StoreSdkState {
-    isAuthenticated?: boolean;
-  }
-}
 class HippooPlugin implements StoreSdkPlugin {
   private _hippoo!: HippoService;
   private readonly _config: HippoConfig;
@@ -27,7 +20,7 @@ class HippooPlugin implements StoreSdkPlugin {
     this._hippoo = new HippoService(config.baseUrl, this._config);
 
     httpClient.default.interceptors.request.use(
-      async (axiosConfig) => {
+      async (axiosConfig: InternalAxiosRequestConfig) => {
         if (this._config.getToken) {
           const bearerToken = await this._config.getToken();
           if (bearerToken) {
@@ -37,7 +30,7 @@ class HippooPlugin implements StoreSdkPlugin {
 
         return axiosConfig;
       },
-      (error) => {
+      (error: AxiosError | Error) => {
         return Promise.reject(error);
       }
     );

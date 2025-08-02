@@ -14,27 +14,28 @@
     "typescript"
   ],
   "description": "JWT Authentication for WP REST API",
-  "type": "commonjs",
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
+      "development": "./src/index.ts",
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
-  "peerDependencies": {
-    "axios": "^1.11.0",
-    "qs": "^6.14.0",
-    "date-fns": "^4.1.0"
+  "files": [
+    "dist",
+    "!**/*.tsbuildinfo"
+  ],
+  "nx": {
+    "name": "jwt-authentication-for-wp-rest-api"
   },
+  "peerDependencies": {},
   "dependencies": {
     "tslib": "^2.3.0"
-  },
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch"
   }
 }

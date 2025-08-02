@@ -15,15 +15,24 @@
   ],
   "description": "JWT Authentication for WP REST API",
   "type": "module",
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
+      "development": "./src/index.ts",
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     }
+  },
+  "files": [
+    "dist",
+    "!**/*.tsbuildinfo"
+  ],
+  "nx": {
+    "name": "hippoo"
   },
   "dependencies": {
     "tslib": "^2.3.0"
@@ -34,9 +43,5 @@
   },
   "devDependencies": {
     "@store-sdk/core": "*"
-  },
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch"
   }
 }
