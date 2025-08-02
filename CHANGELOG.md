@@ -1,3 +1,14 @@
+## 0.4.1 (2025-08-02)
+
+### 🩹 Fixes
+
+- release config ([8012816](https://github.com/kmakris23/store-sdk/commit/8012816))
+- **core:** add jwt utilities ([9cb9bea](https://github.com/kmakris23/store-sdk/commit/9cb9bea))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.4.1-0 (2025-08-02)
 
 ### 🚀 Features
