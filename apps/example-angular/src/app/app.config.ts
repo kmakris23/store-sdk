@@ -8,10 +8,11 @@ import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { from } from 'rxjs';
 import { StoreSdk } from '@store-sdk/core';
-import { useHippo } from '@store-sdk/hippoo';
+// import { useHippo } from '@store-sdk/hippoo';
+import { useAuth } from '@store-sdk/jwt-authentication-for-wp-rest-api';
 import { environment } from '../environments/environment.development';
 
-const hippo = useHippo({
+const auth = useAuth({
   getToken: async () =>
     (await Promise.resolve(localStorage.getItem('jwt'))) as string,
   setToken: async (token) => {
@@ -19,6 +20,15 @@ const hippo = useHippo({
     await promise;
   },
 });
+
+// const hippo = useHippo({
+//   getToken: async () =>
+//     (await Promise.resolve(localStorage.getItem('jwt'))) as string,
+//   setToken: async (token) => {
+//     const promise = Promise.resolve(localStorage.setItem('jwt', token));
+//     await promise;
+//   },
+// });
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -28,9 +38,10 @@ export const appConfig: ApplicationConfig = {
       return from(
         StoreSdk.init({
           baseUrl: environment.baseUrl,
-          nonce: { disabled: true },
-          plugins: [hippo],
+          nonce: { disabled: false },
+          plugins: [auth],
           cartToken: {
+            disabled: true,
             getToken: async () => {
               const key = localStorage.getItem('cart_token');
               const promise = Promise.resolve(key);
