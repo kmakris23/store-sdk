@@ -1,3 +1,19 @@
+## 0.4.1-0 (2025-08-02)
+
+### 🚀 Features
+
+- scaffold `jwt-authentication-for-wp-rest-api` package ([6d04e5b](https://github.com/kmakris23/store-sdk/commit/6d04e5b))
+- add JWT Authentication for WP REST API plugin ([6fc570a](https://github.com/kmakris23/store-sdk/commit/6fc570a))
+
+### 🩹 Fixes
+
+- **core:** singleton axios instance, remove `baseUrl` usages and move plugin load into config ([75897e2](https://github.com/kmakris23/store-sdk/commit/75897e2))
+- **hippoo:** load plugin using `useHippoo` and use specific `HippoConfig` ([11bdd66](https://github.com/kmakris23/store-sdk/commit/11bdd66))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.4.0 (2025-07-31)
 
 ### 🚀 Features
