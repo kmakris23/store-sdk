@@ -1,3 +1,13 @@
+## 0.4.3 (2025-08-03)
+
+### 🩹 Fixes
+
+- remove `development` export ([42a5acd](https://github.com/kmakris23/store-sdk/commit/42a5acd))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.4.2 (2025-08-03)
 
 ### 🩹 Fixes
