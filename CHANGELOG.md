@@ -1,3 +1,13 @@
+## 0.4.2 (2025-08-03)
+
+### 🩹 Fixes
+
+- `vite.config.ts` preserveSymlinks ([35ec66a](https://github.com/kmakris23/store-sdk/commit/35ec66a))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.4.1 (2025-08-02)
 
 ### 🩹 Fixes
