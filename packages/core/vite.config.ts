@@ -2,6 +2,9 @@ import { defineConfig } from 'vite';
 
 export default defineConfig(() => ({
   root: __dirname,
+  resolve: {
+    preserveSymlinks: true,
+  },
   cacheDir: '../../node_modules/.vite/packages/core',
   plugins: [],
   // Uncomment this if you are using workers.

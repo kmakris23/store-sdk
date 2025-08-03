@@ -2,6 +2,9 @@ import { defineConfig } from 'vite';
 
 export default defineConfig(() => ({
   root: __dirname,
+  resolve: {
+    preserveSymlinks: true,
+  },
   cacheDir:
     '../../node_modules/.vite/packages/jwt-authentication-for-wp-rest-api',
   plugins: [],
