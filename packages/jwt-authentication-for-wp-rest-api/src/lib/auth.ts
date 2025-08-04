@@ -1,9 +1,4 @@
-import {
-  httpClient,
-  Sdk,
-  StoreSdkConfig,
-  StoreSdkPlugin,
-} from '@store-sdk/core';
+import { httpClient, Sdk, StoreSdkPlugin } from '@store-sdk/core';
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { AuthService } from './auth.service.js';
 import { AuthConfig } from './auth.config.js';
@@ -25,9 +20,8 @@ class AuthPlugin implements StoreSdkPlugin {
     this._config = config;
   }
 
-  async init(config: StoreSdkConfig): Promise<void> {
-    this._auth = new AuthService(config.baseUrl, this._config);
-
+  init(): void {
+    this._auth = new AuthService(this._config);
     httpClient.default.interceptors.request.use(
       async (axiosConfig: InternalAxiosRequestConfig) => {
         if (this._config.getToken) {

@@ -1,9 +1,4 @@
-import {
-  httpClient,
-  Sdk,
-  StoreSdkConfig,
-  StoreSdkPlugin,
-} from '@store-sdk/core';
+import { httpClient, Sdk, StoreSdkPlugin } from '@store-sdk/core';
 import { HippoService } from './hippoo.service.js';
 import { HippoConfig } from './types/hippoo.config.js';
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
@@ -24,10 +19,8 @@ class HippooPlugin implements StoreSdkPlugin {
   constructor(config: HippoConfig) {
     this._config = config;
   }
-
-  async init(config: StoreSdkConfig): Promise<void> {
-    this._hippoo = new HippoService(config.baseUrl, this._config);
-
+  init(): void {
+    this._hippoo = new HippoService(this._config);
     httpClient.default.interceptors.request.use(
       async (axiosConfig: InternalAxiosRequestConfig) => {
         if (this._config.getToken) {
