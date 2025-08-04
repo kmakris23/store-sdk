@@ -50,3 +50,4 @@ vitest.config.*.timestamp*
 .npmrc
 .angular
 environment.development.ts
+proxy.conf.json
