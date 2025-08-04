@@ -9,15 +9,18 @@ import { appRoutes } from './app.routes';
 import { from } from 'rxjs';
 import { StoreSdk } from '@store-sdk/core';
 // import { useHippo } from '@store-sdk/hippoo';
-import { useAuth } from '@store-sdk/jwt-authentication-for-wp-rest-api';
 import { environment } from '../environments/environment.development';
+import { useSimpleJwt } from '@store-sdk/simple-jwt-login';
 
-const auth = useAuth({
+const useSimpleJwtPlugin = useSimpleJwt({
   getToken: async () =>
-    (await Promise.resolve(localStorage.getItem('jwt'))) as string,
+    (await Promise.resolve(localStorage.getItem('simple_jwt'))) as string,
   setToken: async (token) => {
-    const promise = Promise.resolve(localStorage.setItem('jwt', token));
+    const promise = Promise.resolve(localStorage.setItem('simple_jwt', token));
     await promise;
+  },
+  clearToken: async () => {
+    Promise.resolve(localStorage.removeItem('simple_jwt'));
   },
 });
 
@@ -38,10 +41,25 @@ export const appConfig: ApplicationConfig = {
       return from(
         StoreSdk.init({
           baseUrl: environment.baseUrl,
-          nonce: { disabled: false },
-          plugins: [auth],
+          nonce: {
+            disabled: false,
+            getToken: async () => {
+              const key = localStorage.getItem('cart_nonce');
+              const promise = Promise.resolve(key);
+              const result = (await promise) as string;
+              return result;
+            },
+            setToken: async (cartToken) => {
+              console.log(cartToken);
+              const promise = Promise.resolve(
+                localStorage.setItem('cart_nonce', cartToken)
+              );
+              await promise;
+            },
+          },
+          plugins: [useSimpleJwtPlugin],
           cartToken: {
-            disabled: true,
+            disabled: false,
             getToken: async () => {
               const key = localStorage.getItem('cart_token');
               const promise = Promise.resolve(key);

@@ -20,7 +20,7 @@
   "include": [],
   "references": [
     {
-      "path": "../../packages/jwt-authentication-for-wp-rest-api"
+      "path": "../../packages/simple-jwt-login"
     },
     {
       "path": "../../packages/core"
