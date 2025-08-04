@@ -76,13 +76,11 @@ export class Sdk {
       baseURL: config.baseUrl,
     });
 
-    // Initialize plugins
-    if (config.plugins && config.plugins.length > 0) {
-      for (const plugin of config.plugins) {
-        await plugin.init(config);
-        if (plugin.extend) {
-          plugin.extend(this, config);
-        }
+    const allPlugins = [...(config.plugins ?? [])];
+    for (const plugin of allPlugins) {
+      plugin.init();
+      if (plugin.extend) {
+        plugin.extend(this);
       }
     }
 
