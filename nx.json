@@ -52,8 +52,8 @@
   "release": {
     "projects": ["packages/*"],
     "version": {
-      "conventionalCommits": true,
-      "preVersionCommand": "npx nx run-many -t build"
+      "preVersionCommand": "npx nx run-many -t build",
+      "conventionalCommits": true
     },
     "changelog": {
       "workspaceChangelog": {

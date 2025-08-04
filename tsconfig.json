@@ -20,6 +20,9 @@
     },
     {
       "path": "./apps/example-node"
+    },
+    {
+      "path": "./packages/simple-jwt-login"
     }
   ]
 }
