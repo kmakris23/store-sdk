@@ -28,11 +28,15 @@ export class CheckoutOrderService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
-    const { data, error } = await doPost<CheckoutResponse, OrderRequest>(
-      url,
-      params,
-      options
-    );
+    const { data, error, headers } = await doPost<
+      CheckoutResponse,
+      OrderRequest
+    >(url, params, options);
+
+    if (headers) {
+      await super.nonceChanged(headers[this.NONCE_HEADER]);
+    }
+
     return { data, error };
   }
 }

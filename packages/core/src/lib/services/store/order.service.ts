@@ -33,7 +33,12 @@ export class OrderService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
-    const { data, error } = await doGet<OrderResponse>(url, options);
+    const { data, error, headers } = await doGet<OrderResponse>(url, options);
+
+    if (headers) {
+      await super.nonceChanged(headers[this.NONCE_HEADER]);
+    }
+
     return { data, error };
   }
 }

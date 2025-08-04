@@ -28,7 +28,15 @@ export class CartItemService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
-    const { data, error } = await doGet<CartItemResponse[]>(url, options);
+    const { data, error, headers } = await doGet<CartItemResponse[]>(
+      url,
+      options
+    );
+
+    if (headers) {
+      await super.nonceChanged(headers[this.NONCE_HEADER]);
+    }
+
     return { data, error };
   }
 
@@ -44,7 +52,15 @@ export class CartItemService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
-    const { data, error } = await doGet<CartItemResponse>(url, options);
+    const { data, error, headers } = await doGet<CartItemResponse>(
+      url,
+      options
+    );
+
+    if (headers) {
+      await super.nonceChanged(headers[this.NONCE_HEADER]);
+    }
+
     return { data, error };
   }
 
@@ -62,11 +78,15 @@ export class CartItemService extends BaseService {
     await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
-    const { data, error } = await doPost<CartItemResponse, unknown>(
+    const { data, error, headers } = await doPost<CartItemResponse, unknown>(
       url,
       undefined,
       options
     );
+
+    if (headers) {
+      await super.nonceChanged(headers[this.NONCE_HEADER]);
+    }
 
     super.cartLoading(false);
     return { data, error };
@@ -90,11 +110,15 @@ export class CartItemService extends BaseService {
     await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
-    const { data, error } = await doPut<CartItemResponse, unknown>(
+    const { data, error, headers } = await doPut<CartItemResponse, unknown>(
       url,
       undefined,
       options
     );
+
+    if (headers) {
+      await super.nonceChanged(headers[this.NONCE_HEADER]);
+    }
 
     super.cartLoading(false);
     return { data, error };
@@ -113,7 +137,11 @@ export class CartItemService extends BaseService {
     await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
-    const { data, error } = await doDelete<unknown>(url, options);
+    const { data, error, headers } = await doDelete<unknown>(url, options);
+
+    if (headers) {
+      await super.nonceChanged(headers[this.NONCE_HEADER]);
+    }
 
     super.cartLoading(false);
     return { data, error };
@@ -131,7 +159,14 @@ export class CartItemService extends BaseService {
     await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
-    const { data, error } = await doDelete<CartItemResponse[]>(url, options);
+    const { data, error, headers } = await doDelete<CartItemResponse[]>(
+      url,
+      options
+    );
+
+    if (headers) {
+      await super.nonceChanged(headers[this.NONCE_HEADER]);
+    }
 
     super.cartLoading(false);
     return { data, error };

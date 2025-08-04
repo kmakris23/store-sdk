@@ -26,7 +26,15 @@ export class CheckoutService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
-    const { data, error } = await doGet<CheckoutResponse>(url, options);
+    const { data, error, headers } = await doGet<CheckoutResponse>(
+      url,
+      options
+    );
+
+    if (headers) {
+      await super.nonceChanged(headers[this.NONCE_HEADER]);
+    }
+
     return { data, error };
   }
 
@@ -49,11 +57,16 @@ export class CheckoutService extends BaseService {
     const url = `/${this.endpoint}/?__experimental_calc_totals=${
       experimental_calc_totals || false
     }&${query}`;
-    const { data, error } = await doPut<CheckoutResponse, unknown>(
+    const { data, error, headers } = await doPut<CheckoutResponse, unknown>(
       url,
       undefined,
       options
     );
+
+    if (headers) {
+      await super.nonceChanged(headers[this.NONCE_HEADER]);
+    }
+
     return { data, error };
   }
 
@@ -72,11 +85,16 @@ export class CheckoutService extends BaseService {
     await this.addNonceHeader(options);
     await this.addCartTokenHeader(options);
 
-    const { data, error } = await doPost<CheckoutResponse, unknown>(
+    const { data, error, headers } = await doPost<CheckoutResponse, unknown>(
       url,
       undefined,
       options
     );
+
+    if (headers) {
+      await super.nonceChanged(headers[this.NONCE_HEADER]);
+    }
+
     return { data, error };
   }
 }
