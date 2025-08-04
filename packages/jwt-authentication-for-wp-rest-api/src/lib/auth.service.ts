@@ -5,10 +5,8 @@ import { ApiResult, doPost } from '@store-sdk/core';
 
 export class AuthService {
   private readonly config: AuthConfig;
-  private readonly baseUrl: string;
 
-  constructor(baseUrl: string, config: AuthConfig) {
-    this.baseUrl = baseUrl;
+  constructor(config: AuthConfig) {
     this.config = config;
   }
 
@@ -19,10 +17,9 @@ export class AuthService {
    */
   async token(body: TokenRequest): Promise<ApiResult<TokenResponse>> {
     const endpoint = '/wp-json/jwt-auth/v1/token';
-    const url = `${this.baseUrl}/${endpoint}`;
 
     const { data, error } = await doPost<TokenResponse, TokenRequest>(
-      url,
+      endpoint,
       body
     );
 
@@ -40,9 +37,8 @@ export class AuthService {
    */
   async tokenValidate(): Promise<ApiResult<unknown>> {
     const endpoint = '/wp-json/jwt-auth/v1/token/validate';
-    const url = `${this.baseUrl}/${endpoint}`;
 
-    const { data, error } = await doPost<unknown, unknown>(url);
+    const { data, error } = await doPost<unknown, unknown>(endpoint);
 
     return { data, error };
   }

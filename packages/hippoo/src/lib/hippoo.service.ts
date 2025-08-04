@@ -12,10 +12,8 @@ import { HippoConfig } from './types/hippoo.config.js';
 
 export class HippoService {
   private readonly config: HippoConfig;
-  private readonly baseUrl: string;
 
-  constructor(baseUrl: string, config: HippoConfig) {
-    this.baseUrl = baseUrl;
+  constructor(config: HippoConfig) {
     this.config = config;
   }
 
@@ -26,7 +24,7 @@ export class HippoService {
    */
   async signup(request: SignupRequest): Promise<ApiResult<SignupResponse>> {
     const endpoint = '/wp-json/hippoo-auth/v1/signup';
-    const url = `${this.baseUrl}/${endpoint}`;
+    const url = `/${endpoint}`;
 
     const { data, error } = await doPost<SignupResponse, SignupRequest>(
       url,
@@ -50,7 +48,7 @@ export class HippoService {
    */
   async login(request: LoginRequest): Promise<ApiResult<LoginResponse>> {
     const endpoint = '/wp-json/hippoo-auth/v1/login';
-    const url = `${this.baseUrl}/${endpoint}`;
+    const url = `/${endpoint}`;
     const { data, error } = await doPost<LoginResponse, LoginRequest>(
       url,
       request
@@ -75,7 +73,7 @@ export class HippoService {
     request: RefreshTokenRequest
   ): Promise<ApiResult<RefreshTokenResponse>> {
     const endpoint = '/wp-json/hippoo-auth/v1/refresh-token';
-    const url = `${this.baseUrl}/${endpoint}`;
+    const url = `/${endpoint}`;
     const { data, error } = await doPost<
       RefreshTokenResponse,
       RefreshTokenRequest
@@ -97,7 +95,7 @@ export class HippoService {
    */
   async logout(): Promise<ApiResult<unknown>> {
     const endpoint = '/wp-json/hippoo-auth/v1/logout';
-    const url = `${this.baseUrl}/${endpoint}`;
+    const url = `/${endpoint}`;
     const { data, error } = await doPost(url);
 
     return { data, error };
@@ -112,7 +110,7 @@ export class HippoService {
     request: ResetPasswordRequest
   ): Promise<ApiResult<string>> {
     const endpoint = '/wp-json/hippoo-auth/v1/reset-password/request';
-    const url = `${this.baseUrl}/${endpoint}`;
+    const url = `/${endpoint}`;
     const { data, error } = await doPost<string, ResetPasswordRequest>(
       url,
       request
@@ -130,7 +128,7 @@ export class HippoService {
     request: ResetPasswordConfirmRequest
   ): Promise<ApiResult<string>> {
     const endpoint = '/wp-json/hippoo-auth/v1/reset-password/confirm';
-    const url = `${this.baseUrl}/${endpoint}`;
+    const url = `/${endpoint}`;
     const { data, error } = await doPost<string, ResetPasswordConfirmRequest>(
       url,
       request
@@ -149,7 +147,7 @@ export class HippoService {
    */
   async loginSocial(request: LoginSocialRequest): Promise<ApiResult<unknown>> {
     const endpoint = '/wp-json/hippoo-auth/v1/login';
-    const url = `${this.baseUrl}/${endpoint}`;
+    const url = `/${endpoint}`;
     const { data, error } = await doPost<unknown, LoginSocialRequest>(
       url,
       request
