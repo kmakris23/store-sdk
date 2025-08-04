@@ -23,7 +23,7 @@ export class UserService {
    */
   async register(body: UserRequest): Promise<ApiResult<UserResponse>> {
     const namespace = this.config.routeNamespace ?? DEFAULT_ROUTE_NAMESPACE;
-    const endpoint = `${this.config.baseUrl}/wp-json/${namespace}/users`;
+    const endpoint = `/wp-json/${namespace}/users`;
 
     const { data, error } = await doPost<
       SimpleJwtApiResult<UserResponse>,
@@ -42,7 +42,7 @@ export class UserService {
     body: UserChangePasswordRequest
   ): Promise<ApiResult<unknown>> {
     const namespace = this.config.routeNamespace ?? DEFAULT_ROUTE_NAMESPACE;
-    const endpoint = `${this.config.baseUrl}/wp-json/${namespace}/users/reset_password`;
+    const endpoint = `/wp-json/${namespace}/users/reset_password`;
 
     const { data, error } = await doPut<unknown, UserChangePasswordRequest>(
       endpoint,
@@ -61,7 +61,7 @@ export class UserService {
     body: UserResetPasswordRequest
   ): Promise<ApiResult<unknown>> {
     const namespace = this.config.routeNamespace ?? DEFAULT_ROUTE_NAMESPACE;
-    const endpoint = `${this.config.baseUrl}/wp-json/${namespace}/users/reset_password`;
+    const endpoint = `/wp-json/${namespace}/users/reset_password`;
 
     const { data, error } = await doPost<unknown, UserResetPasswordRequest>(
       endpoint,
@@ -73,7 +73,7 @@ export class UserService {
 
   async delete(params: DeleteUserRequest): Promise<ApiResult<unknown>> {
     const namespace = this.config.routeNamespace ?? DEFAULT_ROUTE_NAMESPACE;
-    const endpoint = `${this.config.baseUrl}/wp-json/${namespace}/users`;
+    const endpoint = `/wp-json/${namespace}/users`;
     const query = qs.stringify(params);
     const url = `/${endpoint}?${query}`;
 

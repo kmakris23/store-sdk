@@ -1,6 +1,4 @@
-import { PluginConfig } from '@store-sdk/core';
-
-export interface AuthConfig extends PluginConfig {
+export interface AuthConfig {
   /**
    * Defaults to `simple-jwt-login/v1`.
    */
