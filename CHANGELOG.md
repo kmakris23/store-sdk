@@ -1,3 +1,17 @@
+## 0.5.0 (2025-08-04)
+
+### 🚀 Features
+
+- add simple-jwt-login plugin package ([1435f8c](https://github.com/kmakris23/store-sdk/commit/1435f8c))
+
+### 🩹 Fixes
+
+- **core:** update `nonce` token regularly ([636a353](https://github.com/kmakris23/store-sdk/commit/636a353))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.4.3 (2025-08-03)
 
 ### 🩹 Fixes
