@@ -2,10 +2,7 @@ import { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ApiError, AxiosApiResult } from '../types/api.js';
 import httpClient from '../services/api.js';
 
-export const doGet = async <T>(
-  url: string,
-  options: AxiosRequestConfig = {}
-) => {
+export const doGet = async <T>(url: string, options?: AxiosRequestConfig) => {
   return await doRequest<T>(httpClient, url, {
     ...options,
     method: 'get',
@@ -15,7 +12,7 @@ export const doGet = async <T>(
 export const doPost = async <T, TData>(
   url: string,
   data?: TData,
-  options: AxiosRequestConfig = {}
+  options?: AxiosRequestConfig
 ) => {
   return await doRequest<T>(httpClient, url, {
     ...options,
@@ -27,7 +24,7 @@ export const doPost = async <T, TData>(
 export const doPut = async <T, TData>(
   url: string,
   data?: TData,
-  options: AxiosRequestConfig = {}
+  options?: AxiosRequestConfig
 ) => {
   return await doRequest<T>(httpClient, url, {
     ...options,
@@ -38,7 +35,7 @@ export const doPut = async <T, TData>(
 
 export const doDelete = async <T>(
   url: string,
-  options: AxiosRequestConfig = {}
+  options?: AxiosRequestConfig
 ) => {
   return await doRequest<T>(httpClient, url, {
     ...options,
@@ -49,11 +46,12 @@ export const doDelete = async <T>(
 export const doRequest = async <T>(
   instance: AxiosInstance,
   url: string,
-  options: AxiosRequestConfig = {}
+  options: AxiosRequestConfig
 ): Promise<AxiosApiResult<T>> => {
   const { method = 'get', data, params, headers } = options;
 
   try {
+    console.log(options);
     const response = await instance.request<T>({
       url,
       method,
