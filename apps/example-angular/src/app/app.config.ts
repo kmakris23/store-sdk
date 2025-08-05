@@ -50,7 +50,6 @@ export const appConfig: ApplicationConfig = {
               return result;
             },
             setToken: async (cartToken) => {
-              console.log(cartToken);
               const promise = Promise.resolve(
                 localStorage.setItem('cart_nonce', cartToken)
               );

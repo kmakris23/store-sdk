@@ -24,6 +24,22 @@ export class App {
     }
   }
 
+  async listCoupons() {
+    const { data, error } = await StoreSdk.cartCoupons.list();
+    console.log('list cart coupons:', data);
+    if (error) {
+      console.log('list cart coupons error:', error);
+    }
+  }
+
+  async listCartItems() {
+    const { data, error } = await StoreSdk.cartItems.list();
+    console.log('list cart items:', data);
+    if (error) {
+      console.log('list cart items error:', error);
+    }
+  }
+
   async listProducts() {
     const { data, error } = await StoreSdk.products.list();
     console.log('list products:', data);
