@@ -29,6 +29,8 @@ export interface AuthConfig {
    */
   autoLoginRedirectUrl?: string;
 
+  useTokenInterceptor?: boolean;
+  useRefreshTokenInterceptor?: boolean;
   getToken?: () => Promise<string>;
   setToken?: (token: string) => Promise<void>;
   clearToken?: () => Promise<void>;

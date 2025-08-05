@@ -29,8 +29,16 @@ class SimpleJwtPlugin implements StoreSdkPlugin {
     this._auth = new AuthService(this._config);
     this._users = new UserService(this._config);
 
-    addTokenInterceptor(this._config);
-    addRefreshTokenInterceptor(this._config, this._auth);
+    const useTokenInterceptor = this._config.useTokenInterceptor ?? true;
+    if (useTokenInterceptor) {
+      addTokenInterceptor(this._config);
+    }
+
+    const useRefreshTokenInterceptor =
+      this._config.useRefreshTokenInterceptor ?? true;
+    if (useRefreshTokenInterceptor) {
+      addRefreshTokenInterceptor(this._config, this._auth);
+    }
   }
 
   extend(sdk: Sdk) {
