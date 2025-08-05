@@ -1,3 +1,18 @@
+## 0.6.0 (2025-08-05)
+
+### 🚀 Features
+
+- conditional use interceptors ([ff12114](https://github.com/kmakris23/store-sdk/commit/ff12114))
+- **nx-cloud:** setup nx cloud workspace ([79caf69](https://github.com/kmakris23/store-sdk/commit/79caf69))
+
+### 🩹 Fixes
+
+- **constants:** remove trailing slash from DEFAULT_ROUTE_NAMESPACE ([1fab969](https://github.com/kmakris23/store-sdk/commit/1fab969))
+
+### ❤️ Thank You
+
+- Kostas Makris @kmakris23
+
 ## 0.5.0 (2025-08-04)
 
 ### 🚀 Features
