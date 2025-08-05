@@ -48,7 +48,15 @@
       "preVersionCommand": "npx nx run-many -t build",
       "conventionalCommits": true
     },
-    "changelog": { "workspaceChangelog": { "createRelease": "github" } }
+    "changelog": {
+      "workspaceChangelog": { "createRelease": "github" },
+      "projectChangelogs": {
+        "renderOptions": {
+          "authors": false,
+          "applyUsernameToAuthors": false
+        }
+      }
+    }
   },
   "targetDefaults": { "test": { "dependsOn": ["^build"] } },
   "nxCloudId": "6891b97f8fa82a26fa573fdd"
