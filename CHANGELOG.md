@@ -1,3 +1,13 @@
+## 0.6.1 (2025-08-05)
+
+### 🩹 Fixes
+
+- **core:** remove debug log from doRequest function ([001f0e8](https://github.com/kmakris23/store-sdk/commit/001f0e8))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.6.0 (2025-08-05)
 
 ### 🚀 Features
