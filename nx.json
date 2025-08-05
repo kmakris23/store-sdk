@@ -17,9 +17,7 @@
     {
       "plugin": "@nx/js/typescript",
       "options": {
-        "typecheck": {
-          "targetName": "typecheck"
-        },
+        "typecheck": { "targetName": "typecheck" },
         "build": {
           "targetName": "build",
           "configName": "tsconfig.lib.json",
@@ -28,12 +26,7 @@
         }
       }
     },
-    {
-      "plugin": "@nx/eslint/plugin",
-      "options": {
-        "targetName": "lint"
-      }
-    },
+    { "plugin": "@nx/eslint/plugin", "options": { "targetName": "lint" } },
     {
       "plugin": "@nx/vite/plugin",
       "options": {
@@ -55,15 +48,8 @@
       "preVersionCommand": "npx nx run-many -t build",
       "conventionalCommits": true
     },
-    "changelog": {
-      "workspaceChangelog": {
-        "createRelease": "github"
-      }
-    }
+    "changelog": { "workspaceChangelog": { "createRelease": "github" } }
   },
-  "targetDefaults": {
-    "test": {
-      "dependsOn": ["^build"]
-    }
-  }
+  "targetDefaults": { "test": { "dependsOn": ["^build"] } },
+  "nxCloudId": "6891b97f8fa82a26fa573fdd"
 }
