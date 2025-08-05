@@ -51,7 +51,6 @@ export const doRequest = async <T>(
   const { method = 'get', data, params, headers } = options;
 
   try {
-    console.log(options);
     const response = await instance.request<T>({
       url,
       method,
