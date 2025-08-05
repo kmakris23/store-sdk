@@ -1,9 +1,10 @@
 import { ProductCategoryResponse } from '../../types/store/product-category/product.category.response.js';
 import { ProductCategoryRequest } from '../../types/store/product-category/product.category.request.js';
 import qs from 'qs';
-import { ApiResult } from '../../types/api.js';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
 import { doGet } from '../../utilities/axios.utility.js';
+import { parseLinkHeader } from '../../utilities/common.js';
 
 /**
  * Product Categories API
@@ -18,11 +19,20 @@ export class ProductCategoryService extends BaseService {
    */
   async list(
     params?: ProductCategoryRequest
-  ): Promise<ApiResult<ProductCategoryResponse[]>> {
+  ): Promise<ApiPaginationResult<ProductCategoryResponse[]>> {
     const query = qs.stringify(params);
     const url = `/${this.endpoint}?${query}`;
-    const { data, error } = await doGet<ProductCategoryResponse[]>(url);
-    return { data, error };
+    const { data, error, headers } = await doGet<ProductCategoryResponse[]>(
+      url
+    );
+
+    let total, totalPages, link;
+    if (headers) {
+      link = parseLinkHeader(headers['link']);
+      total = headers['x-wp-total'];
+      totalPages = headers['x-wp-totalpages'];
+    }
+    return { data, error, total, totalPages, link };
   }
 
   /**

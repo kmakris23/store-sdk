@@ -1,7 +1,7 @@
 import { CartItemResponse } from '../../types/store/cart-item/cart.item.response.js';
 import { CartItemAddRequest } from '../../types/store/cart-item/cart.item.add.request.js';
 import qs from 'qs';
-import { ApiResult } from '../../types/api.js';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
 import { AxiosRequestConfig } from 'axios';
 import {
@@ -10,6 +10,7 @@ import {
   doPost,
   doPut,
 } from '../../utilities/axios.utility.js';
+import { parseLinkHeader } from '../../utilities/common.js';
 
 /**
  * Cart Items API
@@ -21,7 +22,7 @@ export class CartItemService extends BaseService {
    * List Cart Items
    * @returns {CartItemResponse[]}
    */
-  async list(): Promise<ApiResult<CartItemResponse[]>> {
+  async list(): Promise<ApiPaginationResult<CartItemResponse[]>> {
     const url = `/${this.endpoint}`;
 
     const options: AxiosRequestConfig = {};
@@ -33,11 +34,16 @@ export class CartItemService extends BaseService {
       options
     );
 
+    let total, totalPages, link;
     if (headers) {
       await super.nonceChanged(headers[this.NONCE_HEADER]);
+
+      link = parseLinkHeader(headers['link']);
+      total = headers['x-wp-total'];
+      totalPages = headers['x-wp-totalpages'];
     }
 
-    return { data, error };
+    return { data, error, total, totalPages, link };
   }
 
   /**

@@ -2,9 +2,10 @@ import { ProductRequest } from '../../types/store/product/product.request.js';
 import { ProductResponse } from '../../types/store/product/product.response.js';
 import { RequireAtLeastOne } from '../../utilities/common.js';
 import qs from 'qs';
-import { ApiResult } from '../../types/api.js';
+import { ApiPaginationResult, ApiResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
 import { doGet } from '../../utilities/axios.utility.js';
+import { parseLinkHeader } from '../../utilities/common.js';
 
 /**
  * Products API
@@ -19,7 +20,9 @@ export class ProductService extends BaseService {
    * @param params
    * @returns
    */
-  async list(params?: ProductRequest): Promise<ApiResult<ProductResponse[]>> {
+  async list(
+    params?: ProductRequest
+  ): Promise<ApiPaginationResult<ProductResponse[]>> {
     let unstable_tax: string | undefined = undefined;
     let unstable_tax_operator: string | undefined = undefined;
     if (params && params._unstable_tax_) {
@@ -45,8 +48,15 @@ export class ProductService extends BaseService {
     );
 
     const url = `/${this.endpoint}?${query}`;
-    const { data, error } = await doGet<ProductResponse[]>(url);
-    return { data, error };
+    const { data, error, headers } = await doGet<ProductResponse[]>(url);
+
+    let total, totalPages, link;
+    if (headers) {
+      link = parseLinkHeader(headers['link']);
+      total = headers['x-wp-total'];
+      totalPages = headers['x-wp-totalpages'];
+    }
+    return { data, error, total, totalPages, link };
   }
 
   /**

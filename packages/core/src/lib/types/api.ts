@@ -19,6 +19,26 @@ export interface ApiResult<T> {
   error?: ApiError;
 }
 
+export interface ApiPaginationResult<T> extends ApiResult<T> {
+  /**
+   * The total number of items in the collection.
+   */
+  total?: number;
+  /**
+   * The total number of pages in the collection.
+   */
+  totalPages?: number;
+
+  /**
+   * Contains links to other pages; next, prev, and up where applicable.
+   */
+  link?: {
+    up?: string;
+    prev?: string;
+    next?: string;
+  };
+}
+
 export interface AxiosApiResult<T> extends ApiResult<T> {
   headers?: RawAxiosResponseHeaders | AxiosResponseHeaders;
 }

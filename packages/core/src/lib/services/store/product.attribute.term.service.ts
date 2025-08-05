@@ -1,9 +1,10 @@
 import { ProductAttributeResponse } from '../../types/store/product-attribute/product.attribute.response.js';
 import { ProductAttributeTermRequest } from '../../types/store/product-attribute-term/product.attribute.term.request.js';
 import qs from 'qs';
-import { ApiResult } from '../../types/api.js';
+import { ApiPaginationResult } from '../../types/api.js';
 import { BaseService } from '../base.service.js';
 import { doGet } from '../../utilities/axios.utility.js';
+import { parseLinkHeader } from '../../utilities/common.js';
 
 /**
  * Product Attribute Terms API
@@ -20,10 +21,19 @@ export class ProductAttributeTermService extends BaseService {
   async list(
     attributeId: number,
     params?: ProductAttributeTermRequest
-  ): Promise<ApiResult<ProductAttributeResponse[]>> {
+  ): Promise<ApiPaginationResult<ProductAttributeResponse[]>> {
     const query = qs.stringify(params, { encode: true });
     const url = `/${this.endpoint}/${attributeId}/terms?${query}`;
-    const { data, error } = await doGet<ProductAttributeResponse[]>(url);
-    return { data, error };
+    const { data, error, headers } = await doGet<ProductAttributeResponse[]>(
+      url
+    );
+
+    let total, totalPages, link;
+    if (headers) {
+      link = parseLinkHeader(headers['link']);
+      total = headers['x-wp-total'];
+      totalPages = headers['x-wp-totalpages'];
+    }
+    return { data, error, total, totalPages, link };
   }
 }
