@@ -61,15 +61,11 @@ export class AuthService {
   }
 
   async revokeToken(
-    body: AuthRevokeRequest,
+    body?: AuthRevokeRequest,
     options?: AxiosRequestConfig
   ): Promise<ApiResult<AuthRevokeResponse>> {
     const namespace = this.config.routeNamespace ?? DEFAULT_ROUTE_NAMESPACE;
     const endpoint = `/wp-json/${namespace}/auth/revoke`;
-
-    if (!body.JWT && this.config.getToken) {
-      body.JWT = await this.config.getToken();
-    }
 
     const { data, error } = await doPost<
       SimpleJwtApiResult<AuthRevokeResponse>,
