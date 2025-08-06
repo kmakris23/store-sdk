@@ -5,6 +5,7 @@ import { UserService } from './services/user.service.js';
 import { addTokenInterceptor } from './interceptors/token.interceptor.js';
 import { addRefreshTokenInterceptor } from './interceptors/refresh.token.interceptor.js';
 import qs from 'qs';
+import { DEFAULT_ROUTE_NAMESPACE } from './constants.js';
 
 declare module '@store-sdk/core' {
   interface Sdk {
@@ -64,7 +65,10 @@ class SimpleJwtPlugin implements StoreSdkPlugin {
           redirectUrl: this._config.autoLoginRedirectUrl,
         });
 
-        return `${this._config.autoLoginUrl}?${params}`;
+        const namespace =
+          this._config.routeNamespace ?? DEFAULT_ROUTE_NAMESPACE;
+        const endpoint = `wp-json/${namespace}/autologin`;
+        return `${this._config.autoLoginUrl}/${endpoint}?${params}`;
       },
     };
 
