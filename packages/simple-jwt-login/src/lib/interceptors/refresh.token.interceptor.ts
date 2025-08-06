@@ -11,7 +11,13 @@ export const addRefreshTokenInterceptor = (
     (response) => response,
     async (error) => {
       const originalRequest = error.config;
-      if (error.response.status === 401 && !originalRequest._retry) {
+      if (
+        error.response &&
+        error.response.status === 401 &&
+        originalRequest &&
+        !originalRequest._retry &&
+        !originalRequest._isRefreshRequest
+      ) {
         originalRequest._retry = true; // Mark the request as retried to avoid infinite loops.
         try {
           if (!config.getToken || !config.setToken) {
@@ -21,6 +27,7 @@ export const addRefreshTokenInterceptor = (
           const token = await config.getToken();
           if (!token) return await refreshTokenFailed(config);
 
+          originalRequest._isRefreshRequest = true; // Mark this request as a refresh request to avoid recursion.
           const { data, error } = await auth.refreshToken({
             JWT: token,
           });
