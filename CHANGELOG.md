@@ -1,3 +1,13 @@
+## 0.9.1 (2025-08-06)
+
+### 🩹 Fixes
+
+- **auth:** update getAutoLoginUrl to include route namespace in the endpoint ([af91110](https://github.com/kmakris23/store-sdk/commit/af91110))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.9.0 (2025-08-06)
 
 ### 🚀 Features
