@@ -10,6 +10,7 @@ import { AuthRevokeResponse } from '../types/authentication/auth.revoke.response
 import { AuthValidateRequest } from '../types/authentication/auth.validate.request.js';
 import { AuthValidateResponse } from '../types/authentication/auth.validate.response.js';
 import { SimpleJwtApiResult } from '../types/simple.jwt.api.result.js';
+import { AxiosRequestConfig } from 'axios';
 
 export class AuthService {
   private readonly config: AuthConfig;
@@ -18,14 +19,17 @@ export class AuthService {
     this.config = config;
   }
 
-  async token(body: AuthRequest): Promise<ApiResult<AuthResponse>> {
+  async token(
+    body: AuthRequest,
+    options?: AxiosRequestConfig
+  ): Promise<ApiResult<AuthResponse>> {
     const namespace = this.config.routeNamespace ?? DEFAULT_ROUTE_NAMESPACE;
     const endpoint = `/wp-json/${namespace}/auth`;
 
     const { data, error } = await doPost<
       SimpleJwtApiResult<AuthResponse>,
       AuthRequest
-    >(endpoint, body);
+    >(endpoint, body, options);
 
     if (this.config.setToken) {
       StoreSdk.state.authenticated = true;
@@ -38,7 +42,8 @@ export class AuthService {
   }
 
   async refreshToken(
-    body: AuthRefreshRequest
+    body: AuthRefreshRequest,
+    options?: AxiosRequestConfig
   ): Promise<ApiResult<AuthResponse>> {
     const namespace = this.config.routeNamespace ?? DEFAULT_ROUTE_NAMESPACE;
     const endpoint = `/wp-json/${namespace}/auth/refresh`;
@@ -46,7 +51,7 @@ export class AuthService {
     const { data, error } = await doPost<
       SimpleJwtApiResult<AuthResponse>,
       AuthRefreshRequest
-    >(endpoint, body);
+    >(endpoint, body, options);
 
     if (this.config.setToken) {
       this.config.setToken(data?.data.jwt ?? '');
@@ -56,7 +61,8 @@ export class AuthService {
   }
 
   async revokeToken(
-    body: AuthRevokeRequest
+    body: AuthRevokeRequest,
+    options?: AxiosRequestConfig
   ): Promise<ApiResult<AuthRevokeResponse>> {
     const namespace = this.config.routeNamespace ?? DEFAULT_ROUTE_NAMESPACE;
     const endpoint = `/wp-json/${namespace}/auth/revoke`;
@@ -68,7 +74,7 @@ export class AuthService {
     const { data, error } = await doPost<
       SimpleJwtApiResult<AuthRevokeResponse>,
       AuthRevokeRequest
-    >(endpoint, body);
+    >(endpoint, body, options);
 
     StoreSdk.state.authenticated = false;
     StoreSdk.events.emit('authenticatedChanged', false);
@@ -77,7 +83,8 @@ export class AuthService {
   }
 
   async validateToken(
-    params: AuthValidateRequest
+    params: AuthValidateRequest,
+    options?: AxiosRequestConfig
   ): Promise<ApiResult<AuthValidateResponse>> {
     const namespace = this.config.routeNamespace ?? DEFAULT_ROUTE_NAMESPACE;
     const endpoint = `/wp-json/${namespace}/auth/validate`;
@@ -86,7 +93,7 @@ export class AuthService {
 
     const { data, error } = await doGet<
       SimpleJwtApiResult<AuthValidateResponse>
-    >(url);
+    >(url, options);
 
     return { data: data?.data, error };
   }
