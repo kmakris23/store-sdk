@@ -1,3 +1,13 @@
+## 0.9.0 (2025-08-06)
+
+### 🚀 Features
+
+- **auth:** add getAutoLoginUrl method and autoLoginUrl config option ([05d549b](https://github.com/kmakris23/store-sdk/commit/05d549b))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.8.5 (2025-08-06)
 
 ### 🩹 Fixes

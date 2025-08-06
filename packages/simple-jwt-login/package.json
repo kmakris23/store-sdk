@@ -1,6 +1,6 @@
 {
   "name": "@store-sdk/simple-jwt-login",
-  "version": "0.8.5",
+  "version": "0.9.0",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -25,9 +25,9 @@
   },
   "peerDependencies": {
     "qs": "^6.14.0",
-    "@store-sdk/core": "0.8.5"
+    "@store-sdk/core": "0.9.0"
   },
   "devDependencies": {
-    "@store-sdk/core": "0.8.5"
+    "@store-sdk/core": "0.9.0"
   }
 }
