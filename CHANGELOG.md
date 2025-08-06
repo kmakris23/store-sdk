@@ -1,3 +1,13 @@
+## 0.8.3 (2025-08-06)
+
+### 🩹 Fixes
+
+- **simple-jwt-login:** refresh-token: improve error handling by ensuring originalRequest is validated before processing 401 responses ([0299667](https://github.com/kmakris23/store-sdk/commit/0299667))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.8.2 (2025-08-06)
 
 ### 🩹 Fixes
