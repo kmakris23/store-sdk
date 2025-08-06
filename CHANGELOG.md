@@ -1,3 +1,14 @@
+## 0.8.5 (2025-08-06)
+
+### 🩹 Fixes
+
+- **auth:** make body parameter optional in revokeToken method ([ddc0a83](https://github.com/kmakris23/store-sdk/commit/ddc0a83))
+- **axios:** ensure options are spread correctly in doRequest function ([26e6297](https://github.com/kmakris23/store-sdk/commit/26e6297))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.8.4 (2025-08-06)
 
 ### 🩹 Fixes

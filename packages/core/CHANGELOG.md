@@ -1,3 +1,9 @@
+## 0.8.5 (2025-08-06)
+
+### 🩹 Fixes
+
+- **axios:** ensure options are spread correctly in doRequest function ([26e6297](https://github.com/kmakris23/store-sdk/commit/26e6297))
+
 ## 0.8.4 (2025-08-06)
 
 This was a version bump only for core to align it with other projects, there were no code changes.

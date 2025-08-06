@@ -1,6 +1,6 @@
 {
   "name": "@store-sdk/hippoo",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "repository": {
     "url": "https://github.com/kmakris23/store-sdk",
     "directory": ""
@@ -38,9 +38,9 @@
   },
   "peerDependencies": {
     "axios": "^1.11.0",
-    "@store-sdk/core": "0.8.4"
+    "@store-sdk/core": "0.8.5"
   },
   "devDependencies": {
-    "@store-sdk/core": "0.8.4"
+    "@store-sdk/core": "0.8.5"
   }
 }
