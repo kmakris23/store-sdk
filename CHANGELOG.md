@@ -1,3 +1,13 @@
+## 0.8.1 (2025-08-06)
+
+### 🩹 Fixes
+
+- **simple-jwt:** add initial authentication state setup in plugin initialization ([b7bc0bb](https://github.com/kmakris23/store-sdk/commit/b7bc0bb))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.8.0 (2025-08-06)
 
 ### 🚀 Features
