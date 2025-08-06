@@ -1,3 +1,9 @@
+## 0.8.2 (2025-08-06)
+
+### 🩹 Fixes
+
+- **refresh-token:** ensure config is passed to refreshTokenFailed for better error handling ([276e168](https://github.com/kmakris23/store-sdk/commit/276e168))
+
 ## 0.8.1 (2025-08-06)
 
 ### 🩹 Fixes

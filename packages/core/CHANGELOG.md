@@ -1,3 +1,7 @@
+## 0.8.2 (2025-08-06)
+
+This was a version bump only for core to align it with other projects, there were no code changes.
+
 ## 0.8.1 (2025-08-06)
 
 This was a version bump only for core to align it with other projects, there were no code changes.
