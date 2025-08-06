@@ -52,6 +52,7 @@ export const doRequest = async <T>(
 
   try {
     const response = await instance.request<T>({
+      ...options,
       url,
       method,
       data,
