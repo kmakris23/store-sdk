@@ -22,6 +22,8 @@ export interface AuthConfig {
 
   authCode?: string;
   authCodeKey?: string;
+
+  autoLoginUrl?: string;
   /**
    * Custom URL to redirect the user after successful login.
    * This will override the default redirect URL set in the plugin settings.

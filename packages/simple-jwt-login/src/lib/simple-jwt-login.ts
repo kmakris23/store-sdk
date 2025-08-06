@@ -4,12 +4,14 @@ import { AuthService } from './services/auth.service.js';
 import { UserService } from './services/user.service.js';
 import { addTokenInterceptor } from './interceptors/token.interceptor.js';
 import { addRefreshTokenInterceptor } from './interceptors/refresh.token.interceptor.js';
+import qs from 'qs';
 
 declare module '@store-sdk/core' {
   interface Sdk {
     simpleJwt: {
       auth: AuthService;
       users: UserService;
+      getAutoLoginUrl: () => Promise<string>;
     };
   }
 }
@@ -54,6 +56,16 @@ class SimpleJwtPlugin implements StoreSdkPlugin {
     const simpleJwt = {
       auth: this._auth,
       users: this._users,
+      getAutoLoginUrl: async () => {
+        const jwt = await this._config.getToken?.();
+
+        const params = qs.stringify({
+          JWT: jwt,
+          redirectUrl: this._config.autoLoginRedirectUrl,
+        });
+
+        return `${this._config.autoLoginUrl}?${params}`;
+      },
     };
 
     Object.defineProperty(sdk, 'simpleJwt', {
