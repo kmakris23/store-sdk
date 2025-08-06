@@ -1,4 +1,4 @@
-import { Sdk, StoreSdkPlugin } from '@store-sdk/core';
+import { Sdk, StoreSdk, StoreSdkPlugin } from '@store-sdk/core';
 import { AuthConfig } from './types/auth.config.js';
 import { AuthService } from './services/auth.service.js';
 import { UserService } from './services/user.service.js';
@@ -35,6 +35,15 @@ class SimpleJwtPlugin implements StoreSdkPlugin {
       this._config.useRefreshTokenInterceptor ?? true;
     if (useRefreshTokenInterceptor) {
       addRefreshTokenInterceptor(this._config, this._auth);
+    }
+
+    // Set initial authentication state based on config
+    // This is useful if the token is already set
+    if (this._config.getToken) {
+      this._config.getToken().then((token) => {
+        StoreSdk.state.authenticated = !!token;
+        StoreSdk.events.emit('authenticatedChanged', !!token);
+      });
     }
   }
 
