@@ -13,6 +13,8 @@ import { environment } from '../environments/environment.development';
 import { useSimpleJwt } from '@store-sdk/simple-jwt-login';
 
 const useSimpleJwtPlugin = useSimpleJwt({
+  autoLoginUrl: environment.baseUrl,
+  autoLoginRedirectUrl: `${environment.baseUrl}/checkout`,
   getToken: async () =>
     (await Promise.resolve(localStorage.getItem('simple_jwt'))) as string,
   setToken: async (token) => {

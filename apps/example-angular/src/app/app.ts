@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { StoreSdk } from '@store-sdk/core';
 import { environment } from '../environments/environment.development';
@@ -9,9 +9,16 @@ import { environment } from '../environments/environment.development';
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {
+export class App implements OnInit {
   protected title = 'example-angular';
 
+  async ngOnInit() {
+    const autoLoginUrl = await StoreSdk.simpleJwt.getAutoLoginUrl();
+    console.log('Auto Login URL:', autoLoginUrl);
+    StoreSdk.events.on('authenticatedChanged', (authenticated) => {
+      console.log('Authentication state changed:', authenticated);
+    });
+  }
 
   async login() {
     const { data, error } = await StoreSdk.simpleJwt.auth.token({
@@ -22,6 +29,10 @@ export class App {
     if (error) {
       console.log('login error:', error);
     }
+  }
+
+  async logout() {
+    await StoreSdk.simpleJwt.auth.revokeToken({});
   }
 
   async listCoupons() {
