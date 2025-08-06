@@ -1,3 +1,9 @@
+## 0.8.4 (2025-08-06)
+
+### 🩹 Fixes
+
+- **auth, user:** add options parameter to service methods for better request configuration ([224d42d](https://github.com/kmakris23/store-sdk/commit/224d42d))
+
 ## 0.8.3 (2025-08-06)
 
 ### 🩹 Fixes
