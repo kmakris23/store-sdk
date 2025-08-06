@@ -15,17 +15,17 @@ export const addRefreshTokenInterceptor = (
         originalRequest._retry = true; // Mark the request as retried to avoid infinite loops.
         try {
           if (!config.getToken || !config.setToken) {
-            return refreshTokenFailed();
+            return await refreshTokenFailed(config);
           }
 
           const token = await config.getToken();
-          if (!token) return refreshTokenFailed();
+          if (!token) return await refreshTokenFailed(config);
 
           const { data, error } = await auth.refreshToken({
             JWT: token,
           });
-          if (error) return refreshTokenFailed(error);
-          if (!data) return refreshTokenFailed();
+          if (error) return await refreshTokenFailed(config, error);
+          if (!data) return await refreshTokenFailed(config);
 
           await config.setToken(data?.jwt);
 
@@ -37,18 +37,18 @@ export const addRefreshTokenInterceptor = (
             },
           });
         } catch (refreshError) {
-          if (config.clearToken) {
-            await config.clearToken();
-          }
-          return refreshTokenFailed(refreshError);
+          return await refreshTokenFailed(config, refreshError);
         }
       }
-      return refreshTokenFailed(error);
+      return await refreshTokenFailed(config, error);
     }
   );
 };
 
-const refreshTokenFailed = (reason?: any) => {
+const refreshTokenFailed = async (config: AuthConfig, reason?: any) => {
+  if (config.clearToken) {
+    await config.clearToken();
+  }
   StoreSdk.state.authenticated = false;
   StoreSdk.events.emit('authenticatedChanged', false);
   return Promise.reject(reason);
