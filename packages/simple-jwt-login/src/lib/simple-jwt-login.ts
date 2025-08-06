@@ -12,9 +12,6 @@ declare module '@store-sdk/core' {
       users: UserService;
     };
   }
-  interface StoreSdkState {
-    isAuthenticated?: boolean;
-  }
 }
 
 class SimpleJwtPlugin implements StoreSdkPlugin {

@@ -1,7 +1,7 @@
 import { AuthConfig } from '../types/auth.config.js';
 import { AuthRequest } from '../types/authentication/auth.request.js';
 import { AuthResponse } from '../types/authentication/auth.response.js';
-import { ApiResult, doGet, doPost } from '@store-sdk/core';
+import { ApiResult, doGet, doPost, StoreSdk } from '@store-sdk/core';
 import qs from 'qs';
 import { AuthRefreshRequest } from '../types/authentication/auth.refresh.request.js';
 import { DEFAULT_ROUTE_NAMESPACE } from '../constants.js';
@@ -28,6 +28,9 @@ export class AuthService {
     >(endpoint, body);
 
     if (this.config.setToken) {
+      StoreSdk.state.authenticated = true;
+      StoreSdk.events.emit('authenticatedChanged', true);
+
       this.config.setToken(data?.data.jwt ?? '');
     }
 
@@ -58,10 +61,17 @@ export class AuthService {
     const namespace = this.config.routeNamespace ?? DEFAULT_ROUTE_NAMESPACE;
     const endpoint = `/wp-json/${namespace}/auth/revoke`;
 
+    if (!body.JWT && this.config.getToken) {
+      body.JWT = await this.config.getToken();
+    }
+
     const { data, error } = await doPost<
       SimpleJwtApiResult<AuthRevokeResponse>,
       AuthRevokeRequest
     >(endpoint, body);
+
+    StoreSdk.state.authenticated = false;
+    StoreSdk.events.emit('authenticatedChanged', false);
 
     return { data: data?.data, error };
   }

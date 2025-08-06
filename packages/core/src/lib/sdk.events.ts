@@ -7,4 +7,5 @@ export type StoreSdkEvent = {
   cartTokenChanged: string;
 
   cartLoading: boolean;
+  authenticatedChanged: boolean;
 };

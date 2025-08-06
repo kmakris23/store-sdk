@@ -1,4 +1,4 @@
-import { httpClient } from '@store-sdk/core';
+import { httpClient, StoreSdk } from '@store-sdk/core';
 import { AuthConfig } from '../types/auth.config.js';
 import axios from 'axios';
 import { AuthService } from '../services/auth.service.js';
@@ -15,17 +15,17 @@ export const addRefreshTokenInterceptor = (
         originalRequest._retry = true; // Mark the request as retried to avoid infinite loops.
         try {
           if (!config.getToken || !config.setToken) {
-            return Promise.reject();
+            return refreshTokenFailed();
           }
 
           const token = await config.getToken();
-          if (!token) return Promise.reject();
+          if (!token) return refreshTokenFailed();
 
           const { data, error } = await auth.refreshToken({
             JWT: token,
           });
-          if (error) return Promise.reject(error);
-          if (!data) return Promise.reject();
+          if (error) return refreshTokenFailed(error);
+          if (!data) return refreshTokenFailed();
 
           await config.setToken(data?.jwt);
 
@@ -40,10 +40,16 @@ export const addRefreshTokenInterceptor = (
           if (config.clearToken) {
             await config.clearToken();
           }
-          return Promise.reject(refreshError);
+          return refreshTokenFailed(refreshError);
         }
       }
-      return Promise.reject(error);
+      return refreshTokenFailed(error);
     }
   );
+};
+
+const refreshTokenFailed = (reason?: any) => {
+  StoreSdk.state.authenticated = false;
+  StoreSdk.events.emit('authenticatedChanged', false);
+  return Promise.reject(reason);
 };

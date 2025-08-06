@@ -6,7 +6,9 @@
     "packages/*",
     "apps/*"
   ],
-  "scripts": {},
+  "scripts": {
+    "dev:rebuild": "nx reset && npx nx run-many -t build"
+  },
   "devDependencies": {
     "@analogjs/vite-plugin-angular": "~1.19.1",
     "@analogjs/vitest-angular": "~1.19.1",

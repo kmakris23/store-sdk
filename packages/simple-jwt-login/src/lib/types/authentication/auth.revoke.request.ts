@@ -1,4 +1,4 @@
 export interface AuthRevokeRequest {
-  JWT: string;
+  JWT?: string;
   AUTH_CODE?: string;
 }
