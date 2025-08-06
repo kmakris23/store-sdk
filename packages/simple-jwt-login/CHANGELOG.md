@@ -1,3 +1,9 @@
+## 0.8.0 (2025-08-06)
+
+### 🚀 Features
+
+- **auth:** enhance authentication handling and state management ([ec53370](https://github.com/kmakris23/store-sdk/commit/ec53370))
+
 ## 0.7.0 (2025-08-05)
 
 This was a version bump only for simple-jwt-login to align it with other projects, there were no code changes.

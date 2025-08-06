@@ -1,3 +1,13 @@
+## 0.8.0 (2025-08-06)
+
+### 🚀 Features
+
+- **auth:** enhance authentication handling and state management ([ec53370](https://github.com/kmakris23/store-sdk/commit/ec53370))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.7.0 (2025-08-05)
 
 ### 🚀 Features
