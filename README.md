@@ -1,4 +1,4 @@
-# Store SDK for WooCommerce
+# WooCommerce Store API SDK
 
 > ⚠️ **This project is currently under active development.**
 >
