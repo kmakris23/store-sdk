@@ -26,4 +26,7 @@ jobs:
         run: npm install
 
       - uses: nrwl/nx-set-shas@v4
-      - run: npx nx affected -t lint test build
+      - run: npx nx lint core
+      - run: npx nx test core
+      - run: npx nx build core
+      
