@@ -30,9 +30,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        
-      - uses: nrwl/nx-set-shas@v4
 
+      - uses: nrwl/nx-set-shas@v4
       - run: npx nx affected -t lint test build
-      - run: npx nx fix-ci
-        if: always()
