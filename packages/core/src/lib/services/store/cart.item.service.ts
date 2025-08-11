@@ -27,7 +27,6 @@ export class CartItemService extends BaseService {
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
-    await this.addCartTokenHeader(options);
 
     const { data, error, headers } = await doGet<CartItemResponse[]>(
       url,
@@ -56,7 +55,6 @@ export class CartItemService extends BaseService {
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
-    await this.addCartTokenHeader(options);
 
     const { data, error, headers } = await doGet<CartItemResponse>(
       url,
@@ -81,7 +79,6 @@ export class CartItemService extends BaseService {
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
-    await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
     const { data, error, headers } = await doPost<CartItemResponse, unknown>(
@@ -113,7 +110,6 @@ export class CartItemService extends BaseService {
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
-    await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
     const { data, error, headers } = await doPut<CartItemResponse, unknown>(
@@ -140,7 +136,6 @@ export class CartItemService extends BaseService {
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
-    await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
     const { data, error, headers } = await doDelete<unknown>(url, options);
@@ -162,7 +157,6 @@ export class CartItemService extends BaseService {
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
-    await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
     const { data, error, headers } = await doDelete<CartItemResponse[]>(

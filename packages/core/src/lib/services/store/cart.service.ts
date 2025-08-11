@@ -24,14 +24,12 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
-    await this.addCartTokenHeader(options);
 
     const { data, error, headers } = await doGet<CartResponse>(url, options);
 
     super.cartChanged(data);
     if (headers) {
       await super.nonceChanged(headers[this.NONCE_HEADER]);
-      await super.cartTokenChanged(headers[this.CART_TOKEN_HEADER]);
     }
     return { data, error };
   }
@@ -47,7 +45,6 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
-    await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
     const { data, error, headers } = await doPost<CartResponse, unknown>(
@@ -80,7 +77,6 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
-    await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
     const { data, error, headers } = await doPost<CartResponse, unknown>(
@@ -108,7 +104,6 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
-    await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
     const { data, error, headers } = await doPost<CartResponse, unknown>(
@@ -136,7 +131,6 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
-    await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
     const { data, error, headers } = await doPost<CartResponse, unknown>(
@@ -164,7 +158,6 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
-    await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
     const { data, error, headers } = await doPost<CartResponse, unknown>(
@@ -194,7 +187,6 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
-    await this.addCartTokenHeader(options);
 
     super.cartLoading(true);
     const { data, error, headers } = await doPost<
@@ -225,7 +217,6 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
-    await this.addCartTokenHeader(options);
 
     const { data, error, headers } = await doPost<CartResponse, unknown>(
       url,

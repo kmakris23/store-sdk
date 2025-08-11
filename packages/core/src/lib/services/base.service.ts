@@ -39,23 +39,6 @@ export class BaseService {
     return axiosRequestConfig;
   }
 
-  protected async addCartTokenHeader(axiosRequestConfig: AxiosRequestConfig) {
-    if (this.config.cartToken?.disabled) return axiosRequestConfig;
-
-    const cartToken = this.config.cartToken?.getToken
-      ? await this.config.cartToken?.getToken()
-      : this.state.cartToken;
-
-    if (!cartToken) return axiosRequestConfig;
-
-    axiosRequestConfig.headers = {
-      ...axiosRequestConfig.headers,
-      [this.CART_TOKEN_HEADER]: cartToken,
-    };
-
-    return axiosRequestConfig;
-  }
-
   protected cartLoading(loading: boolean) {
     this.events.emit('cartLoading', loading);
   }
@@ -76,14 +59,5 @@ export class BaseService {
       await this.config.nonce.setToken(nonce);
     }
     this.events.emit('nonceChanged', nonce);
-  }
-  protected async cartTokenChanged(cartToken?: string) {
-    if (!cartToken) return;
-
-    this.state.cartToken = cartToken;
-    if (this.config.cartToken?.setToken) {
-      await this.config.cartToken?.setToken(cartToken);
-    }
-    this.events.emit('cartTokenChanged', cartToken);
   }
 }

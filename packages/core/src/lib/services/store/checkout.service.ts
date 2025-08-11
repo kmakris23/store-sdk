@@ -24,7 +24,6 @@ export class CheckoutService extends BaseService {
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
-    await this.addCartTokenHeader(options);
 
     const { data, error, headers } = await doGet<CheckoutResponse>(
       url,
@@ -52,7 +51,6 @@ export class CheckoutService extends BaseService {
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
-    await this.addCartTokenHeader(options);
 
     const url = `/${this.endpoint}/?__experimental_calc_totals=${
       experimental_calc_totals || false
@@ -83,7 +81,6 @@ export class CheckoutService extends BaseService {
 
     const options: AxiosRequestConfig = {};
     await this.addNonceHeader(options);
-    await this.addCartTokenHeader(options);
 
     const { data, error, headers } = await doPost<CheckoutResponse, unknown>(
       url,
