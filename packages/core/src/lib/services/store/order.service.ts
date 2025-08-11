@@ -30,14 +30,8 @@ export class OrderService extends BaseService {
     }
 
     const options: AxiosRequestConfig = {};
-    await this.addNonceHeader(options);
 
-    const { data, error, headers } = await doGet<OrderResponse>(url, options);
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
-
+    const { data, error } = await doGet<OrderResponse>(url, options);
     return { data, error };
   }
 }

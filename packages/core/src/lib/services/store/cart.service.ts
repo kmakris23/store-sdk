@@ -23,14 +23,10 @@ export class CartService extends BaseService {
     const url = `/${this.endpoint}`;
 
     const options: AxiosRequestConfig = {};
-    await this.addNonceHeader(options);
 
-    const { data, error, headers } = await doGet<CartResponse>(url, options);
+    const { data, error } = await doGet<CartResponse>(url, options);
 
     super.cartChanged(data);
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
     return { data, error };
   }
 
@@ -44,18 +40,13 @@ export class CartService extends BaseService {
     const url = `/${this.endpoint}/add-item?${query}`;
 
     const options: AxiosRequestConfig = {};
-    await this.addNonceHeader(options);
 
     super.cartLoading(true);
-    const { data, error, headers } = await doPost<CartResponse, unknown>(
+    const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
 
     super.cartLoading(false);
     super.cartChanged(data);
@@ -76,18 +67,13 @@ export class CartService extends BaseService {
     const url = `/${this.endpoint}/update-item?${query}`;
 
     const options: AxiosRequestConfig = {};
-    await this.addNonceHeader(options);
 
     super.cartLoading(true);
-    const { data, error, headers } = await doPost<CartResponse, unknown>(
+    const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
 
     super.cartLoading(false);
     super.cartChanged(data);
@@ -103,18 +89,13 @@ export class CartService extends BaseService {
     const url = `/${this.endpoint}/remove-item?key=${key}`;
 
     const options: AxiosRequestConfig = {};
-    await this.addNonceHeader(options);
 
     super.cartLoading(true);
-    const { data, error, headers } = await doPost<CartResponse, unknown>(
+    const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
 
     super.cartLoading(false);
     super.cartChanged(data);
@@ -130,18 +111,13 @@ export class CartService extends BaseService {
     const url = `/${this.endpoint}/apply-coupon/${code}`;
 
     const options: AxiosRequestConfig = {};
-    await this.addNonceHeader(options);
 
     super.cartLoading(true);
-    const { data, error, headers } = await doPost<CartResponse, unknown>(
+    const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
 
     super.cartLoading(false);
     super.cartChanged(data);
@@ -157,18 +133,13 @@ export class CartService extends BaseService {
     const url = `/${this.endpoint}/remove-coupon/${code}`;
 
     const options: AxiosRequestConfig = {};
-    await this.addNonceHeader(options);
 
     super.cartLoading(true);
-    const { data, error, headers } = await doPost<CartResponse, unknown>(
+    const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
 
     super.cartLoading(false);
     super.cartChanged(data);
@@ -186,17 +157,13 @@ export class CartService extends BaseService {
     const url = `/${this.endpoint}/update-customer`;
 
     const options: AxiosRequestConfig = {};
-    await this.addNonceHeader(options);
 
     super.cartLoading(true);
-    const { data, error, headers } = await doPost<
-      CartResponse,
-      CartCustomerRequest
-    >(url, body, options);
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
+    const { data, error } = await doPost<CartResponse, CartCustomerRequest>(
+      url,
+      body,
+      options
+    );
 
     super.cartLoading(false);
     super.cartChanged(data);
@@ -216,17 +183,12 @@ export class CartService extends BaseService {
     const url = `/${this.endpoint}/select-shipping-rate/package_id=${packageId}&rate_id=${rateId}`;
 
     const options: AxiosRequestConfig = {};
-    await this.addNonceHeader(options);
 
-    const { data, error, headers } = await doPost<CartResponse, unknown>(
+    const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
 
     super.cartChanged(data);
     return { data, error };

@@ -20,8 +20,6 @@ export class CartCouponService extends BaseService {
 
     let total, totalPages, link;
     if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-
       link = parseLinkHeader(headers['link']);
       total = headers['x-wp-total'];
       totalPages = headers['x-wp-totalpages'];
@@ -37,11 +35,7 @@ export class CartCouponService extends BaseService {
    */
   async single(code: string): Promise<ApiResult<CartCouponResponse>> {
     const url = `/${this.endpoint}/${code}`;
-    const { data, error, headers } = await doGet<CartCouponResponse>(url);
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
+    const { data, error } = await doGet<CartCouponResponse>(url);
 
     return { data, error };
   }
@@ -53,13 +47,9 @@ export class CartCouponService extends BaseService {
    */
   async add(code: string): Promise<ApiResult<CartCouponResponse>> {
     const url = `/${this.endpoint}?code=${code}`;
-    const { data, error, headers } = await doPost<CartCouponResponse, unknown>(
+    const { data, error } = await doPost<CartCouponResponse, unknown>(
       url
     );
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
 
     return { data, error };
   }
@@ -71,11 +61,7 @@ export class CartCouponService extends BaseService {
    */
   async delete(code: string): Promise<ApiResult<unknown>> {
     const url = `/${this.endpoint}/${code}`;
-    const { data, error, headers } = await doDelete<unknown>(url);
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
+    const { data, error } = await doDelete<unknown>(url);
 
     return { data, error };
   }
@@ -86,11 +72,7 @@ export class CartCouponService extends BaseService {
    */
   async clear(): Promise<ApiResult<CartCouponResponse[]>> {
     const url = `/${this.endpoint}`;
-    const { data, error, headers } = await doDelete<CartCouponResponse[]>(url);
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
+    const { data, error } = await doDelete<CartCouponResponse[]>(url);
 
     return { data, error };
   }

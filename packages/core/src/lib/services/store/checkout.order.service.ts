@@ -25,16 +25,11 @@ export class CheckoutOrderService extends BaseService {
     const url = `/${this.endpoint}/${orderId}`;
 
     const options: AxiosRequestConfig = {};
-    await this.addNonceHeader(options);
 
-    const { data, error, headers } = await doPost<
+    const { data, error } = await doPost<
       CheckoutResponse,
       OrderRequest
     >(url, params, options);
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
 
     return { data, error };
   }

@@ -26,7 +26,6 @@ export class CartItemService extends BaseService {
     const url = `/${this.endpoint}`;
 
     const options: AxiosRequestConfig = {};
-    await this.addNonceHeader(options);
 
     const { data, error, headers } = await doGet<CartItemResponse[]>(
       url,
@@ -35,8 +34,6 @@ export class CartItemService extends BaseService {
 
     let total, totalPages, link;
     if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-
       link = parseLinkHeader(headers['link']);
       total = headers['x-wp-total'];
       totalPages = headers['x-wp-totalpages'];
@@ -54,16 +51,11 @@ export class CartItemService extends BaseService {
     const url = `/${this.endpoint}/${key}`;
 
     const options: AxiosRequestConfig = {};
-    await this.addNonceHeader(options);
 
-    const { data, error, headers } = await doGet<CartItemResponse>(
+    const { data, error } = await doGet<CartItemResponse>(
       url,
       options
     );
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
 
     return { data, error };
   }
@@ -78,18 +70,13 @@ export class CartItemService extends BaseService {
     const url = `/${this.endpoint}?${query}`;
 
     const options: AxiosRequestConfig = {};
-    await this.addNonceHeader(options);
 
     super.cartLoading(true);
-    const { data, error, headers } = await doPost<CartItemResponse, unknown>(
+    const { data, error } = await doPost<CartItemResponse, unknown>(
       url,
       undefined,
       options
     );
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
 
     super.cartLoading(false);
     return { data, error };
@@ -109,18 +96,13 @@ export class CartItemService extends BaseService {
     const url = `/${this.endpoint}/${key}?${query}`;
 
     const options: AxiosRequestConfig = {};
-    await this.addNonceHeader(options);
 
     super.cartLoading(true);
-    const { data, error, headers } = await doPut<CartItemResponse, unknown>(
+    const { data, error } = await doPut<CartItemResponse, unknown>(
       url,
       undefined,
       options
     );
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
 
     super.cartLoading(false);
     return { data, error };
@@ -135,14 +117,9 @@ export class CartItemService extends BaseService {
     const url = `/${this.endpoint}/${key}`;
 
     const options: AxiosRequestConfig = {};
-    await this.addNonceHeader(options);
 
     super.cartLoading(true);
-    const { data, error, headers } = await doDelete<unknown>(url, options);
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
+    const { data, error } = await doDelete<unknown>(url, options);
 
     super.cartLoading(false);
     return { data, error };
@@ -156,17 +133,12 @@ export class CartItemService extends BaseService {
     const url = `/${this.endpoint}`;
 
     const options: AxiosRequestConfig = {};
-    await this.addNonceHeader(options);
 
     super.cartLoading(true);
-    const { data, error, headers } = await doDelete<CartItemResponse[]>(
+    const { data, error } = await doDelete<CartItemResponse[]>(
       url,
       options
     );
-
-    if (headers) {
-      await super.nonceChanged(headers[this.NONCE_HEADER]);
-    }
 
     super.cartLoading(false);
     return { data, error };
