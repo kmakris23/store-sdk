@@ -1,4 +1,4 @@
-import { httpClient, Sdk, StoreSdkPlugin } from '@store-sdk/core';
+import { httpClient, PluginId, Sdk, StoreSdkPlugin } from '@store-sdk/core';
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { AuthService } from './auth.service.js';
 import { AuthConfig } from './auth.config.js';
@@ -15,6 +15,8 @@ declare module '@store-sdk/core' {
 class AuthPlugin implements StoreSdkPlugin {
   private _auth!: AuthService;
   private readonly _config: AuthConfig;
+
+  id: PluginId = 'jwt-authentication-for-wp-rest-api';
 
   constructor(config: AuthConfig) {
     this._config = config;

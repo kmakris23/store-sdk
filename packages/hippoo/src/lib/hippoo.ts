@@ -1,4 +1,4 @@
-import { httpClient, Sdk, StoreSdkPlugin } from '@store-sdk/core';
+import { httpClient, PluginId, Sdk, StoreSdkPlugin } from '@store-sdk/core';
 import { HippoService } from './hippoo.service.js';
 import { HippoConfig } from './types/hippoo.config.js';
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
@@ -15,6 +15,8 @@ declare module '@store-sdk/core' {
 class HippooPlugin implements StoreSdkPlugin {
   private _hippoo!: HippoService;
   private readonly _config: HippoConfig;
+
+  id: PluginId = 'hippoo';
 
   constructor(config: HippoConfig) {
     this._config = config;

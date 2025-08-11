@@ -1,4 +1,4 @@
-import { Sdk, StoreSdk, StoreSdkPlugin } from '@store-sdk/core';
+import { PluginId, Sdk, StoreSdk, StoreSdkPlugin } from '@store-sdk/core';
 import { AuthConfig } from './types/auth.config.js';
 import { AuthService } from './services/auth.service.js';
 import { UserService } from './services/user.service.js';
@@ -21,6 +21,8 @@ class SimpleJwtPlugin implements StoreSdkPlugin {
   private _auth!: AuthService;
   private _users!: UserService;
   private readonly _config: AuthConfig;
+
+  id: PluginId = 'simple-jwt-login';
 
   constructor(config: AuthConfig) {
     this._config = config;
