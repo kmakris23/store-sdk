@@ -6,11 +6,13 @@ export interface StoreSdkConfig {
     disabled?: boolean;
     getToken?: () => Promise<string>;
     setToken?: (nonce: string) => Promise<void>;
+    clearToken?: () => Promise<void>;
   };
   cartToken?: {
     disabled?: boolean;
     getToken?: () => Promise<string>;
     setToken?: (cartToken: string) => Promise<void>;
+    clearToken?: () => Promise<void>;
   };
   plugins?: StoreSdkPlugin[];
 }
