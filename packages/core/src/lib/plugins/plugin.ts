@@ -5,8 +5,9 @@ export type PluginId =
   | 'jwt-authentication-for-wp-rest-api'
   | 'hippoo';
 
-export interface StoreSdkPlugin {
+export interface StoreSdkPlugin<T> {
   id: PluginId;
   init(): void;
   extend(sdk: Sdk): void;
+  getConfig(): T;
 }

@@ -22,7 +22,7 @@ declare module '@store-sdk/core' {
   }
 }
 
-class SimpleJwtPlugin implements StoreSdkPlugin {
+class SimpleJwtPlugin implements StoreSdkPlugin<SimpleJwtLoginConfig> {
   private _auth!: AuthService;
   private _users!: UserService;
   private readonly _config: SimpleJwtLoginConfig;
@@ -31,6 +31,10 @@ class SimpleJwtPlugin implements StoreSdkPlugin {
 
   constructor(config: SimpleJwtLoginConfig) {
     this._config = config;
+  }
+
+  getConfig(): SimpleJwtLoginConfig {
+    return this._config;
   }
   init(): void {
     this._auth = new AuthService(this._config);

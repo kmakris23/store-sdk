@@ -12,7 +12,7 @@ declare module '@store-sdk/core' {
   }
 }
 
-class HippooPlugin implements StoreSdkPlugin {
+class HippooPlugin implements StoreSdkPlugin<HippoConfig> {
   private _hippoo!: HippoService;
   private readonly _config: HippoConfig;
 
@@ -20,6 +20,9 @@ class HippooPlugin implements StoreSdkPlugin {
 
   constructor(config: HippoConfig) {
     this._config = config;
+  }
+  getConfig(): HippoConfig {
+    return this._config;
   }
   init(): void {
     this._hippoo = new HippoService(this._config);

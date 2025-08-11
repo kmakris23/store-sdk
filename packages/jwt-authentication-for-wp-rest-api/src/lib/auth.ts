@@ -12,7 +12,7 @@ declare module '@store-sdk/core' {
   }
 }
 
-class AuthPlugin implements StoreSdkPlugin {
+class AuthPlugin implements StoreSdkPlugin<AuthConfig> {
   private _auth!: AuthService;
   private readonly _config: AuthConfig;
 
@@ -20,6 +20,9 @@ class AuthPlugin implements StoreSdkPlugin {
 
   constructor(config: AuthConfig) {
     this._config = config;
+  }
+  getConfig(): AuthConfig {
+    return this._config;
   }
 
   init(): void {
