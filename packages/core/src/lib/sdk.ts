@@ -18,6 +18,7 @@ import { createHttpClient } from './services/api.js';
 import { addCartTokenInterceptors } from './interceptors/cart.token.interceptor.js';
 import { addNonceInterceptors } from './interceptors/nonce.interceptor.js';
 import { addCartLoadingInterceptors } from './interceptors/cart.loading.interceptor.js';
+import { addSimpleJwtLoginInterceptors } from './interceptors/simple.jwt.login.interceptors.js';
 
 export class Sdk {
   private _tags!: ProductTagService;
@@ -85,6 +86,10 @@ export class Sdk {
 
     const allPlugins = [...(config.plugins ?? [])];
     for (const plugin of allPlugins) {
+      if (plugin.id === 'simple-jwt-login') {
+        addSimpleJwtLoginInterceptors(config);
+      }
+
       plugin.init();
       if (plugin.extend) {
         plugin.extend(this);
