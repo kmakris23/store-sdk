@@ -72,8 +72,14 @@ export class AuthService {
       AuthRevokeRequest
     >(endpoint, body, options);
 
-    StoreSdk.state.authenticated = false;
-    StoreSdk.events.emit('authenticatedChanged', false);
+    if (!error) {
+      if (this.config.clearToken) {
+        await this.config.clearToken();
+      }
+
+      StoreSdk.state.authenticated = false;
+      StoreSdk.events.emit('authenticatedChanged', false);
+    }
 
     return { data: data?.data, error };
   }
