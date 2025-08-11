@@ -14,5 +14,5 @@ export interface StoreSdkConfig {
     setToken?: (cartToken: string) => Promise<void>;
     clearToken?: () => Promise<void>;
   };
-  plugins?: StoreSdkPlugin[];
+  plugins?: StoreSdkPlugin<Record<string, unknown>>[];
 }
