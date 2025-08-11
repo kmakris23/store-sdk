@@ -41,14 +41,12 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
-    super.cartLoading(true);
     const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
 
-    super.cartLoading(false);
     super.cartChanged(data);
     return { data, error };
   }
@@ -68,14 +66,12 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
-    super.cartLoading(true);
     const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
 
-    super.cartLoading(false);
     super.cartChanged(data);
     return { data, error };
   }
@@ -90,14 +86,12 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
-    super.cartLoading(true);
     const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
 
-    super.cartLoading(false);
     super.cartChanged(data);
     return { data, error };
   }
@@ -112,14 +106,12 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
-    super.cartLoading(true);
     const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
 
-    super.cartLoading(false);
     super.cartChanged(data);
     return { data, error };
   }
@@ -134,14 +126,12 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
-    super.cartLoading(true);
     const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
 
-    super.cartLoading(false);
     super.cartChanged(data);
     return { data, error };
   }
@@ -158,14 +148,12 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
-    super.cartLoading(true);
     const { data, error } = await doPost<CartResponse, CartCustomerRequest>(
       url,
       body,
       options
     );
 
-    super.cartLoading(false);
     super.cartChanged(data);
     return { data, error };
   }

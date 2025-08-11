@@ -68,14 +68,12 @@ export class CartItemService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
-    super.cartLoading(true);
     const { data, error } = await doPost<CartItemResponse, unknown>(
       url,
       undefined,
       options
     );
 
-    super.cartLoading(false);
     return { data, error };
   }
 
@@ -94,14 +92,12 @@ export class CartItemService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
-    super.cartLoading(true);
     const { data, error } = await doPut<CartItemResponse, unknown>(
       url,
       undefined,
       options
     );
 
-    super.cartLoading(false);
     return { data, error };
   }
 
@@ -115,10 +111,8 @@ export class CartItemService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
-    super.cartLoading(true);
     const { data, error } = await doDelete<unknown>(url, options);
 
-    super.cartLoading(false);
     return { data, error };
   }
 
@@ -131,10 +125,8 @@ export class CartItemService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
-    super.cartLoading(true);
     const { data, error } = await doDelete<CartItemResponse[]>(url, options);
 
-    super.cartLoading(false);
     return { data, error };
   }
 }

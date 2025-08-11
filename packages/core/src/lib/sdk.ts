@@ -17,6 +17,7 @@ import { StoreSdkEventEmitter } from './sdk.event.emitter.js';
 import { createHttpClient } from './services/api.js';
 import { addCartTokenInterceptors } from './interceptors/cart.token.interceptor.js';
 import { addNonceInterceptors } from './interceptors/nonce.interceptor.js';
+import { addCartLoadingInterceptors } from './interceptors/cart.loading.interceptor.js';
 
 export class Sdk {
   private _tags!: ProductTagService;
@@ -80,6 +81,7 @@ export class Sdk {
 
     addNonceInterceptors(config, this.state, this.events);
     addCartTokenInterceptors(config, this.state, this.events);
+    addCartLoadingInterceptors(this.events);
 
     const allPlugins = [...(config.plugins ?? [])];
     for (const plugin of allPlugins) {
