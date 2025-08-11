@@ -1,11 +1,15 @@
 import { StoreSdkConfig } from '../configs/sdk.config.js';
-import { httpClient } from '../../index.js';
+import { httpClient, SimpleJwtLoginConfig } from '../../index.js';
 
-const TOKEN_REVOKE_PATH = '/auth/revoke';
-
-export const addSimpleJwtLoginInterceptors = (config: StoreSdkConfig) => {
+export const addSimpleJwtLoginInterceptors = (
+  config: StoreSdkConfig,
+  simpleJwtLoginConfig: SimpleJwtLoginConfig
+) => {
   httpClient.default.interceptors.response.use(async (response) => {
-    if (!response.config.url?.includes(TOKEN_REVOKE_PATH)) return response;
+    const namespace = simpleJwtLoginConfig.routeNamespace;
+    const tokenRevokePath = `/wp-json/${namespace}/auth/revoke`;
+
+    if (!response.config.url?.includes(tokenRevokePath)) return response;
 
     if (!config.nonce?.disabled) {
       if (config.nonce?.clearToken) {

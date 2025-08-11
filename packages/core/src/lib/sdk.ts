@@ -87,7 +87,7 @@ export class Sdk {
     const allPlugins = [...(config.plugins ?? [])];
     for (const plugin of allPlugins) {
       if (plugin.id === 'simple-jwt-login') {
-        addSimpleJwtLoginInterceptors(config);
+        addSimpleJwtLoginInterceptors(config, plugin.getConfig());
       }
 
       plugin.init();
