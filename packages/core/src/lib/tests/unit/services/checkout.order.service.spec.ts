@@ -1,6 +1,6 @@
 import { StoreSdkEventEmitter } from '../../../sdk.event.emitter.js';
 import { CheckoutOrderService } from '../../../services/store/checkout.order.service.js';
-import { StoreSdkConfig } from '../../../types/sdk.config.js';
+import { StoreSdkConfig } from '../../../configs/sdk.config.js';
 import { StoreSdkState } from '../../../types/sdk.state.js';
 import { OrderRequest, CheckoutResponse } from '../../../types/store/index.js';
 

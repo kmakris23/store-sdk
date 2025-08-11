@@ -1,10 +1,9 @@
-import { httpClient, StoreSdk } from '@store-sdk/core';
-import { AuthConfig } from '../types/auth.config.js';
+import { httpClient, SimpleJwtLoginConfig, StoreSdk } from '@store-sdk/core';
 import axios, { AxiosRequestConfig } from 'axios';
 import { AuthService } from '../services/auth.service.js';
 
 export const addRefreshTokenInterceptor = (
-  config: AuthConfig,
+  config: SimpleJwtLoginConfig,
   auth: AuthService
 ) => {
   httpClient.default.interceptors.response.use(
@@ -53,7 +52,10 @@ export const addRefreshTokenInterceptor = (
   );
 };
 
-const refreshTokenFailed = async (config: AuthConfig, reason?: any) => {
+const refreshTokenFailed = async (
+  config: SimpleJwtLoginConfig,
+  reason?: any
+) => {
   if (config.clearToken) {
     await config.clearToken();
   }

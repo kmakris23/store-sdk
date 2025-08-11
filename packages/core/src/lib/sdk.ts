@@ -1,4 +1,4 @@
-import { StoreSdkConfig } from './types/sdk.config.js';
+import { StoreSdkConfig } from './configs/sdk.config.js';
 import { CartCouponService } from './services/store/cart.coupon.service.js';
 import { CartItemService } from './services/store/cart.item.service.js';
 import { CartService } from './services/store/cart.service.js';

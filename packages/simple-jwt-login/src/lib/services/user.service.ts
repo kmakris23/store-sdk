@@ -1,5 +1,10 @@
-import { ApiResult, doDelete, doPost, doPut } from '@store-sdk/core';
-import { AuthConfig } from '../types/auth.config.js';
+import {
+  ApiResult,
+  doDelete,
+  doPost,
+  doPut,
+  SimpleJwtLoginConfig,
+} from '@store-sdk/core';
 import { UserChangePasswordRequest } from '../types/user/user.change.password.request.js';
 import { DEFAULT_ROUTE_NAMESPACE } from '../constants.js';
 import { UserResetPasswordRequest } from '../types/user/user.reset.password.request.js';
@@ -11,9 +16,9 @@ import { SimpleJwtApiResult } from '../types/simple.jwt.api.result.js';
 import { AxiosRequestConfig } from 'axios';
 
 export class UserService {
-  private readonly config: AuthConfig;
+  private readonly config: SimpleJwtLoginConfig;
 
-  constructor(config: AuthConfig) {
+  constructor(config: SimpleJwtLoginConfig) {
     this.config = config;
   }
 

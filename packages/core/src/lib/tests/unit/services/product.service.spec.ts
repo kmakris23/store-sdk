@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ProductService } from '../../../services/store/product.service.js';
 import { ProductResponse, ProductRequest } from '../../../types/store/index.js';
 import { StoreSdkEventEmitter } from '../../../sdk.event.emitter.js';
-import { StoreSdkConfig } from '../../../types/sdk.config.js';
+import { StoreSdkConfig } from '../../../configs/sdk.config.js';
 import { StoreSdkState } from '../../../types/sdk.state.js';
 
 class MockProductService extends ProductService {

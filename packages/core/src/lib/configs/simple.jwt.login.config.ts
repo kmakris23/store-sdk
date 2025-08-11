@@ -1,4 +1,4 @@
-export interface AuthConfig {
+export interface SimpleJwtLoginConfig {
   /**
    * Defaults to `simple-jwt-login/v1`.
    */

@@ -1,6 +1,6 @@
 import { StoreSdkEventEmitter } from '../../../sdk.event.emitter.js';
 import { CartService } from '../../../services/store/cart.service.js';
-import { StoreSdkConfig } from '../../../types/sdk.config.js';
+import { StoreSdkConfig } from '../../../configs/sdk.config.js';
 import { StoreSdkState } from '../../../types/sdk.state.js';
 import {
   CartResponse,

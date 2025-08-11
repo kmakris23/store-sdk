@@ -1,5 +1,10 @@
-import { PluginId, Sdk, StoreSdk, StoreSdkPlugin } from '@store-sdk/core';
-import { AuthConfig } from './types/auth.config.js';
+import {
+  PluginId,
+  Sdk,
+  SimpleJwtLoginConfig,
+  StoreSdk,
+  StoreSdkPlugin,
+} from '@store-sdk/core';
 import { AuthService } from './services/auth.service.js';
 import { UserService } from './services/user.service.js';
 import { addTokenInterceptor } from './interceptors/token.interceptor.js';
@@ -20,11 +25,11 @@ declare module '@store-sdk/core' {
 class SimpleJwtPlugin implements StoreSdkPlugin {
   private _auth!: AuthService;
   private _users!: UserService;
-  private readonly _config: AuthConfig;
+  private readonly _config: SimpleJwtLoginConfig;
 
   id: PluginId = 'simple-jwt-login';
 
-  constructor(config: AuthConfig) {
+  constructor(config: SimpleJwtLoginConfig) {
     this._config = config;
   }
   init(): void {
@@ -82,6 +87,6 @@ class SimpleJwtPlugin implements StoreSdkPlugin {
   }
 }
 
-export const useSimpleJwt = (config: AuthConfig) => {
+export const useSimpleJwt = (config: SimpleJwtLoginConfig) => {
   return new SimpleJwtPlugin(config);
 };

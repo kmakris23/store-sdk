@@ -1,7 +1,12 @@
-import { AuthConfig } from '../types/auth.config.js';
 import { AuthRequest } from '../types/authentication/auth.request.js';
 import { AuthResponse } from '../types/authentication/auth.response.js';
-import { ApiResult, doGet, doPost, StoreSdk } from '@store-sdk/core';
+import {
+  ApiResult,
+  doGet,
+  doPost,
+  SimpleJwtLoginConfig,
+  StoreSdk,
+} from '@store-sdk/core';
 import qs from 'qs';
 import { AuthRefreshRequest } from '../types/authentication/auth.refresh.request.js';
 import { DEFAULT_ROUTE_NAMESPACE } from '../constants.js';
@@ -13,9 +18,9 @@ import { SimpleJwtApiResult } from '../types/simple.jwt.api.result.js';
 import { AxiosRequestConfig } from 'axios';
 
 export class AuthService {
-  private readonly config: AuthConfig;
+  private readonly config: SimpleJwtLoginConfig;
 
-  constructor(config: AuthConfig) {
+  constructor(config: SimpleJwtLoginConfig) {
     this.config = config;
   }
 
