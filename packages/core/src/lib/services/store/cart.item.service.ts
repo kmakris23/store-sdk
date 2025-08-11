@@ -52,10 +52,7 @@ export class CartItemService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
-    const { data, error } = await doGet<CartItemResponse>(
-      url,
-      options
-    );
+    const { data, error } = await doGet<CartItemResponse>(url, options);
 
     return { data, error };
   }
@@ -135,10 +132,7 @@ export class CartItemService extends BaseService {
     const options: AxiosRequestConfig = {};
 
     super.cartLoading(true);
-    const { data, error } = await doDelete<CartItemResponse[]>(
-      url,
-      options
-    );
+    const { data, error } = await doDelete<CartItemResponse[]>(url, options);
 
     super.cartLoading(false);
     return { data, error };

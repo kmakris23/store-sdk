@@ -4,22 +4,16 @@
   "targets": {
     "build": {
       "executor": "@nx/esbuild:esbuild",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "platform": "node",
         "outputPath": "apps/example-node/dist",
-        "format": [
-          "cjs"
-        ],
+        "format": ["cjs"],
         "bundle": false,
         "main": "apps/example-node/src/main.ts",
         "tsConfig": "apps/example-node/tsconfig.app.json",
-        "assets": [
-          "apps/example-node/src/assets"
-        ],
+        "assets": ["apps/example-node/src/assets"],
         "esbuildOptions": {
           "sourcemap": true,
           "outExtension": {
@@ -43,9 +37,7 @@
       "continuous": true,
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
-      "dependsOn": [
-        "build"
-      ],
+      "dependsOn": ["build"],
       "options": {
         "buildTarget": "@store-sdk/example-node:build",
         "runBuildTargetDependencies": false

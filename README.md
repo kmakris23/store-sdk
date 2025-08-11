@@ -4,7 +4,6 @@
 >
 > Features, APIs, and documentation may change frequently until a stable version is released.
 
-
 A modern, TypeScript-first SDK for integrating with the **WooCommerce Store API**.
 This library provides typed client utilities and convenient abstractions to simplify working with WooCommerce headless or decoupled storefronts.
 

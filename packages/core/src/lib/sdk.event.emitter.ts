@@ -3,7 +3,7 @@ import { StoreSdkEvent } from './sdk.events.js';
 type Handler<T> = (payload?: T) => void;
 export class StoreSdkEventEmitter<TEvents = StoreSdkEvent> {
   private listeners: {
-    [K in keyof TEvents]?: Set<Handler<TEvents[K] >>;
+    [K in keyof TEvents]?: Set<Handler<TEvents[K]>>;
   } = {};
 
   private onceListeners: {

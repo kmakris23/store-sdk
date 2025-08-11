@@ -1,4 +1,4 @@
-import { Paginated } from "../paginated.js";
+import { Paginated } from '../paginated.js';
 
 export interface ProductReviewRequest extends Paginated {
   /**

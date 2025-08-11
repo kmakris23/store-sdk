@@ -8,15 +8,11 @@
   "targets": {
     "build": {
       "executor": "@angular/build:application",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/example-angular",
         "browser": "apps/example-angular/src/main.ts",
-        "polyfills": [
-          "zone.js"
-        ],
+        "polyfills": ["zone.js"],
         "tsConfig": "apps/example-angular/tsconfig.app.json",
         "assets": [
           {
@@ -24,9 +20,7 @@
             "input": "apps/example-angular/public"
           }
         ],
-        "styles": [
-          "apps/example-angular/src/styles.css"
-        ]
+        "styles": ["apps/example-angular/src/styles.css"]
       },
       "configurations": {
         "production": {

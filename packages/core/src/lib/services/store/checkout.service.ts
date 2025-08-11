@@ -24,10 +24,7 @@ export class CheckoutService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
-    const { data, error } = await doGet<CheckoutResponse>(
-      url,
-      options
-    );
+    const { data, error } = await doGet<CheckoutResponse>(url, options);
 
     return { data, error };
   }

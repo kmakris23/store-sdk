@@ -47,9 +47,7 @@ export class CartCouponService extends BaseService {
    */
   async add(code: string): Promise<ApiResult<CartCouponResponse>> {
     const url = `/${this.endpoint}?code=${code}`;
-    const { data, error } = await doPost<CartCouponResponse, unknown>(
-      url
-    );
+    const { data, error } = await doPost<CartCouponResponse, unknown>(url);
 
     return { data, error };
   }

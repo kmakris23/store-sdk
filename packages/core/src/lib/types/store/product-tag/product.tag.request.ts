@@ -1,3 +1,3 @@
 import { Paginated } from '../paginated.js';
 
-export type ProductTagRequest = Paginated
+export type ProductTagRequest = Paginated;

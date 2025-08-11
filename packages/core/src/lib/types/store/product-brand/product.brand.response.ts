@@ -1,4 +1,4 @@
-import { ImageResponse } from "../image.response.js";
+import { ImageResponse } from '../image.response.js';
 
 export interface ProductBrandResponse {
   id: number;
