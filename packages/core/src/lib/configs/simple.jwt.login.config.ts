@@ -38,6 +38,12 @@ export interface SimpleJwtLoginConfig {
    * Defaults to `false`.
    */
   fetchCartOnLogin?: boolean;
+  /**
+   * Revoke the token before login.
+   * This is useful if you want to ensure the token is cleared before a new login attempt.
+   * Defaults to `false`.
+   */
+  revokeTokenBeforeLogin?: boolean;
 
   useTokenInterceptor?: boolean;
   useRefreshTokenInterceptor?: boolean;

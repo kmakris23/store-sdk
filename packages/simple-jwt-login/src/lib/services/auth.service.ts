@@ -28,6 +28,10 @@ export class AuthService {
     body: AuthRequest,
     options?: AxiosRequestConfig
   ): Promise<ApiResult<AuthResponse>> {
+    if (this.config.revokeTokenBeforeLogin) {
+      await this.revokeToken();
+    }
+
     const namespace = this.config.routeNamespace ?? DEFAULT_ROUTE_NAMESPACE;
     const endpoint = `/wp-json/${namespace}/auth`;
 
