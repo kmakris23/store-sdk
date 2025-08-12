@@ -31,6 +31,14 @@ export interface SimpleJwtLoginConfig {
    */
   autoLoginRedirectUrl?: string;
 
+  /**
+   * Fetch the cart after login.
+   * This is useful if you want to ensure the cart is up-to-date after a user logs in.
+   * It will trigger a cart request after the login process.
+   * Defaults to `false`.
+   */
+  fetchCartOnLogin?: boolean;
+
   useTokenInterceptor?: boolean;
   useRefreshTokenInterceptor?: boolean;
   getToken?: () => Promise<string>;

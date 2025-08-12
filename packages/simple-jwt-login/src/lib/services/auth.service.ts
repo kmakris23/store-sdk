@@ -41,11 +41,13 @@ export class AuthService {
     StoreSdk.events.emitIf(!!data, 'auth:login:success');
     StoreSdk.events.emitIf(!!error, 'auth:login:error', error);
 
-    if (this.config.setToken) {
-      StoreSdk.state.authenticated = true;
-      StoreSdk.events.emit('auth:changed', true);
+    if (!error) {
+      if (this.config.setToken) {
+        StoreSdk.state.authenticated = true;
+        StoreSdk.events.emit('auth:changed', true);
 
-      this.config.setToken(data?.data.jwt ?? '');
+        this.config.setToken(data?.data.jwt ?? '');
+      }
     }
 
     return { data: data?.data, error };
