@@ -1,5 +1,6 @@
+import { EventBus } from '../bus/event.bus.js';
 import { StoreSdkConfig } from '../configs/sdk.config.js';
-import { StoreSdkEventEmitter } from '../sdk.event.emitter.js';
+import { StoreSdkEvent } from '../sdk.events.js';
 import { StoreSdkState } from '../types/sdk.state.js';
 import { CartCouponService } from './store/cart.coupon.service.js';
 import { CartItemService } from './store/cart.item.service.js';
@@ -34,7 +35,7 @@ export class StoreService {
   constructor(
     state: StoreSdkState,
     config: StoreSdkConfig,
-    events: StoreSdkEventEmitter
+    events: EventBus<StoreSdkEvent>
   ) {
     this._tags = new ProductTagService(state, config, events);
     this._orders = new OrderService(state, config, events);

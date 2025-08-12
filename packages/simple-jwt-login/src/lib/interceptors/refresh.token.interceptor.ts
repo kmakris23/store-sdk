@@ -60,6 +60,6 @@ const refreshTokenFailed = async (
     await config.clearToken();
   }
   StoreSdk.state.authenticated = false;
-  StoreSdk.events.emit('authenticatedChanged', false);
+  StoreSdk.events.emit('auth:changed', false);
   return Promise.reject(reason);
 };

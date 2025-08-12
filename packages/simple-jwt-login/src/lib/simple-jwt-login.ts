@@ -56,7 +56,7 @@ class SimpleJwtPlugin implements StoreSdkPlugin<SimpleJwtLoginConfig> {
     if (this._config.getToken) {
       this._config.getToken().then((token) => {
         StoreSdk.state.authenticated = !!token;
-        StoreSdk.events.emit('authenticatedChanged', !!token);
+        StoreSdk.events.emit('auth:changed', !!token);
       });
     }
   }

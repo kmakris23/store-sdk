@@ -68,11 +68,18 @@ export class CartItemService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
+    this.events.emit('cart:loading', true);
+    this.events.emit('cart:request:start');
+
     const { data, error } = await doPost<CartItemResponse, unknown>(
       url,
       undefined,
       options
     );
+
+    this.events.emitIf(!!data, 'cart:request:success');
+    this.events.emitIf(!!error, 'cart:request:error', error);
+    this.events.emit('cart:loading', false);
 
     return { data, error };
   }
@@ -92,11 +99,18 @@ export class CartItemService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
+    this.events.emit('cart:loading', true);
+    this.events.emit('cart:request:start');
+
     const { data, error } = await doPut<CartItemResponse, unknown>(
       url,
       undefined,
       options
     );
+
+    this.events.emitIf(!!data, 'cart:request:success');
+    this.events.emitIf(!!error, 'cart:request:error', error);
+    this.events.emit('cart:loading', false);
 
     return { data, error };
   }
@@ -111,7 +125,14 @@ export class CartItemService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
+    this.events.emit('cart:loading', true);
+    this.events.emit('cart:request:start');
+
     const { data, error } = await doDelete<unknown>(url, options);
+
+    this.events.emitIf(!!data, 'cart:request:success');
+    this.events.emitIf(!!error, 'cart:request:error', error);
+    this.events.emit('cart:loading', false);
 
     return { data, error };
   }
@@ -125,7 +146,14 @@ export class CartItemService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
+    this.events.emit('cart:loading', true);
+    this.events.emit('cart:request:start');
+
     const { data, error } = await doDelete<CartItemResponse[]>(url, options);
+
+    this.events.emitIf(!!data, 'cart:request:success');
+    this.events.emitIf(!!error, 'cart:request:error', error);
+    this.events.emit('cart:loading', false);
 
     return { data, error };
   }

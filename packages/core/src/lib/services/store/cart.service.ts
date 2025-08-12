@@ -24,9 +24,16 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
+    this.events.emit('cart:loading', true);
+    this.events.emit('cart:request:start');
+
     const { data, error } = await doGet<CartResponse>(url, options);
 
-    super.cartChanged(data);
+    this.events.emitIf(!!data, 'cart:request:success');
+    this.events.emitIf(!!error, 'cart:request:error', { error });
+    this.events.emitIf(!!data, 'cart:updated', data);
+    this.events.emit('cart:loading', false);
+
     return { data, error };
   }
 
@@ -41,13 +48,20 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
+    this.events.emit('cart:loading', true);
+    this.events.emit('cart:request:start');
+
     const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
 
-    super.cartChanged(data);
+    this.events.emitIf(!!data, 'cart:request:success');
+    this.events.emitIf(!!error, 'cart:request:error', { error });
+    this.events.emitIf(!!data, 'cart:updated', data);
+    this.events.emit('cart:loading', false);
+
     return { data, error };
   }
 
@@ -66,13 +80,20 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
+    this.events.emit('cart:loading', true);
+    this.events.emit('cart:request:start');
+
     const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
 
-    super.cartChanged(data);
+    this.events.emitIf(!!data, 'cart:request:success');
+    this.events.emitIf(!!error, 'cart:request:error', { error });
+    this.events.emitIf(!!data, 'cart:updated', data);
+    this.events.emit('cart:loading', false);
+
     return { data, error };
   }
 
@@ -86,13 +107,20 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
+    this.events.emit('cart:loading', true);
+    this.events.emit('cart:request:start');
+
     const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
 
-    super.cartChanged(data);
+    this.events.emitIf(!!data, 'cart:request:success');
+    this.events.emitIf(!!error, 'cart:request:error', { error });
+    this.events.emitIf(!!data, 'cart:updated', data);
+    this.events.emit('cart:loading', false);
+
     return { data, error };
   }
 
@@ -106,13 +134,20 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
+    this.events.emit('cart:loading', true);
+    this.events.emit('cart:request:start');
+
     const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
 
-    super.cartChanged(data);
+    this.events.emitIf(!!data, 'cart:request:success');
+    this.events.emitIf(!!error, 'cart:request:error', { error });
+    this.events.emitIf(!!data, 'cart:updated', data);
+    this.events.emit('cart:loading', false);
+
     return { data, error };
   }
 
@@ -126,13 +161,20 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
+    this.events.emit('cart:loading', true);
+    this.events.emit('cart:request:start');
+
     const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
 
-    super.cartChanged(data);
+    this.events.emitIf(!!data, 'cart:request:success');
+    this.events.emitIf(!!error, 'cart:request:error', { error });
+    this.events.emitIf(!!data, 'cart:updated', data);
+    this.events.emit('cart:loading', false);
+
     return { data, error };
   }
 
@@ -148,13 +190,20 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
+    this.events.emit('cart:loading', true);
+    this.events.emit('cart:request:start');
+
     const { data, error } = await doPost<CartResponse, CartCustomerRequest>(
       url,
       body,
       options
     );
 
-    super.cartChanged(data);
+    this.events.emitIf(!!data, 'cart:request:success');
+    this.events.emitIf(!!error, 'cart:request:error', { error });
+    this.events.emitIf(!!data, 'cart:updated', data);
+    this.events.emit('cart:loading', false);
+
     return { data, error };
   }
 
@@ -172,13 +221,20 @@ export class CartService extends BaseService {
 
     const options: AxiosRequestConfig = {};
 
+    this.events.emit('cart:loading', true);
+    this.events.emit('cart:request:start');
+
     const { data, error } = await doPost<CartResponse, unknown>(
       url,
       undefined,
       options
     );
 
-    super.cartChanged(data);
+    this.events.emitIf(!!data, 'cart:request:success');
+    this.events.emitIf(!!error, 'cart:request:error', { error });
+    this.events.emitIf(!!data, 'cart:updated', data);
+    this.events.emit('cart:loading', false);
+
     return { data, error };
   }
 }

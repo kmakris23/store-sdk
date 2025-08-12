@@ -1,7 +1,7 @@
-import { StoreSdkEventEmitter } from '../sdk.event.emitter.js';
-import { CartResponse } from '../types/store/index.js';
 import { StoreSdkState } from '../types/sdk.state.js';
 import { StoreSdkConfig } from '../configs/sdk.config.js';
+import { EventBus } from '../bus/event.bus.js';
+import { StoreSdkEvent } from '../sdk.events.js';
 
 export class BaseService {
   protected NONCE_HEADER = 'nonce';
@@ -9,25 +9,15 @@ export class BaseService {
 
   protected readonly state: StoreSdkState;
   protected readonly config: StoreSdkConfig;
-  protected readonly events: StoreSdkEventEmitter;
+  protected readonly events: EventBus<StoreSdkEvent>;
 
   constructor(
     state: StoreSdkState,
     config: StoreSdkConfig,
-    events: StoreSdkEventEmitter
+    events: EventBus<StoreSdkEvent>
   ) {
     this.state = state;
     this.events = events;
     this.config = config;
-  }
-
-  protected cartChanged(newCart?: CartResponse) {
-    const cartEqual =
-      JSON.stringify(newCart) === JSON.stringify(this.state.cart);
-
-    if (!cartEqual) {
-      this.state.cart = newCart;
-      this.events.emit('cartChanged', newCart);
-    }
   }
 }

@@ -47,7 +47,15 @@ export class CartCouponService extends BaseService {
    */
   async add(code: string): Promise<ApiResult<CartCouponResponse>> {
     const url = `/${this.endpoint}?code=${code}`;
+
+    this.events.emit('cart:loading', true);
+    this.events.emit('cart:request:start');
+
     const { data, error } = await doPost<CartCouponResponse, unknown>(url);
+
+    this.events.emitIf(!!data, 'cart:request:success');
+    this.events.emitIf(!!error, 'cart:request:error', error);
+    this.events.emit('cart:loading', false);
 
     return { data, error };
   }
@@ -59,7 +67,15 @@ export class CartCouponService extends BaseService {
    */
   async delete(code: string): Promise<ApiResult<unknown>> {
     const url = `/${this.endpoint}/${code}`;
+
+    this.events.emit('cart:loading', true);
+    this.events.emit('cart:request:start');
+
     const { data, error } = await doDelete<unknown>(url);
+
+    this.events.emitIf(!!data, 'cart:request:success');
+    this.events.emitIf(!!error, 'cart:request:error', error);
+    this.events.emit('cart:loading', false);
 
     return { data, error };
   }
@@ -70,7 +86,15 @@ export class CartCouponService extends BaseService {
    */
   async clear(): Promise<ApiResult<CartCouponResponse[]>> {
     const url = `/${this.endpoint}`;
+
+    this.events.emit('cart:loading', true);
+    this.events.emit('cart:request:start');
+
     const { data, error } = await doDelete<CartCouponResponse[]>(url);
+
+    this.events.emitIf(!!data, 'cart:request:success');
+    this.events.emitIf(!!error, 'cart:request:error', error);
+    this.events.emit('cart:loading', false);
 
     return { data, error };
   }

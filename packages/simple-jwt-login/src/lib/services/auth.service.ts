@@ -31,14 +31,19 @@ export class AuthService {
     const namespace = this.config.routeNamespace ?? DEFAULT_ROUTE_NAMESPACE;
     const endpoint = `/wp-json/${namespace}/auth`;
 
+    StoreSdk.events.emit('auth:login:start');
+
     const { data, error } = await doPost<
       SimpleJwtApiResult<AuthResponse>,
       AuthRequest
     >(endpoint, body, options);
 
+    StoreSdk.events.emitIf(!!data, 'auth:login:success');
+    StoreSdk.events.emitIf(!!error, 'auth:login:error', error);
+
     if (this.config.setToken) {
       StoreSdk.state.authenticated = true;
-      StoreSdk.events.emit('authenticatedChanged', true);
+      StoreSdk.events.emit('auth:changed', true);
 
       this.config.setToken(data?.data.jwt ?? '');
     }
@@ -53,10 +58,15 @@ export class AuthService {
     const namespace = this.config.routeNamespace ?? DEFAULT_ROUTE_NAMESPACE;
     const endpoint = `/wp-json/${namespace}/auth/refresh`;
 
+    StoreSdk.events.emit('auth:token:refresh:start');
+
     const { data, error } = await doPost<
       SimpleJwtApiResult<AuthResponse>,
       AuthRefreshRequest
     >(endpoint, body, options);
+
+    StoreSdk.events.emitIf(!!data, 'auth:token:refresh:success');
+    StoreSdk.events.emitIf(!!error, 'auth:token:refresh:error', error);
 
     if (this.config.setToken) {
       this.config.setToken(data?.data.jwt ?? '');
@@ -72,10 +82,15 @@ export class AuthService {
     const namespace = this.config.routeNamespace ?? DEFAULT_ROUTE_NAMESPACE;
     const endpoint = `/wp-json/${namespace}/auth/revoke`;
 
+    StoreSdk.events.emit('auth:token:revoke:start');
+
     const { data, error } = await doPost<
       SimpleJwtApiResult<AuthRevokeResponse>,
       AuthRevokeRequest
     >(endpoint, body, options);
+
+    StoreSdk.events.emitIf(!!data, 'auth:token:revoke:success');
+    StoreSdk.events.emitIf(!!error, 'auth:token:revoke:error', error);
 
     if (!error) {
       if (this.config.clearToken) {
@@ -83,7 +98,7 @@ export class AuthService {
       }
 
       StoreSdk.state.authenticated = false;
-      StoreSdk.events.emit('authenticatedChanged', false);
+      StoreSdk.events.emit('auth:changed', false);
     }
 
     return { data: data?.data, error };

@@ -2,12 +2,13 @@ import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { StoreSdkConfig } from '../configs/sdk.config.js';
 import { httpClient } from '../../index.js';
 import { StoreSdkState } from '../types/sdk.state.js';
-import { StoreSdkEventEmitter } from '../sdk.event.emitter.js';
+import { EventBus } from '../bus/event.bus.js';
+import { StoreSdkEvent } from '../sdk.events.js';
 
 export const addNonceInterceptors = (
   config: StoreSdkConfig,
   state: StoreSdkState,
-  events: StoreSdkEventEmitter
+  events: EventBus<StoreSdkEvent>
 ) => {
   httpClient.default.interceptors.request.use(
     async (axiosConfig: InternalAxiosRequestConfig) => {
@@ -38,7 +39,7 @@ export const addNonceInterceptors = (
     if (config.nonce?.setToken) {
       await config.nonce?.setToken(nonce);
     }
-    events.emit('nonceChanged', nonce);
+    events.emit('nonce:changed', nonce);
     return response;
   });
 };

@@ -1,12 +1,12 @@
 import { StoreSdkConfig } from './configs/sdk.config.js';
 import { StoreSdkState } from './types/sdk.state.js';
-import { StoreSdkEventEmitter } from './sdk.event.emitter.js';
 import { createHttpClient } from './services/api.js';
 import { addCartTokenInterceptors } from './interceptors/cart.token.interceptor.js';
 import { addNonceInterceptors } from './interceptors/nonce.interceptor.js';
-import { addCartLoadingInterceptors } from './interceptors/cart.loading.interceptor.js';
 import { addSimpleJwtLoginInterceptors } from './interceptors/simple.jwt.login.interceptors.js';
 import { StoreService } from './services/store.service.js';
+import { StoreSdkEvent } from './sdk.events.js';
+import { EventBus } from './bus/event.bus.js';
 
 export class Sdk {
   state: StoreSdkState = {};
@@ -15,7 +15,7 @@ export class Sdk {
 
   private _initialized = false;
 
-  events = new StoreSdkEventEmitter();
+  events = new EventBus<StoreSdkEvent>();
 
   public async init(config: StoreSdkConfig): Promise<void> {
     if (this._initialized) return;
@@ -28,12 +28,11 @@ export class Sdk {
 
     addNonceInterceptors(config, this.state, this.events);
     addCartTokenInterceptors(config, this.state, this.events);
-    addCartLoadingInterceptors(this.events);
 
     const allPlugins = [...(config.plugins ?? [])];
     for (const plugin of allPlugins) {
       if (plugin.id === 'simple-jwt-login') {
-        addSimpleJwtLoginInterceptors(config, plugin.getConfig(), this._store);
+        addSimpleJwtLoginInterceptors(config, plugin.getConfig());
       }
 
       plugin.init();

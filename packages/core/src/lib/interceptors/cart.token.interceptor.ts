@@ -2,12 +2,13 @@ import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { StoreSdkConfig } from '../configs/sdk.config.js';
 import { httpClient } from '../../index.js';
 import { StoreSdkState } from '../types/sdk.state.js';
-import { StoreSdkEventEmitter } from '../sdk.event.emitter.js';
+import { EventBus } from '../bus/event.bus.js';
+import { StoreSdkEvent } from '../sdk.events.js';
 
 export const addCartTokenInterceptors = (
   config: StoreSdkConfig,
   state: StoreSdkState,
-  events: StoreSdkEventEmitter
+  events: EventBus<StoreSdkEvent>
 ) => {
   // Add interceptor for cart token
   httpClient.default.interceptors.request.use(
@@ -39,7 +40,7 @@ export const addCartTokenInterceptors = (
     if (config.cartToken?.setToken) {
       await config.cartToken?.setToken(cartToken);
     }
-    events.emit('cartTokenChanged', cartToken);
+    events.emit('cart:token:changed', cartToken);
     return response;
   });
 };
