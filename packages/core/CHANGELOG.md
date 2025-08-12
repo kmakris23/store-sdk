@@ -1,3 +1,22 @@
+# 1.0.0 (2025-08-12)
+
+### 🚀 Features
+
+- **simple-jwt-login:** add `revokeTokenBeforeLogin` to automatically revoke token before each new login ([079128e](https://github.com/kmakris23/store-sdk/commit/079128e))
+- **simple-jwt-login:** add `fetchCartOnLogin` to automatically fetch cart after login and automatically remove `nonce` and `cartToken` on each logout ([fb6e964](https://github.com/kmakris23/store-sdk/commit/fb6e964))
+- ⚠️  new event bus implementation ([53b0207](https://github.com/kmakris23/store-sdk/commit/53b0207))
+- ⚠️  **core:** move store api services under `store` property ([2978784](https://github.com/kmakris23/store-sdk/commit/2978784))
+- **core:** add specific `simple-jwt-login` plugin interceptor ([7a5d061](https://github.com/kmakris23/store-sdk/commit/7a5d061))
+
+### 🩹 Fixes
+
+- **core:** use `simple-jwt-login` config for interceptor ([c57ed92](https://github.com/kmakris23/store-sdk/commit/c57ed92))
+
+### ⚠️  Breaking Changes
+
+- New event bus has been implemented replacing the previous event emitter.
+- **core:** Store API services have been moved under `store` property in `StoreSdk`.
+
 ## 0.9.1 (2025-08-06)
 
 This was a version bump only for core to align it with other projects, there were no code changes.

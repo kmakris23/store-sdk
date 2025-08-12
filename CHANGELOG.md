@@ -1,3 +1,28 @@
+# 1.0.0 (2025-08-12)
+
+### 🚀 Features
+
+- ⚠️  new event bus implementation ([53b0207](https://github.com/kmakris23/store-sdk/commit/53b0207))
+- **core:** add clear token function for `nonce` and `cartToken` ([da7f519](https://github.com/kmakris23/store-sdk/commit/da7f519))
+- **core:** add specific `simple-jwt-login` plugin interceptor ([7a5d061](https://github.com/kmakris23/store-sdk/commit/7a5d061))
+- ⚠️  **core:** move store api services under `store` property ([2978784](https://github.com/kmakris23/store-sdk/commit/2978784))
+- **simple-jwt-login:** automatically call `clearToken()` on token revoke success ([33c35c3](https://github.com/kmakris23/store-sdk/commit/33c35c3))
+- **simple-jwt-login:** add `fetchCartOnLogin` to automatically fetch cart after login and automatically remove `nonce` and `cartToken` on each logout ([fb6e964](https://github.com/kmakris23/store-sdk/commit/fb6e964))
+- **simple-jwt-login:** add `revokeTokenBeforeLogin` to automatically revoke token before each new login ([079128e](https://github.com/kmakris23/store-sdk/commit/079128e))
+
+### 🩹 Fixes
+
+- **core:** use `simple-jwt-login` config for interceptor ([c57ed92](https://github.com/kmakris23/store-sdk/commit/c57ed92))
+
+### ⚠️  Breaking Changes
+
+- New event bus has been implemented replacing the previous event emitter.
+- **core:** Store API services have been moved under `store` property in `StoreSdk`.
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 0.9.1 (2025-08-06)
 
 ### 🩹 Fixes

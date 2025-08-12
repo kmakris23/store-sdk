@@ -1,3 +1,7 @@
+# 1.0.0 (2025-08-12)
+
+This was a version bump only for jwt-authentication-for-wp-rest-api to align it with other projects, there were no code changes.
+
 ## 0.9.1 (2025-08-06)
 
 This was a version bump only for jwt-authentication-for-wp-rest-api to align it with other projects, there were no code changes.
