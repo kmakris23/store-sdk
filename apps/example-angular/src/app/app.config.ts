@@ -13,6 +13,8 @@ import { environment } from '../environments/environment.development';
 import { useSimpleJwt } from '@store-sdk/simple-jwt-login';
 
 const useSimpleJwtPlugin = useSimpleJwt({
+  fetchCartOnLogin: true,
+  revokeTokenBeforeLogin: true,
   autoLoginUrl: environment.baseUrl,
   autoLoginRedirectUrl: `${environment.baseUrl}/checkout`,
   getToken: async () =>
@@ -45,6 +47,12 @@ export const appConfig: ApplicationConfig = {
           baseUrl: environment.baseUrl,
           nonce: {
             disabled: false,
+            clearToken: async () => {
+              const promise = Promise.resolve(
+                localStorage.removeItem('cart_nonce')
+              );
+              await promise;
+            },
             getToken: async () => {
               const key = localStorage.getItem('cart_nonce');
               const promise = Promise.resolve(key);
@@ -61,6 +69,12 @@ export const appConfig: ApplicationConfig = {
           plugins: [useSimpleJwtPlugin],
           cartToken: {
             disabled: false,
+            clearToken: async () => {
+              const promise = Promise.resolve(
+                localStorage.removeItem('cart_token')
+              );
+              await promise;
+            },
             getToken: async () => {
               const key = localStorage.getItem('cart_token');
               const promise = Promise.resolve(key);
