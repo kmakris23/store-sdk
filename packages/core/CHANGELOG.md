@@ -1,3 +1,10 @@
+## 1.0.1 (2025-08-13)
+
+### 🩹 Fixes
+
+- **core:** remove `simple-jwt-login` interceptor ([4104c9a](https://github.com/kmakris23/store-sdk/commit/4104c9a))
+- **core:** always clear `nonce` and `cartToken` when auth change to `false` ([7dc98cd](https://github.com/kmakris23/store-sdk/commit/7dc98cd))
+
 # 1.0.0 (2025-08-12)
 
 ### 🚀 Features
