@@ -35,20 +35,22 @@ export class Sdk {
       if (plugin.id === 'simple-jwt-login') {
         const simpleJwtLoginConfig = plugin.getConfig() as SimpleJwtLoginConfig;
         addSimpleJwtLoginInterceptors(config, simpleJwtLoginConfig);
-        if (simpleJwtLoginConfig.fetchCartOnLogin) {
-          this.events.on('auth:changed', async (authenticated) => {
+        this.events.on('auth:changed', async (authenticated) => {
+          if (simpleJwtLoginConfig.fetchCartOnLogin) {
             if (authenticated) {
               await this._store.cart.get();
-            } else {
-              if (config.nonce?.clearToken) {
-                await config.nonce?.clearToken();
-              }
-              if (config.cartToken?.clearToken) {
-                await config.cartToken?.clearToken();
-              }
             }
-          });
-        }
+          }
+
+          if (!authenticated) {
+            if (config.nonce?.clearToken) {
+              await config.nonce?.clearToken();
+            }
+            if (config.cartToken?.clearToken) {
+              await config.cartToken?.clearToken();
+            }
+          }
+        });
       }
 
       plugin.init();
