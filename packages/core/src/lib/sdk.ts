@@ -3,7 +3,6 @@ import { StoreSdkState } from './types/sdk.state.js';
 import { createHttpClient } from './services/api.js';
 import { addCartTokenInterceptors } from './interceptors/cart.token.interceptor.js';
 import { addNonceInterceptors } from './interceptors/nonce.interceptor.js';
-import { addSimpleJwtLoginInterceptors } from './interceptors/simple.jwt.login.interceptors.js';
 import { StoreService } from './services/store.service.js';
 import { StoreSdkEvent } from './sdk.events.js';
 import { EventBus } from './bus/event.bus.js';
@@ -34,7 +33,6 @@ export class Sdk {
     for (const plugin of allPlugins) {
       if (plugin.id === 'simple-jwt-login') {
         const simpleJwtLoginConfig = plugin.getConfig() as SimpleJwtLoginConfig;
-        addSimpleJwtLoginInterceptors(config, simpleJwtLoginConfig);
         this.events.on('auth:changed', async (authenticated) => {
           if (simpleJwtLoginConfig.fetchCartOnLogin) {
             if (authenticated) {
