@@ -7,6 +7,7 @@
     "apps/*"
   ],
   "scripts": {
+    "serve:angular": "nx serve example-angular",
     "dev:rebuild": "rimraf .angular && nx reset && npx nx run-many -t build"
   },
   "devDependencies": {
