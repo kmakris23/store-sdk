@@ -1,24 +1,24 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
-let client: AxiosInstance | null = null;
+let _http: AxiosInstance | null = null;
 
 export function createHttpClient(config: AxiosRequestConfig): AxiosInstance {
-  if (!client) {
-    client = axios.create(config);
-  }
-  return client;
+  if (_http) return _http; // idempotent
+  _http = axios.create(config);
+  return _http;
 }
 
-// Proxy makes sure it's safe and throws if used before init
-const exportedHttpClient = new Proxy({} as AxiosInstance, {
-  get(_target, prop) {
-    if (!client) {
-      throw new Error(
-        'httpClient not initialized. Call createHttpClient(config) first.'
-      );
-    }
-    return (client as any)[prop];
+export function getHttpClient(): AxiosInstance {
+  if (!_http) {
+    throw new Error(
+      'httpClient not initialized. Call createHttpClient(config) first.'
+    );
+  }
+  return _http;
+}
+
+export const httpClient: AxiosInstance = new Proxy({} as AxiosInstance, {
+  get(_t, prop) {
+    return (getHttpClient() as any)[prop];
   },
 });
-
-export const httpClient = exportedHttpClient;
