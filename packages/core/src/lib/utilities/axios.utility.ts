@@ -43,6 +43,14 @@ export const doDelete = async <T>(
   });
 };
 
+export const doHead = async <T>(url: string, options?: AxiosRequestConfig) => {
+  return await doRequest<T>(httpClient, url, {
+    ...options,
+    method: 'head',
+    validateStatus: () => true,
+  });
+};
+
 export const doRequest = async <T>(
   instance: AxiosInstance,
   url: string,
