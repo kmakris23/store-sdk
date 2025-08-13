@@ -2,7 +2,7 @@ import { httpClient, SimpleJwtLoginConfig } from '@store-sdk/core';
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
 export const addTokenInterceptor = (config: SimpleJwtLoginConfig) => {
-  httpClient.default.interceptors.request.use(
+  httpClient.interceptors.request.use(
     async (axiosConfig: InternalAxiosRequestConfig) => {
       if (config.getToken) {
         const bearerToken = await config.getToken();

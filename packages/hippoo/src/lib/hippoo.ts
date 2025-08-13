@@ -26,7 +26,7 @@ class HippooPlugin implements StoreSdkPlugin<HippoConfig> {
   }
   init(): void {
     this._hippoo = new HippoService(this._config);
-    httpClient.default.interceptors.request.use(
+    httpClient.interceptors.request.use(
       async (axiosConfig: InternalAxiosRequestConfig) => {
         if (this._config.getToken) {
           const bearerToken = await this._config.getToken();

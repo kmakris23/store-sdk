@@ -11,7 +11,7 @@ export const addCartTokenInterceptors = (
   events: EventBus<StoreSdkEvent>
 ) => {
   // Add interceptor for cart token
-  httpClient.default.interceptors.request.use(
+  httpClient.interceptors.request.use(
     async (axiosConfig: InternalAxiosRequestConfig) => {
       if (config.cartToken?.disabled) return axiosConfig;
 
@@ -29,7 +29,7 @@ export const addCartTokenInterceptors = (
     }
   );
 
-  httpClient.default.interceptors.response.use(async (response) => {
+  httpClient.interceptors.response.use(async (response) => {
     if (config.cartToken?.disabled) return response;
 
     const headers = response.headers;

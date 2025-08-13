@@ -6,7 +6,7 @@ export const addRefreshTokenInterceptor = (
   config: SimpleJwtLoginConfig,
   auth: AuthService
 ) => {
-  httpClient.default.interceptors.response.use(
+  httpClient.interceptors.response.use(
     (response) => response,
     async (error) => {
       const originalRequest = error.config;

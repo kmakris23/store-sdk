@@ -10,7 +10,7 @@ export const addNonceInterceptors = (
   state: StoreSdkState,
   events: EventBus<StoreSdkEvent>
 ) => {
-  httpClient.default.interceptors.request.use(
+  httpClient.interceptors.request.use(
     async (axiosConfig: InternalAxiosRequestConfig) => {
       if (config.nonce?.disabled) return axiosConfig;
 
@@ -28,7 +28,7 @@ export const addNonceInterceptors = (
     }
   );
 
-  httpClient.default.interceptors.response.use(async (response) => {
+  httpClient.interceptors.response.use(async (response) => {
     if (config.nonce?.disabled) return response;
 
     const headers = response.headers;

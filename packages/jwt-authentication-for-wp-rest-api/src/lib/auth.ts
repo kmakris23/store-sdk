@@ -27,7 +27,7 @@ class AuthPlugin implements StoreSdkPlugin<AuthConfig> {
 
   init(): void {
     this._auth = new AuthService(this._config);
-    httpClient.default.interceptors.request.use(
+    httpClient.interceptors.request.use(
       async (axiosConfig: InternalAxiosRequestConfig) => {
         if (this._config.getToken) {
           const bearerToken = await this._config.getToken();

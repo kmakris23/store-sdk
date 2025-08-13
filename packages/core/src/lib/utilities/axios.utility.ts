@@ -1,6 +1,6 @@
 import { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ApiError, AxiosApiResult } from '../types/api.js';
-import httpClient from '../services/api.js';
+import { httpClient } from '../services/api.js';
 
 export const doGet = async <T>(url: string, options?: AxiosRequestConfig) => {
   return await doRequest<T>(httpClient, url, {

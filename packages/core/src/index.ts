@@ -9,7 +9,7 @@ export * from './lib/configs/index.js';
 export { isJwtExpired, getJwtExpiration } from './lib/utilities/jwt.utility.js';
 
 // Common
-export * as httpClient from './lib/services/api.js';
+export { httpClient, createHttpClient } from './lib/services/api.js';
 export * from './lib/configs/sdk.config.js';
 export * from './lib/types/api.js';
 export * from './lib/plugins/index.js';
