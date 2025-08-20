@@ -17,7 +17,7 @@ declare module '@store-sdk/core' {
     simpleJwt: {
       auth: AuthService;
       users: UserService;
-      getAutoLoginUrl: () => Promise<string>;
+      getAutoLoginUrl: (redirectUrl?: string) => Promise<string>;
     };
   }
 }
