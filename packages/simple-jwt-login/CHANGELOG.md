@@ -1,3 +1,9 @@
+## 1.1.1 (2025-08-20)
+
+### 🩹 Fixes
+
+- update `simpleJwt` interface ([65a9c82](https://github.com/kmakris23/store-sdk/commit/65a9c82))
+
 ## 1.1.0 (2025-08-20)
 
 ### 🚀 Features

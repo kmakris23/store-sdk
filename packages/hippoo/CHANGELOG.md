@@ -1,3 +1,7 @@
+## 1.1.1 (2025-08-20)
+
+This was a version bump only for hippoo to align it with other projects, there were no code changes.
+
 ## 1.1.0 (2025-08-20)
 
 This was a version bump only for hippoo to align it with other projects, there were no code changes.
