@@ -1,3 +1,13 @@
+## 1.1.0 (2025-08-20)
+
+### 🚀 Features
+
+- **simple-jwt-login:** add `redirectUrl` optional parameter to `getAutoLoginUrl` method ([5aa0a47](https://github.com/kmakris23/store-sdk/commit/5aa0a47))
+
+### ❤️ Thank You
+
+- Kostas Makris
+
 ## 1.0.1 (2025-08-13)
 
 ### 🩹 Fixes
