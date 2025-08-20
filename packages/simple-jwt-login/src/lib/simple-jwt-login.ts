@@ -68,12 +68,12 @@ class SimpleJwtPlugin implements StoreSdkPlugin<SimpleJwtLoginConfig> {
     const simpleJwt = {
       auth: this._auth,
       users: this._users,
-      getAutoLoginUrl: async () => {
+      getAutoLoginUrl: async (redirectUrl?: string) => {
         const jwt = await this._config.getToken?.();
 
         const params = qs.stringify({
           JWT: jwt,
-          redirectUrl: this._config.autoLoginRedirectUrl,
+          redirectUrl: redirectUrl ?? this._config.autoLoginRedirectUrl,
         });
 
         const namespace =
