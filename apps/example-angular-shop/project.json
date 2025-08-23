@@ -1,0 +1,82 @@
+{
+  "name": "example-angular-shop",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/example-angular-shop/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/example-angular-shop",
+        "browser": "apps/example-angular-shop/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/example-angular-shop/tsconfig.app.json",
+        "assets": [
+          { "glob": "**/*", "input": "apps/example-angular-shop/public" }
+        ],
+        "styles": ["apps/example-angular-shop/src/styles.css"]
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/example-angular-shop/src/environments/environment.ts",
+              "with": "apps/example-angular-shop/src/environments/environment.development.ts"
+            }
+          ]
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "configurations": {
+        "production": {
+          "buildTarget": "example-angular-shop:build:production"
+        },
+        "development": {
+          "buildTarget": "example-angular-shop:build:development"
+        }
+      },
+      "options": { "proxyConfig": "proxy.conf.json" },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular/build:extract-i18n",
+      "options": { "buildTarget": "example-angular-shop:build" }
+    },
+    "lint": { "executor": "@nx/eslint:lint" },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "example-angular-shop:build",
+        "port": 4301,
+        "staticFilePath": "dist/apps/example-angular-shop/browser",
+        "spa": true
+      }
+    }
+  }
+}

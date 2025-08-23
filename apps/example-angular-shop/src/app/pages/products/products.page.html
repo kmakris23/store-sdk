@@ -1,0 +1,78 @@
+<h1 class="text-2xl font-semibold mb-4">Products</h1>
+<div
+  class="flex flex-wrap gap-2 mb-4"
+  *ngIf="categories().length; else catLoading"
+>
+  <button
+    type="button"
+    (click)="selectCategory(null)"
+    class="px-3 py-1 rounded-full border text-xs font-medium transition bg-slate-100 border-slate-200 hover:bg-slate-200"
+    [class.!bg-blue-600]="!selectedCategory()"
+    [class.!text-white]="!selectedCategory()"
+  >
+    All
+  </button>
+  <button
+    type="button"
+    *ngFor="let c of categories()"
+    (click)="selectCategory(c)"
+    class="px-3 py-1 rounded-full border text-xs font-medium transition bg-slate-100 border-slate-200 hover:bg-slate-200 flex items-center gap-1"
+    [class.!bg-blue-600]="selectedCategory()===c.id"
+    [class.!text-white]="selectedCategory()===c.id"
+  >
+    <span>{{ c.name }}</span>
+    <small class="text-[10px] bg-black/15 rounded px-1" *ngIf="c.count"
+      >{{ c.count }}</small
+    >
+  </button>
+</div>
+<ng-template #catLoading>
+  <p class="text-xs text-slate-500 mb-4">Loading categories...</p>
+</ng-template>
+<div
+  *ngIf="loading()"
+  class="grid gap-4 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]"
+>
+  <div
+    class="h-64 rounded bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 animate-pulse"
+    *ngFor="let i of skeleton"
+  ></div>
+</div>
+<div
+  class="grid gap-4 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]"
+  *ngIf="!loading()"
+>
+  <article
+    class="border rounded-lg p-3 bg-white flex flex-col relative hover:shadow transition cursor-pointer"
+    *ngFor="let p of products()"
+    [routerLink]="['/products', p.id]"
+  >
+    <div
+      class="aspect-square flex items-center justify-center bg-slate-100 rounded mb-2 relative overflow-hidden"
+      *ngIf="p.images as imgs; else noImg"
+    >
+      <img
+        [src]="imgs[0].src"
+        [alt]="imgs[0].alt || p.name"
+        loading="lazy"
+        class="max-w-full max-h-full object-contain"
+      />
+      <span
+        class="absolute top-1 left-1 bg-red-600 text-white text-[10px] px-1.5 py-0.5 rounded"
+        *ngIf="p.on_sale"
+        >SALE</span
+      >
+    </div>
+    <ng-template #noImg>
+      <div
+        class="aspect-square flex items-center justify-center bg-slate-100 rounded mb-2 text-xs text-slate-500"
+      >
+        No Image
+      </div>
+    </ng-template>
+    <h2 class="text-sm font-medium mb-1 flex-1">{{ p.name }}</h2>
+    <p class="text-sm font-semibold text-slate-800 m-0">
+      {{ p.prices?.price | price }}
+    </p>
+  </article>
+</div>

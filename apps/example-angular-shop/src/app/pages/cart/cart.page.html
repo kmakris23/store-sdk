@@ -1,0 +1,38 @@
+<h1 class="text-2xl font-semibold mb-4">Cart</h1>
+<div *ngIf="loading()" class="text-sm text-slate-500">Loading cart...</div>
+<div *ngIf="!loading() && cart()">
+  <table
+    *ngIf="cart()?.items?.length; else emptyTpl"
+    class="w-full border-collapse bg-white text-sm rounded shadow"
+  >
+    <thead class="bg-slate-50">
+      <tr>
+        <th class="border p-2 text-left">Item</th>
+        <th class="border p-2 text-left w-24">Qty</th>
+        <th class="border p-2 text-left w-32">Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of cart()?.items" class="hover:bg-slate-50">
+        <td class="border p-2">{{ item.name }}</td>
+        <td class="border p-2">{{ item.quantity }}</td>
+        <td class="border p-2">{{ item.prices?.price | price }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td class="border p-2 font-semibold" colspan="2">Total Items</td>
+        <td class="border p-2 font-semibold">{{ totalItems() }}</td>
+      </tr>
+    </tfoot>
+  </table>
+  <ng-template #emptyTpl>
+    <p class="text-sm text-slate-500">Cart is empty</p>
+  </ng-template>
+</div>
+<button
+  class="mt-4 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded text-sm font-medium"
+  (click)="refresh()"
+>
+  Refresh
+</button>
