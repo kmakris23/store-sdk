@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeEach, vi, afterEach, type MockedFunction } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  vi,
+  afterEach,
+  type MockedFunction,
+} from 'vitest';
 import { ProductBrandService } from '../../../services/store/product.brand.service.js';
 import { ProductBrandResponse } from '../../../types/store/index.js';
 import { Paginated } from '../../../types/store/paginated.js';
@@ -39,9 +47,14 @@ describe('ProductBrandService', () => {
 
   it('lists brands and parses headers', async () => {
     const data = [brand(1, 'Nike'), brand(2, 'Adidas')];
-    mockedGet.mockResolvedValue({ data, headers: { 'x-wp-total': 2, 'x-wp-totalpages': 1 } });
+    mockedGet.mockResolvedValue({
+      data,
+      headers: { 'x-wp-total': 2, 'x-wp-totalpages': 1 },
+    });
     const result = await service.list();
-    expect(mockedGet).toHaveBeenCalledWith('/wp-json/wc/store/v1/products/brands?');
+    expect(mockedGet).toHaveBeenCalledWith(
+      '/wp-json/wc/store/v1/products/brands?'
+    );
     expect(result.data).toEqual(data);
     expect(result.total).toBe(2);
   });
@@ -60,12 +73,19 @@ describe('ProductBrandService', () => {
     const data = brand(5, 'Reebok');
     mockedGet.mockResolvedValue({ data });
     const result = await service.single(5);
-    expect(mockedGet).toHaveBeenCalledWith('/wp-json/wc/store/v1/products/brands/5');
+    expect(mockedGet).toHaveBeenCalledWith(
+      '/wp-json/wc/store/v1/products/brands/5'
+    );
     expect(result.data).toEqual(data);
   });
 
   it('single brand error path', async () => {
-    const error: ApiError = { code: 'not_found', message: 'Missing', data: { status: 404 }, details: {} };
+    const error: ApiError = {
+      code: 'not_found',
+      message: 'Missing',
+      data: { status: 404 },
+      details: {},
+    };
     mockedGet.mockResolvedValue({ error });
     const result = await service.single(9999);
     expect(result.error).toEqual(error);

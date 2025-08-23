@@ -1,6 +1,17 @@
-import { describe, it, expect, beforeEach, vi, afterEach, type MockedFunction } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  vi,
+  afterEach,
+  type MockedFunction,
+} from 'vitest';
 import { ProductCollectionDataService } from '../../../services/store/product.collection.data.service.js';
-import { ProductCollectionDataResponse, ProductCollectionDataRequest } from '../../../types/store/index.js';
+import {
+  ProductCollectionDataResponse,
+  ProductCollectionDataRequest,
+} from '../../../types/store/index.js';
 import { StoreSdkConfig } from '../../../configs/sdk.config.js';
 import { StoreSdkState } from '../../../types/sdk.state.js';
 import { EventBus } from '../../../bus/event.bus.js';
@@ -22,12 +33,12 @@ describe('ProductCollectionDataService', () => {
       min_price: '0',
       max_price: '100',
       currency_code: 'USD',
-  currency_decimal_separator: '.',
-  currency_minor_unit: 2,
-  currency_prefix: '$',
-  currency_suffix: '',
-  currency_symbol: '$',
-  currency_thousand_separator: ',',
+      currency_decimal_separator: '.',
+      currency_minor_unit: 2,
+      currency_prefix: '$',
+      currency_suffix: '',
+      currency_symbol: '$',
+      currency_thousand_separator: ',',
     },
     attribute_counts: [],
     rating_counts: [],
@@ -44,7 +55,9 @@ describe('ProductCollectionDataService', () => {
   it('calculates collection data without params', async () => {
     mockedGet.mockResolvedValue({ data: response() });
     const result = await service.calculate();
-    expect(mockedGet).toHaveBeenCalledWith('/wp-json/wc/store/v1/products/collection-data?');
+    expect(mockedGet).toHaveBeenCalledWith(
+      '/wp-json/wc/store/v1/products/collection-data?'
+    );
     expect(result.data?.price_range.min_price).toBe('0');
   });
 
@@ -61,7 +74,12 @@ describe('ProductCollectionDataService', () => {
   });
 
   it('handles error path', async () => {
-    const error: ApiError = { code: 'err', message: 'failure', data: { status:500 }, details: {} };
+    const error: ApiError = {
+      code: 'err',
+      message: 'failure',
+      data: { status: 500 },
+      details: {},
+    };
     mockedGet.mockResolvedValue({ error });
     const result = await service.calculate();
     expect(result.error).toEqual(error);

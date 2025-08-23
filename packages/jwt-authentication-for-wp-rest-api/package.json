@@ -34,7 +34,8 @@
     "name": "jwt-authentication-for-wp-rest-api"
   },
   "peerDependencies": {
-    "@store-sdk/core": "1.1.1"
+    "@store-sdk/core": "1.1.1",
+    "axios": "^1.11.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

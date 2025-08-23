@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeEach, vi, afterEach, type MockedFunction } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  vi,
+  afterEach,
+  type MockedFunction,
+} from 'vitest';
 import { CartCouponService } from '../../../services/store/cart.coupon.service.js';
 import { CartCouponResponse } from '../../../types/store/index.js';
 import { StoreSdkConfig } from '../../../configs/sdk.config.js';
@@ -52,27 +60,40 @@ describe('CartCouponService', () => {
 
   it('list() parses pagination headers and link header', async () => {
     const data = [coupon('SAVE10'), coupon('SAVE15')];
-    const linkHeader = '<https://example.com/wp-json/wc/store/v1/cart/coupons?page=2>; rel="next"';
-    mockedGet.mockResolvedValue({ data, headers: { link: linkHeader, 'x-wp-total': 2, 'x-wp-totalpages': 1 } });
+    const linkHeader =
+      '<https://example.com/wp-json/wc/store/v1/cart/coupons?page=2>; rel="next"';
+    mockedGet.mockResolvedValue({
+      data,
+      headers: { link: linkHeader, 'x-wp-total': 2, 'x-wp-totalpages': 1 },
+    });
 
     const result = await service.list();
 
     expect(mockedGet).toHaveBeenCalledWith('/wp-json/wc/store/v1/cart/coupons');
     expect(result.data).toEqual(data);
     expect(result.total).toBe(2);
-    expect(result.link).toEqual({ next: 'https://example.com/wp-json/wc/store/v1/cart/coupons?page=2' });
+    expect(result.link).toEqual({
+      next: 'https://example.com/wp-json/wc/store/v1/cart/coupons?page=2',
+    });
   });
 
   it('single() fetches coupon by code', async () => {
     const data = coupon('SAVE10');
     mockedGet.mockResolvedValue({ data });
     const result = await service.single('SAVE10');
-    expect(mockedGet).toHaveBeenCalledWith('/wp-json/wc/store/v1/cart/coupons/SAVE10');
+    expect(mockedGet).toHaveBeenCalledWith(
+      '/wp-json/wc/store/v1/cart/coupons/SAVE10'
+    );
     expect(result.data).toEqual(data);
   });
 
   it('single() returns error when not found', async () => {
-    const error: ApiError = { code: 'not_found', message: 'Missing', data: { status: 404 }, details: {} };
+    const error: ApiError = {
+      code: 'not_found',
+      message: 'Missing',
+      data: { status: 404 },
+      details: {},
+    };
     mockedGet.mockResolvedValue({ error });
     const result = await service.single('MISSING');
     expect(result.error).toEqual(error);
@@ -90,8 +111,10 @@ describe('CartCouponService', () => {
     const data = coupon('SAVE10');
     mockedPost.mockResolvedValue({ data });
     await service.add('SAVE10');
-    expect(mockedPost).toHaveBeenCalledWith('/wp-json/wc/store/v1/cart/coupons?code=SAVE10');
-    expect(emitted.map(e => e.event)).toEqual([
+    expect(mockedPost).toHaveBeenCalledWith(
+      '/wp-json/wc/store/v1/cart/coupons?code=SAVE10'
+    );
+    expect(emitted.map((e) => e.event)).toEqual([
       'cart:loading',
       'cart:request:start',
       'cart:request:success',
@@ -104,11 +127,16 @@ describe('CartCouponService', () => {
 
   it('add() emits error event on failure', async () => {
     const emitted = collectEvents();
-    const error: ApiError = { code: 'invalid_coupon', message: 'Bad', data: { status: 400 }, details: {} };
+    const error: ApiError = {
+      code: 'invalid_coupon',
+      message: 'Bad',
+      data: { status: 400 },
+      details: {},
+    };
     mockedPost.mockResolvedValue({ error });
     const result = await service.add('BAD');
     expect(result.error).toEqual(error);
-    expect(emitted.map(e => e.event)).toEqual([
+    expect(emitted.map((e) => e.event)).toEqual([
       'cart:loading',
       'cart:request:start',
       'cart:request:error',
@@ -120,8 +148,10 @@ describe('CartCouponService', () => {
     const emitted = collectEvents();
     mockedDelete.mockResolvedValue({ data: {} });
     await service.delete('SAVE10');
-    expect(mockedDelete).toHaveBeenCalledWith('/wp-json/wc/store/v1/cart/coupons/SAVE10');
-    expect(emitted.map(e => e.event)).toEqual([
+    expect(mockedDelete).toHaveBeenCalledWith(
+      '/wp-json/wc/store/v1/cart/coupons/SAVE10'
+    );
+    expect(emitted.map((e) => e.event)).toEqual([
       'cart:loading',
       'cart:request:start',
       'cart:request:success',
@@ -131,10 +161,15 @@ describe('CartCouponService', () => {
 
   it('delete() emits error events', async () => {
     const emitted = collectEvents();
-    const error: ApiError = { code: 'cannot_delete', message: 'Err', data: { status: 500 }, details: {} };
+    const error: ApiError = {
+      code: 'cannot_delete',
+      message: 'Err',
+      data: { status: 500 },
+      details: {},
+    };
     mockedDelete.mockResolvedValue({ error });
     await service.delete('SAVE10');
-    expect(emitted.map(e => e.event)).toEqual([
+    expect(emitted.map((e) => e.event)).toEqual([
       'cart:loading',
       'cart:request:start',
       'cart:request:error',
@@ -146,8 +181,10 @@ describe('CartCouponService', () => {
     const emitted = collectEvents();
     mockedDelete.mockResolvedValue({ data: [coupon('SAVE10')] });
     await service.clear();
-    expect(mockedDelete).toHaveBeenCalledWith('/wp-json/wc/store/v1/cart/coupons');
-    expect(emitted.map(e => e.event)).toEqual([
+    expect(mockedDelete).toHaveBeenCalledWith(
+      '/wp-json/wc/store/v1/cart/coupons'
+    );
+    expect(emitted.map((e) => e.event)).toEqual([
       'cart:loading',
       'cart:request:start',
       'cart:request:success',
@@ -157,10 +194,15 @@ describe('CartCouponService', () => {
 
   it('clear() emits error events', async () => {
     const emitted = collectEvents();
-    const error: ApiError = { code: 'cannot_clear', message: 'Err', data: { status: 500 }, details: {} };
+    const error: ApiError = {
+      code: 'cannot_clear',
+      message: 'Err',
+      data: { status: 500 },
+      details: {},
+    };
     mockedDelete.mockResolvedValue({ error });
     await service.clear();
-    expect(emitted.map(e => e.event)).toEqual([
+    expect(emitted.map((e) => e.event)).toEqual([
       'cart:loading',
       'cart:request:start',
       'cart:request:error',

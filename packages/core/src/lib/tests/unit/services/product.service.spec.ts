@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeEach, vi, afterEach, type MockedFunction } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  vi,
+  afterEach,
+  type MockedFunction,
+} from 'vitest';
 import { ProductService } from '../../../services/store/product.service.js';
 import { ProductResponse, ProductRequest } from '../../../types/store/index.js';
 import { EventBus } from '../../../bus/event.bus.js';
@@ -30,7 +38,9 @@ describe('ProductService', () => {
     vi.clearAllMocks();
   });
 
-  const minimalProduct = (overrides: Partial<ProductResponse>): ProductResponse => ({
+  const minimalProduct = (
+    overrides: Partial<ProductResponse>
+  ): ProductResponse => ({
     id: 1,
     name: 'Name',
     slug: 'slug',
@@ -67,7 +77,8 @@ describe('ProductService', () => {
 
   it('lists products without params and parses pagination headers', async () => {
     const mockData = [minimalProduct({ id: 1 }), minimalProduct({ id: 2 })];
-    const linkHeader = '<https://example.com/wp-json/wc/store/v1/products?page=2>; rel="next", <https://example.com/wp-json/wc/store/v1/products?page=10>; rel="up"';
+    const linkHeader =
+      '<https://example.com/wp-json/wc/store/v1/products?page=2>; rel="next", <https://example.com/wp-json/wc/store/v1/products?page=10>; rel="up"';
     mockedDoGet.mockResolvedValue({
       data: mockData,
       headers: { link: linkHeader, 'x-wp-total': 25, 'x-wp-totalpages': 5 },
@@ -76,12 +87,17 @@ describe('ProductService', () => {
     const result = await service.list();
 
     expect(doGet).toHaveBeenCalledTimes(1);
-    expect(doGet).toHaveBeenCalledWith(expect.stringContaining('/wp-json/wc/store/v1/products?'));
+    expect(doGet).toHaveBeenCalledWith(
+      expect.stringContaining('/wp-json/wc/store/v1/products?')
+    );
     expect(result.data).toEqual(mockData);
     // Headers surfaced (note: implementation returns raw header values as-is)
     expect(result.total).toBe(25);
     expect(result.totalPages).toBe(5);
-    expect(result.link).toEqual({ next: 'https://example.com/wp-json/wc/store/v1/products?page=2', up: 'https://example.com/wp-json/wc/store/v1/products?page=10' });
+    expect(result.link).toEqual({
+      next: 'https://example.com/wp-json/wc/store/v1/products?page=2',
+      up: 'https://example.com/wp-json/wc/store/v1/products?page=10',
+    });
   });
 
   it('serializes complex query params including arrays and ordering', async () => {
@@ -96,11 +112,11 @@ describe('ProductService', () => {
       per_page: 20,
     };
     const mockData = [minimalProduct({ id: 10 })];
-  mockedDoGet.mockResolvedValue({ data: mockData, headers: {} });
+    mockedDoGet.mockResolvedValue({ data: mockData, headers: {} });
 
     await service.list(params);
 
-  const calledUrl: string = mockedDoGet.mock.calls[0][0] as string;
+    const calledUrl: string = mockedDoGet.mock.calls[0][0] as string;
     expect(calledUrl).toContain('include[0]=10');
     expect(calledUrl).toContain('include[1]=11');
     expect(calledUrl).toContain('exclude[0]=5');
@@ -120,16 +136,20 @@ describe('ProductService', () => {
       per_page: 5,
     };
     const mockData = [minimalProduct({ id: 3 })];
-  mockedDoGet.mockResolvedValue({ data: mockData, headers: {} });
+    mockedDoGet.mockResolvedValue({ data: mockData, headers: {} });
 
     await service.list(params);
 
-  const calledUrl: string = mockedDoGet.mock.calls[0][0] as string;
+    const calledUrl: string = mockedDoGet.mock.calls[0][0] as string;
     // Ensure concatenated pieces exist (implementation currently concatenates without separators)
-  // Implementation concatenates onto uninitialized strings so we expect 'undefined_unstable_tax_' prefix currently.
-  // Current implementation builds a single query param 'unstable_tax' and 'unstable_tax_operator' whose value concatenates segments.
-  expect(calledUrl).toContain('unstable_tax=undefined_unstable_tax_term=term1_unstable_tax_group=g1');
-  expect(calledUrl).toContain('unstable_tax_operator=undefined_unstable_tax_term_operator=in');
+    // Implementation concatenates onto uninitialized strings so we expect 'undefined_unstable_tax_' prefix currently.
+    // Current implementation builds a single query param 'unstable_tax' and 'unstable_tax_operator' whose value concatenates segments.
+    expect(calledUrl).toContain(
+      'unstable_tax=undefined_unstable_tax_term=term1_unstable_tax_group=g1'
+    );
+    expect(calledUrl).toContain(
+      'unstable_tax_operator=undefined_unstable_tax_term_operator=in'
+    );
     // Side-effect: arrays cleared
     expect(params._unstable_tax_).toEqual([]);
     expect(params._unstable_tax_operator).toEqual([]);
@@ -137,17 +157,21 @@ describe('ProductService', () => {
 
   it('gets single product by id', async () => {
     const mock = minimalProduct({ id: 123 });
-  mockedDoGet.mockResolvedValue({ data: mock });
+    mockedDoGet.mockResolvedValue({ data: mock });
     const result = await service.single({ id: 123 });
-    expect(doGet).toHaveBeenCalledWith(expect.stringContaining('/wp-json/wc/store/v1/products/123'));
+    expect(doGet).toHaveBeenCalledWith(
+      expect.stringContaining('/wp-json/wc/store/v1/products/123')
+    );
     expect(result.data).toEqual(mock);
   });
 
   it('gets single product by slug', async () => {
     const mock = minimalProduct({ id: 456, slug: 'product-slug' });
-  mockedDoGet.mockResolvedValue({ data: mock });
+    mockedDoGet.mockResolvedValue({ data: mock });
     const result = await service.single({ slug: 'product-slug' });
-    expect(doGet).toHaveBeenCalledWith(expect.stringContaining('/wp-json/wc/store/v1/products/product-slug'));
+    expect(doGet).toHaveBeenCalledWith(
+      expect.stringContaining('/wp-json/wc/store/v1/products/product-slug')
+    );
     expect(result.data).toEqual(mock);
   });
 
@@ -158,7 +182,7 @@ describe('ProductService', () => {
       data: { status: 404 },
       details: {},
     };
-  mockedDoGet.mockResolvedValue({ data: undefined, error: apiError });
+    mockedDoGet.mockResolvedValue({ data: undefined, error: apiError });
     const result = await service.single({ id: 999 });
     expect(result.error).toEqual(apiError);
     expect(result.data).toBeUndefined();

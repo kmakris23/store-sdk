@@ -1,0 +1,175 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
+env:
+  NODE_VERSION: 20
+  # Ensure Nx prints useful logs in CI
+  NX_VERBOSE_LOGGING: false
+  # Avoid Nx daemon issues in ephemeral runners
+  NX_DAEMON: false
+
+jobs:
+  setup-and-cache:
+    name: setup
+    runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.cache-nx.outputs.cache-primary-key }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Need full history so Nx affected has a proper base commit
+          fetch-depth: 0
+
+      - name: Use Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install Dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install --no-audit --no-fund
+          fi
+
+      - name: Cache Nx (previous runs)
+        id: cache-nx
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-${{ github.sha }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-
+            nx-${{ runner.os }}-
+
+      - name: Print Nx Version / Projects
+        run: |
+          npx nx --version
+          npx nx show projects
+
+  lint:
+    name: lint (all)
+    runs-on: ubuntu-latest
+    needs: setup-and-cache
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Install Dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
+      - name: Restore Nx Cache
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-${{ github.sha }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-
+            nx-${{ runner.os }}-
+      - name: Run lint (all)
+        run: |
+          npx nx affected -t lint --parallel=3 --base=origin/main
+
+  format:
+    name: format check
+    runs-on: ubuntu-latest
+    needs: setup-and-cache
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Install Dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
+      - name: Prettier Check
+        run: |
+          npx prettier --version
+          npx prettier --check .
+
+  test:
+    name: unit tests (all)
+    runs-on: ubuntu-latest
+    needs: [lint, format]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Install Dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
+      - name: Restore Nx Cache
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-${{ github.sha }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-
+            nx-${{ runner.os }}-
+      - name: Run Tests (all)
+        run: |
+          npx nx affected -t lint --parallel=3 --base=origin/main
+      - name: Upload Coverage (if generated)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: |
+            coverage
+            packages/**/coverage
+          if-no-files-found: ignore
+
+  build:
+    name: build (all)
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Install Dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
+      - name: Restore Nx Cache
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-${{ github.sha }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-
+            nx-${{ runner.os }}-
+      - name: build (all)
+        run: |
+          npx nx affected -t build --parallel=3 --base=origin/main
+      - name: Package Size Summary (optional)
+        if: always()
+        run: |
+          find packages -maxdepth 3 -type f -name package.json -printf "\n---- %p ----\n" -exec jq -r '.name + "@" + (.version // "0.0.0")' {} \;

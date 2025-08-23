@@ -1,0 +1,33 @@
+name: Post Merge Verification
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: 20
+  NX_DAEMON: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Install Dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
+      - name: Lint All
+        run: npx nx run-many -t lint --parallel=3
+      - name: Test All
+        run: npx nx run-many -t test --parallel=3
+      - name: Build All
+        run: npx nx run-many -t build --parallel=3
