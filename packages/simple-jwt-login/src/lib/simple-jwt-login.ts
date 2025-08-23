@@ -4,6 +4,10 @@ import {
   SimpleJwtLoginConfig,
   StoreSdk,
   StoreSdkPlugin,
+  EventBus,
+  StoreSdkEvent,
+  StoreSdkState,
+  StoreSdkConfig,
 } from '@store-sdk/core';
 import { AuthService } from './services/auth.service.js';
 import { UserService } from './services/user.service.js';
@@ -59,6 +63,30 @@ class SimpleJwtPlugin implements StoreSdkPlugin<SimpleJwtLoginConfig> {
         StoreSdk.events.emit('auth:changed', !!token);
       });
     }
+  }
+
+  registerEventHandlers(
+    events: EventBus<StoreSdkEvent>, 
+    state: StoreSdkState, 
+    config: StoreSdkConfig,
+    sdk: Sdk
+  ): void {
+    events.on('auth:changed', async (authenticated) => {
+      if (this._config.fetchCartOnLogin) {
+        if (authenticated) {
+          await sdk.store.cart.get();
+        }
+      }
+
+      if (!authenticated) {
+        if (config.nonce?.clearToken) {
+          await config.nonce?.clearToken();
+        }
+        if (config.cartToken?.clearToken) {
+          await config.cartToken?.clearToken();
+        }
+      }
+    });
   }
 
   extend(sdk: Sdk) {
