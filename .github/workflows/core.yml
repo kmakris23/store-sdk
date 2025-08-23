@@ -1,71 +1,11 @@
-name: core
+name: legacy-core-disabled
 
+# Manual-only placeholder retained for history. Use ci.yml instead.
 on:
-  pull_request:
-
-permissions:
-  contents: read
+  workflow_dispatch:
 
 jobs:
-  build:
-    name: build
+  noop:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          filter: tree:0
-          fetch-depth: 0
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm install
-
-      - uses: nrwl/nx-set-shas@v4
-      - run: npx nx build core
-
-  lint:
-    name: lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          filter: tree:0
-          fetch-depth: 0
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm install
-
-      - uses: nrwl/nx-set-shas@v4
-      - run: npx nx lint core
-
-  test:
-    name: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          filter: tree:0
-          fetch-depth: 0
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm install
-
-      - uses: nrwl/nx-set-shas@v4
-      - run: npx nx test core
+      - run: echo "Legacy core workflow disabled. Use ci.yml for CI checks."
