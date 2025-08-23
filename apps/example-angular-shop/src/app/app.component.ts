@@ -141,6 +141,6 @@ export class AppComponent implements OnInit {
   }
 
   async logout() {
-    await StoreSdk.simpleJwt.auth.revokeToken();
+  await StoreSdk.simpleJwt?.auth.revokeToken();
   }
 }

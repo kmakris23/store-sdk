@@ -18,7 +18,7 @@ const simpleJwtPlugin = useSimpleJwt({
   autoLoginRedirectUrl: `${environment.baseUrl}/checkout`,
   getToken: async () =>
     (await Promise.resolve(localStorage.getItem('simple_jwt'))) as string,
-  setToken: async (token) => {
+  setToken: async (token: string) => {
     await Promise.resolve(localStorage.setItem('simple_jwt', token));
   },
   clearToken: async () => {
