@@ -1,159 +1,117 @@
-import { StoreSdkEventEmitter } from '../../../sdk.event.emitter.js';
+import { describe, it, expect, beforeEach, vi, type MockedFunction } from 'vitest';
 import { CartService } from '../../../services/store/cart.service.js';
 import { StoreSdkConfig } from '../../../configs/sdk.config.js';
 import { StoreSdkState } from '../../../types/sdk.state.js';
-import {
-  CartResponse,
-  CartItemAddRequest,
-  CartCustomerRequest,
-} from '../../../types/store/index.js';
+import { CartResponse, CartItemAddRequest, CartCustomerRequest } from '../../../types/store/index.js';
+import { EventBus } from '../../../bus/event.bus.js';
+import { StoreSdkEvent } from '../../../sdk.events.js';
+import { ApiError } from '../../../types/api.js';
 
-class MockCartService extends CartService {
-  doGet = vi.fn();
-  doPost = vi.fn();
-}
+vi.mock('../../../utilities/axios.utility.js', () => ({ doGet: vi.fn(), doPost: vi.fn() }));
+import { doGet, doPost } from '../../../utilities/axios.utility.js';
 
 describe('CartService', () => {
-  let service: MockCartService;
+  let service: CartService;
+  let mockedGet: MockedFunction<typeof doGet>;
+  let mockedPost: MockedFunction<typeof doPost>;
   const state: StoreSdkState = {};
-  const config: StoreSdkConfig = {
-    baseUrl: 'https://example.com',
+  const config: StoreSdkConfig = { baseUrl: 'https://example.com' };
+  const events = new EventBus<StoreSdkEvent>();
+
+  const cart = (count: number): CartResponse => ({ items_count: count } as unknown as CartResponse);
+
+  const collectEvents = () => {
+    const received: { event: keyof StoreSdkEvent; payload?: unknown }[] = [];
+    events.onAny((ev, payload) => {
+      const key = ev as keyof StoreSdkEvent;
+      if (
+        key === 'cart:loading' ||
+        key === 'cart:request:start' ||
+        key === 'cart:request:success' ||
+        key === 'cart:request:error' ||
+        key === 'cart:updated'
+      ) {
+        received.push({ event: key, payload });
+      }
+    });
+    return received;
   };
-  const events = new StoreSdkEventEmitter();
 
   beforeEach(() => {
-    service = new MockCartService(state, config, events);
+    mockedGet = doGet as unknown as MockedFunction<typeof doGet>;
+    mockedPost = doPost as unknown as MockedFunction<typeof doPost>;
+    vi.clearAllMocks();
+    service = new CartService(state, config, events);
   });
 
-  it('should get cart', async () => {
-    const mockData = { items_count: 2 } as CartResponse;
-    const mockHeaders = {
-      'x-wc-nonce': 'abc123',
-      'x-cart-token': 'def456',
-    };
-
-    service.doGet.mockResolvedValue({
-      data: mockData,
-      error: null,
-      headers: mockHeaders,
-    });
-
+  it('gets cart and emits events', async () => {
+    mockedGet.mockResolvedValue({ data: cart(2) });
+    const eventsArr = collectEvents();
     const result = await service.get();
-
-    expect(service.doGet).toHaveBeenCalled();
-    expect(result.data).toEqual(mockData);
+    expect(mockedGet).toHaveBeenCalledWith('/wp-json/wc/store/v1/cart', expect.any(Object));
+    expect(result.data?.items_count).toBe(2);
+    const names = eventsArr.map(e => e.event);
+    expect(names).toContain('cart:loading');
+    expect(names).toContain('cart:updated');
   });
 
-  it('should add item to cart', async () => {
-    const params: CartItemAddRequest = {
-      id: 1,
-      quantity: 2,
-    } as CartItemAddRequest;
-    const mockData = { items_count: 1 } as CartResponse;
-
-    service.doPost.mockResolvedValue({ data: mockData, error: null });
-
-    const result = await service.add(params);
-
-    expect(service.doPost).toHaveBeenCalled();
-    expect(result.data).toEqual(mockData);
+  it('adds item and emits sequence', async () => {
+    mockedPost.mockResolvedValue({ data: cart(1) });
+    const eventsArr = collectEvents();
+    await service.add({ id: 10, quantity: 2 } as CartItemAddRequest);
+    const url = mockedPost.mock.calls[0][0];
+    expect(url).toContain('/wp-json/wc/store/v1/cart/add-item?');
+    const names = eventsArr.map(e => e.event);
+    expect(names[0]).toBe('cart:loading');
+    expect(names).toContain('cart:request:success');
   });
 
-  it('should update item in cart', async () => {
-    const mockData = { items_count: 1 } as CartResponse;
-    service.doPost.mockResolvedValue({ data: mockData, error: null });
-
-    const result = await service.update('itemKey', 3);
-
-    expect(service.doPost).toHaveBeenCalledWith(
-      expect.stringContaining('update-item'),
-      undefined,
-      expect.any(Object)
-    );
-    expect(result.data).toEqual(mockData);
+  it('updates item', async () => {
+    mockedPost.mockResolvedValue({ data: cart(1) });
+    await service.update('itemKey', 3);
+    expect(mockedPost.mock.calls[0][0]).toContain('/wp-json/wc/store/v1/cart/update-item?');
   });
 
-  it('should remove item from cart', async () => {
-    const mockData = { items_count: 0 } as CartResponse;
-    service.doPost.mockResolvedValue({ data: mockData, error: null });
-
-    expect(service.doPost).toHaveBeenCalledWith(
-      expect.stringContaining('remove-item'),
-      undefined,
-      expect.any(Object)
-    );
+  it('removes item', async () => {
+    mockedPost.mockResolvedValue({ data: cart(0) });
+    await service.remove('itemKey');
+    expect(mockedPost.mock.calls[0][0]).toContain('/wp-json/wc/store/v1/cart/remove-item?key=itemKey');
   });
 
-  it('should apply coupon', async () => {
-    const mockData = { items_count: 1 } as CartResponse;
-    service.doPost.mockResolvedValue({ data: mockData, error: null });
-
-    expect(service.doPost).toHaveBeenCalledWith(
-      expect.stringContaining('/apply-coupon/SAVE20'),
-      undefined,
-      expect.any(Object)
-    );
+  it('applies coupon', async () => {
+    mockedPost.mockResolvedValue({ data: cart(1) });
+    await service.applyCoupon('SAVE20');
+    expect(mockedPost.mock.calls[0][0]).toBe('/wp-json/wc/store/v1/cart/apply-coupon/SAVE20');
   });
 
-  it('should remove coupon', async () => {
-    const mockData = { items_count: 1 } as CartResponse;
-    service.doPost.mockResolvedValue({ data: mockData, error: null });
-
-    expect(service.doPost).toHaveBeenCalledWith(
-      expect.stringContaining('/remove-coupon/SAVE20'),
-      undefined,
-      expect.any(Object)
-    );
+  it('removes coupon', async () => {
+    mockedPost.mockResolvedValue({ data: cart(1) });
+    await service.removeCoupon('SAVE20');
+    expect(mockedPost.mock.calls[0][0]).toBe('/wp-json/wc/store/v1/cart/remove-coupon/SAVE20');
   });
 
-  it('should update customer', async () => {
-    const mockData = { items_count: 1 } as CartResponse;
+  it('updates customer', async () => {
+    mockedPost.mockResolvedValue({ data: cart(1) });
     const body: CartCustomerRequest = {
-      billing_address: {
-        address_1: 'test',
-        address_2: '',
-        city: '',
-        company: '',
-        country: '',
-        email: '',
-        first_name: '',
-        last_name: '',
-        phone: '',
-        postcode: '',
-        state: '',
-      },
-      shipping_address: {
-        address_1: '',
-        address_2: '',
-        city: '',
-        company: '',
-        country: '',
-        first_name: '',
-        last_name: '',
-        phone: '',
-        postcode: '',
-        state: '',
-      },
-    } as CartCustomerRequest;
-
-    service.doPost.mockResolvedValue({ data: mockData, error: null });
-
-    expect(service.doPost).toHaveBeenCalledWith(
-      expect.stringContaining('/update-customer'),
-      body,
-      expect.any(Object)
-    );
+      billing_address: { address_1: 'a', address_2: '', city: '', company: '', country: '', email: '', first_name: '', last_name: '', phone: '', postcode: '', state: '' },
+      shipping_address: { address_1: '', address_2: '', city: '', company: '', country: '', first_name: '', last_name: '', phone: '', postcode: '', state: '' },
+    };
+    await service.updateCustomer(body);
+    expect(mockedPost.mock.calls[0][0]).toBe('/wp-json/wc/store/v1/cart/update-customer');
   });
 
-  it('should select shipping rate', async () => {
-    const mockData = { items_count: 1 } as CartResponse;
+  it('selects shipping rate', async () => {
+    mockedPost.mockResolvedValue({ data: cart(1) });
+    await service.selectShippingRate(5, 'flat_rate');
+    expect(mockedPost.mock.calls[0][0]).toBe('/wp-json/wc/store/v1/cart/select-shipping-rate/package_id=5&rate_id=flat_rate');
+  });
 
-    service.doPost.mockResolvedValue({ data: mockData, error: null });
-
-    expect(service.doPost).toHaveBeenCalledWith(
-      expect.stringContaining('package_id=5&rate_id=flat_rate'),
-      undefined,
-      expect.any(Object)
-    );
+  it('handles error and emits error event', async () => {
+    const error: ApiError = { code: 'err', message: 'fail', data: { status:500 }, details: {} };
+    mockedGet.mockResolvedValue({ error });
+    const eventsArr = collectEvents();
+    const result = await service.get();
+    expect(result.error).toEqual(error);
+    expect(eventsArr.map(e => e.event)).toContain('cart:request:error');
   });
 });
