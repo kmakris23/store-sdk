@@ -43,7 +43,7 @@
     "angular-eslint": "^20.0.0",
     "axios": "^1.11.0",
     "date-fns": "^4.1.0",
-    "esbuild": "0.19.2",
+    "esbuild": "0.25.9",
     "eslint": "9.34.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-playwright": "^1.6.2",
