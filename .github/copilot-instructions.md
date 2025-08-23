@@ -52,12 +52,17 @@ Follow existing plugin id patterns; if adding new plugin-specific behavior to co
 - Use Vitest; test config is via `tsconfig.spec.json`. Put tests under same directory tree (e.g., `src/lib/.../__tests__` or `tests/`) — follow existing naming `*.spec.ts`.
 - For new event or interceptor behavior, write unit tests that mock axios via dependency injection (consider exporting small helper or using axios adapters). Keep tests deterministic (no network).
 - Any change to a service (method signature, emitted events, URL/query construction, headers reliance) MUST be reflected in its corresponding `*.service.spec.ts` so tests stay in lockstep with runtime behavior. Update or add specs in the same commit.
+- Run tests per library with `nx test <library>` (e.g. `nx test core`).
 
 ## Build & Dev Workflows
 - Build all libraries: `npx nx run-many -t build` (root script `dev:rebuild` also resets Nx cache and rebuilds).
+- Build a single library: `nx build <library>` (e.g. `nx build core`).
 - Example Angular app serve: `npm run serve:angular` (proxy uses `proxy.conf.json`).
 - Node example: `nx serve @store-sdk/example-node` (auto builds first; esbuild no bundle by default).
 - Release (version + changelog) is automated via Nx release using conventional commits; do not manually edit CHANGELOGs.
+
+## Linting
+- Lint a single library with `nx lint <library>` (e.g. `nx lint core`) before committing service or API changes.
 
 ## Style & Types
 - Strict TS (`tsconfig.base.json`) – no `any`; add precise types or generics. Use utility types rather than casts.
