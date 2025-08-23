@@ -23,8 +23,8 @@ class MockSimpleJwtPlugin {
   }
 
   registerEventHandlers(
-    events: any, 
-    state: any, 
+    events: EventBus<StoreSdkEvent>, 
+    state: StoreSdkState, 
     config: StoreSdkConfig,
     sdk: Sdk
   ): void {
