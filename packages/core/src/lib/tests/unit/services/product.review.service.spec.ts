@@ -1,62 +1,66 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach, type MockedFunction } from 'vitest';
 import { ProductReviewService } from '../../../services/store/product.review.service.js';
-import {
-  ProductReviewRequest,
-  ProductReviewResponse,
-} from '../../../types/store/index.js';
-import { StoreSdkEventEmitter } from '../../../sdk.event.emitter.js';
+import { ProductReviewRequest, ProductReviewResponse } from '../../../types/store/index.js';
 import { StoreSdkConfig } from '../../../configs/sdk.config.js';
 import { StoreSdkState } from '../../../types/sdk.state.js';
+import { EventBus } from '../../../bus/event.bus.js';
+import { StoreSdkEvent } from '../../../sdk.events.js';
+import { ApiError } from '../../../types/api.js';
 
-class MockProductReviewService extends ProductReviewService {
-  doGet = vi.fn();
-}
+vi.mock('../../../utilities/axios.utility.js', () => ({ doGet: vi.fn() }));
+import { doGet } from '../../../utilities/axios.utility.js';
 
 describe('ProductReviewService', () => {
-  let service: MockProductReviewService;
+  let service: ProductReviewService;
+  let mockedGet: MockedFunction<typeof doGet>;
   const state: StoreSdkState = {};
-  const config: StoreSdkConfig = {
-    baseUrl: 'https://example.com',
-  };
-  const events = new StoreSdkEventEmitter();
+  const config: StoreSdkConfig = { baseUrl: 'https://example.com' };
+  const events = new EventBus<StoreSdkEvent>();
+
+  const review = (id: number, product_id: number, text: string): ProductReviewResponse => ({
+    id,
+    product_id,
+    date_created: '',
+    formatted_date_created: '',
+    date_created_gmt: '',
+    product_name: '',
+    product_permalink: '',
+    product_image: { id: 0, src: '', thumbnail: '', name: '' } as any,
+    reviewer: 'Anon',
+    review: text,
+    rating: 0,
+    verified: false,
+    reviewer_avatar_urls: [],
+  });
 
   beforeEach(() => {
-    service = new MockProductReviewService(state, config, events);
+    mockedGet = doGet as unknown as MockedFunction<typeof doGet>;
+    vi.clearAllMocks();
+    service = new ProductReviewService(state, config, events);
   });
+  afterEach(() => vi.clearAllMocks());
 
-  it('should list product reviews without params', async () => {
-    const mockData = [
-      { id: 1, product_id: 101, review: 'Great!' },
-      { id: 2, product_id: 102, review: 'Good' },
-    ] as ProductReviewResponse[];
-
-    service.doGet.mockResolvedValue({ data: mockData, error: null });
-
+  it('lists reviews and parses headers', async () => {
+    const data = [review(1,101,'Great!'), review(2,102,'Ok')];
+    mockedGet.mockResolvedValue({ data, headers: { 'x-wp-total': 2, 'x-wp-totalpages': 1 } });
     const result = await service.list();
-
-    expect(service.doGet).toHaveBeenCalledWith(
-      expect.stringContaining('/products/reviews?')
-    );
-    expect(result.data).toEqual(mockData);
-    expect(result.error).toBeNull();
+    expect(mockedGet).toHaveBeenCalledWith('/wp-json/wc/store/v1/products/reviews?');
+    expect(result.total).toBe(2);
   });
 
-  it('should list product reviews with query params', async () => {
+  it('lists with params', async () => {
     const params: ProductReviewRequest = { product_id: '101', per_page: 5 };
-    const mockData = [
-      { id: 3, product_id: 101, review: 'Awesome!' },
-    ] as ProductReviewResponse[];
+    mockedGet.mockResolvedValue({ data: [review(3,101,'Awesome!')] });
+    await service.list(params);
+    const url = mockedGet.mock.calls[0][0];
+    expect(url).toContain('product_id=101');
+    expect(url).toContain('per_page=5');
+  });
 
-    service.doGet.mockResolvedValue({ data: mockData, error: null });
-
-    const result = await service.list(params);
-
-    expect(service.doGet).toHaveBeenCalledWith(
-      expect.stringContaining('product_id=101')
-    );
-    expect(service.doGet).toHaveBeenCalledWith(
-      expect.stringContaining('per_page=5')
-    );
-    expect(result.data).toEqual(mockData);
+  it('list error path', async () => {
+    const error: ApiError = { code: 'err', message: 'fail', data: { status:500 }, details: {} };
+    mockedGet.mockResolvedValue({ error });
+    const result = await service.list();
+    expect(result.error).toEqual(error);
   });
 });

@@ -1,56 +1,53 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, type MockedFunction } from 'vitest';
 import { OrderService } from '../../../services/store/order.service.js';
 import { OrderResponse } from '../../../types/store/index.js';
-import { StoreSdkEventEmitter } from '../../../sdk.event.emitter.js';
 import { StoreSdkConfig } from '../../../configs/sdk.config.js';
 import { StoreSdkState } from '../../../types/sdk.state.js';
+import { EventBus } from '../../../bus/event.bus.js';
+import { StoreSdkEvent } from '../../../sdk.events.js';
+import { ApiError } from '../../../types/api.js';
 
-class MockOrderService extends OrderService {
-  doGet = vi.fn();
-}
+vi.mock('../../../utilities/axios.utility.js', () => ({ doGet: vi.fn() }));
+import { doGet } from '../../../utilities/axios.utility.js';
 
 describe('OrderService', () => {
-  let service: MockOrderService;
+  let service: OrderService;
+  let mockedGet: MockedFunction<typeof doGet>;
   const state: StoreSdkState = {};
-  const config: StoreSdkConfig = {
-    baseUrl: 'https://example.com',
-  };
-  const events = new StoreSdkEventEmitter();
+  const config: StoreSdkConfig = { baseUrl: 'https://example.com' };
+  const events = new EventBus<StoreSdkEvent>();
+
+  const order = (id: number): OrderResponse => ({ id } as unknown as OrderResponse);
 
   beforeEach(() => {
-    service = new MockOrderService(state, config, events);
+    mockedGet = doGet as unknown as MockedFunction<typeof doGet>;
+    vi.clearAllMocks();
+    service = new OrderService(state, config, events);
   });
 
-  it('should get order with billing email', async () => {
-    const mockData = { id: 123 } as OrderResponse;
-    service.doGet.mockResolvedValue({ data: mockData, error: null });
-
-    const key = 'securekey';
-    const orderId = '123';
-    const billingEmail = 'test@example.com';
-
-    const result = await service.get(key, orderId, billingEmail);
-
-    expect(service.doGet).toHaveBeenCalledWith(
-      expect.stringContaining(`key=${key}`),
-      expect.any(Object)
-    );
-
-    expect(service.doGet.mock.calls[0][0]).toContain(
-      `billing_email=${billingEmail}`
-    );
-
-    expect(result.data).toEqual(mockData);
-    expect(result.error).toBeNull();
+  it('gets order with billing email', async () => {
+    mockedGet.mockResolvedValue({ data: order(123) });
+    const result = await service.get('securekey', '123', 'test@example.com');
+    const url = mockedGet.mock.calls[0][0];
+    expect(url).toContain('/wp-json/wc/store/v1/order/123?');
+    expect(url).toContain('key=securekey');
+  // Email not encoded (service doesn't encode) so plain form expected
+  expect(url).toContain('billing_email=test@example.com');
+    expect(result.data?.id).toBe(123);
   });
 
-  it('should get order without billing email', async () => {
-    const mockData = { id: 456 } as OrderResponse;
-    service.doGet.mockResolvedValue({ data: mockData, error: null });
-
+  it('gets order without billing email', async () => {
+    mockedGet.mockResolvedValue({ data: order(456) });
     const result = await service.get('securekey', '456');
+    const url = mockedGet.mock.calls[0][0];
+    expect(url).not.toContain('billing_email=');
+    expect(result.data?.id).toBe(456);
+  });
 
-    expect(service.doGet.mock.calls[0][0]).not.toContain('billing_email=');
-    expect(result.data).toEqual(mockData);
+  it('handles error path', async () => {
+    const error: ApiError = { code: 'not_found', message: 'missing', data: { status:404 }, details: {} };
+    mockedGet.mockResolvedValue({ error });
+    const result = await service.get('securekey', '999');
+    expect(result.error).toEqual(error);
   });
 });
