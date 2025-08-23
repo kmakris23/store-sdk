@@ -23,13 +23,13 @@ class MockSimpleJwtPlugin {
   }
 
   registerEventHandlers(
-    events: EventBus<StoreSdkEvent>, 
-    state: StoreSdkState, 
+    events: EventBus<StoreSdkEvent>,
+    state: StoreSdkState,
     config: StoreSdkConfig,
     sdk: Sdk
   ): void {
     this._eventHandlersRegistered = true;
-    
+
     // This is the actual logic that was moved from core to the plugin
     events.on('auth:changed', async (authenticated: boolean) => {
       if (this._config.fetchCartOnLogin) {
@@ -53,7 +53,7 @@ class MockSimpleJwtPlugin {
     // Simulate extending the SDK with auth capabilities
     (sdk as any).simpleJwt = {
       auth: { isAuthenticated: () => true },
-      users: { getCurrentUser: () => ({ id: 1 }) }
+      users: { getCurrentUser: () => ({ id: 1 }) },
     };
   }
 
@@ -65,24 +65,24 @@ class MockSimpleJwtPlugin {
 // Mock dependencies
 vi.mock('../../../services/api.js', () => ({
   createHttpClient: vi.fn(),
-  httpClient: {}
+  httpClient: {},
 }));
 
 vi.mock('../../../interceptors/cart.token.interceptor.js', () => ({
-  addCartTokenInterceptors: vi.fn()
+  addCartTokenInterceptors: vi.fn(),
 }));
 
 vi.mock('../../../interceptors/nonce.interceptor.js', () => ({
-  addNonceInterceptors: vi.fn()
+  addNonceInterceptors: vi.fn(),
 }));
 
 const mockCartGet = vi.fn();
 vi.mock('../../../services/store.service.js', () => ({
   StoreService: vi.fn().mockImplementation(() => ({
     cart: {
-      get: mockCartGet
-    }
-  }))
+      get: mockCartGet,
+    },
+  })),
 }));
 
 describe('Simple JWT Login Plugin Integration', () => {
@@ -94,29 +94,29 @@ describe('Simple JWT Login Plugin Integration', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     sdk = new Sdk();
     mockClearNonce = vi.fn();
     mockClearCartToken = vi.fn();
-    
+
     const simpleJwtConfig: SimpleJwtLoginConfig = {
       fetchCartOnLogin: true,
       getToken: vi.fn().mockResolvedValue('test-token'),
       setToken: vi.fn(),
-      clearToken: vi.fn()
+      clearToken: vi.fn(),
     };
 
     mockPlugin = new MockSimpleJwtPlugin(simpleJwtConfig);
-    
+
     config = {
       baseUrl: 'https://example.com',
       plugins: [mockPlugin as any],
       nonce: {
-        clearToken: mockClearNonce
+        clearToken: mockClearNonce,
       },
       cartToken: {
-        clearToken: mockClearCartToken
-      }
+        clearToken: mockClearCartToken,
+      },
     };
   });
 
@@ -131,9 +131,9 @@ describe('Simple JWT Login Plugin Integration', () => {
 
     // Simulate authentication event
     sdk.events.emit('auth:changed', true);
-    
+
     // Wait for async operations
-    await new Promise(resolve => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(mockCartGet).toHaveBeenCalled();
   });
@@ -141,14 +141,14 @@ describe('Simple JWT Login Plugin Integration', () => {
   it('should not fetch cart on login when fetchCartOnLogin is false', async () => {
     const simpleJwtConfig: SimpleJwtLoginConfig = {
       fetchCartOnLogin: false,
-      getToken: vi.fn().mockResolvedValue('test-token')
+      getToken: vi.fn().mockResolvedValue('test-token'),
     };
 
     const mockPluginNoFetch = new MockSimpleJwtPlugin(simpleJwtConfig);
-    
+
     const configNoFetch = {
       ...config,
-      plugins: [mockPluginNoFetch as any]
+      plugins: [mockPluginNoFetch as any],
     };
 
     // Create a fresh SDK instance to avoid interference
@@ -160,9 +160,9 @@ describe('Simple JWT Login Plugin Integration', () => {
 
     // Simulate authentication event
     freshSdk.events.emit('auth:changed', true);
-    
+
     // Wait for async operations
-    await new Promise(resolve => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(mockCartGet).not.toHaveBeenCalled();
   });
@@ -172,9 +172,9 @@ describe('Simple JWT Login Plugin Integration', () => {
 
     // Simulate logout event
     sdk.events.emit('auth:changed', false);
-    
+
     // Wait for async operations
-    await new Promise(resolve => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(mockClearNonce).toHaveBeenCalled();
     expect(mockClearCartToken).toHaveBeenCalled();
@@ -191,7 +191,7 @@ describe('Simple JWT Login Plugin Integration', () => {
   it('should work without nonce or cartToken configured', async () => {
     const configMinimal = {
       baseUrl: 'https://example.com',
-      plugins: [mockPlugin as any]
+      plugins: [mockPlugin as any],
     };
 
     // Should not throw

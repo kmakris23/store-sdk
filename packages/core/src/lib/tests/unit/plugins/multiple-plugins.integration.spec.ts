@@ -9,7 +9,9 @@ class PluginA {
   public eventHandlersCalled = false;
   public extendCalled = false;
 
-  getConfig() { return {}; }
+  getConfig() {
+    return {};
+  }
 
   init() {
     this.initCalled = true;
@@ -34,7 +36,9 @@ class PluginB {
   public eventHandlersCalled = false;
   public extendCalled = false;
 
-  getConfig() { return {}; }
+  getConfig() {
+    return {};
+  }
 
   init() {
     this.initCalled = true;
@@ -56,21 +60,21 @@ class PluginB {
 // Mock dependencies
 vi.mock('../../../services/api.js', () => ({
   createHttpClient: vi.fn(),
-  httpClient: {}
+  httpClient: {},
 }));
 
 vi.mock('../../../interceptors/cart.token.interceptor.js', () => ({
-  addCartTokenInterceptors: vi.fn()
+  addCartTokenInterceptors: vi.fn(),
 }));
 
 vi.mock('../../../interceptors/nonce.interceptor.js', () => ({
-  addNonceInterceptors: vi.fn()
+  addNonceInterceptors: vi.fn(),
 }));
 
 vi.mock('../../../services/store.service.js', () => ({
   StoreService: vi.fn().mockImplementation(() => ({
-    cart: { get: vi.fn() }
-  }))
+    cart: { get: vi.fn() },
+  })),
 }));
 
 describe('Multiple Plugins Integration', () => {
@@ -84,10 +88,10 @@ describe('Multiple Plugins Integration', () => {
     sdk = new Sdk();
     pluginA = new PluginA();
     pluginB = new PluginB();
-    
+
     config = {
       baseUrl: 'https://example.com',
-      plugins: [pluginA as any, pluginB as any]
+      plugins: [pluginA as any, pluginB as any],
     };
   });
 
@@ -118,7 +122,7 @@ describe('Multiple Plugins Integration', () => {
   it('should handle empty plugins array', async () => {
     const emptyConfig = {
       baseUrl: 'https://example.com',
-      plugins: []
+      plugins: [],
     };
 
     await expect(sdk.init(emptyConfig)).resolves.not.toThrow();
@@ -126,7 +130,7 @@ describe('Multiple Plugins Integration', () => {
 
   it('should handle missing plugins property', async () => {
     const noPluginsConfig = {
-      baseUrl: 'https://example.com'
+      baseUrl: 'https://example.com',
       // no plugins property
     };
 

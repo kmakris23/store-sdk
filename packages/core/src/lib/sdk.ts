@@ -31,12 +31,12 @@ export class Sdk {
     const allPlugins = [...(config.plugins ?? [])];
     for (const plugin of allPlugins) {
       plugin.init();
-      
+
       // Allow plugins to register their own event handlers
       if (plugin.registerEventHandlers) {
         plugin.registerEventHandlers(this.events, this.state, config, this);
       }
-      
+
       if (plugin.extend) {
         plugin.extend(this);
       }

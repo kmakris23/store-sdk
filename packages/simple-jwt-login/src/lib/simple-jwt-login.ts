@@ -66,8 +66,8 @@ class SimpleJwtPlugin implements StoreSdkPlugin<SimpleJwtLoginConfig> {
   }
 
   registerEventHandlers(
-    events: EventBus<StoreSdkEvent>, 
-    state: StoreSdkState, 
+    events: EventBus<StoreSdkEvent>,
+    state: StoreSdkState,
     config: StoreSdkConfig,
     sdk: Sdk
   ): void {

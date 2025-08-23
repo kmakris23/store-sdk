@@ -19,8 +19,8 @@ export interface StoreSdkPlugin<T> {
    * Called after init() but before extend()
    */
   registerEventHandlers?(
-    events: EventBus<StoreSdkEvent>, 
-    state: StoreSdkState, 
+    events: EventBus<StoreSdkEvent>,
+    state: StoreSdkState,
     config: StoreSdkConfig,
     sdk: Sdk
   ): void;

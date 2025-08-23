@@ -5,7 +5,15 @@ This document demonstrates how the new plugin architecture works, showing how pl
 ## Basic Plugin Structure
 
 ```typescript
-import { StoreSdkPlugin, PluginId, EventBus, StoreSdkEvent, StoreSdkState, StoreSdkConfig, Sdk } from '@store-sdk/core';
+import {
+  StoreSdkPlugin,
+  PluginId,
+  EventBus,
+  StoreSdkEvent,
+  StoreSdkState,
+  StoreSdkConfig,
+  Sdk,
+} from '@store-sdk/core';
 
 class MyPlugin implements StoreSdkPlugin<MyPluginConfig> {
   id: PluginId = 'my-plugin';
@@ -27,8 +35,8 @@ class MyPlugin implements StoreSdkPlugin<MyPluginConfig> {
 
   // Optional: Register event handlers for plugin-specific business logic
   registerEventHandlers(
-    events: EventBus<StoreSdkEvent>, 
-    state: StoreSdkState, 
+    events: EventBus<StoreSdkEvent>,
+    state: StoreSdkState,
     config: StoreSdkConfig,
     sdk: Sdk
   ): void {
@@ -43,7 +51,7 @@ class MyPlugin implements StoreSdkPlugin<MyPluginConfig> {
   // Extend the SDK with new methods and properties
   extend(sdk: Sdk): void {
     (sdk as any).myPlugin = {
-      doSomething: () => 'Plugin functionality'
+      doSomething: () => 'Plugin functionality',
     };
   }
 }
@@ -59,8 +67,10 @@ import { useMyPlugin } from '@my-org/my-plugin';
 await StoreSdk.init({
   baseUrl: 'https://api.example.com',
   plugins: [
-    useMyPlugin({ /* plugin config */ })
-  ]
+    useMyPlugin({
+      /* plugin config */
+    }),
+  ],
 });
 
 // Use extended functionality

@@ -10,7 +10,7 @@ import { StoreSdkConfig } from '../../../configs/sdk.config.js';
 class TestPlugin implements StoreSdkPlugin<{ testConfig: string }> {
   id: PluginId = 'hippoo';
   private config = { testConfig: 'test' };
-  
+
   public initCalled = false;
   public registerEventHandlersCalled = false;
   public extendCalled = false;
@@ -28,8 +28,8 @@ class TestPlugin implements StoreSdkPlugin<{ testConfig: string }> {
   }
 
   registerEventHandlers(
-    events: EventBus<StoreSdkEvent>, 
-    state: StoreSdkState, 
+    events: EventBus<StoreSdkEvent>,
+    state: StoreSdkState,
     config: StoreSdkConfig,
     sdk: Sdk
   ): void {
@@ -38,7 +38,7 @@ class TestPlugin implements StoreSdkPlugin<{ testConfig: string }> {
     this.receivedState = state;
     this.receivedConfig = config;
     this.receivedSdk = sdk;
-    
+
     // Register a test event handler
     events.on('auth:changed', (authenticated) => {
       state.testValue = authenticated ? 'logged-in' : 'logged-out';
@@ -61,23 +61,23 @@ declare module '../../../types/sdk.state.js' {
 // Mock the HTTP client and other dependencies
 vi.mock('../../../services/api.js', () => ({
   createHttpClient: vi.fn(),
-  httpClient: {}
+  httpClient: {},
 }));
 
 vi.mock('../../../interceptors/cart.token.interceptor.js', () => ({
-  addCartTokenInterceptors: vi.fn()
+  addCartTokenInterceptors: vi.fn(),
 }));
 
 vi.mock('../../../interceptors/nonce.interceptor.js', () => ({
-  addNonceInterceptors: vi.fn()
+  addNonceInterceptors: vi.fn(),
 }));
 
 vi.mock('../../../services/store.service.js', () => ({
   StoreService: vi.fn().mockImplementation(() => ({
     cart: {
-      get: vi.fn()
-    }
-  }))
+      get: vi.fn(),
+    },
+  })),
 }));
 
 describe('Plugin Architecture', () => {
@@ -90,7 +90,7 @@ describe('Plugin Architecture', () => {
     testPlugin = new TestPlugin();
     config = {
       baseUrl: 'https://example.com',
-      plugins: [testPlugin]
+      plugins: [testPlugin],
     };
   });
 
@@ -134,12 +134,12 @@ describe('Plugin Architecture', () => {
       id: 'hippoo',
       getConfig: () => ({}),
       init: vi.fn(),
-      extend: vi.fn()
+      extend: vi.fn(),
     };
 
     const simpleConfig = {
       baseUrl: 'https://example.com',
-      plugins: [simplePlugin]
+      plugins: [simplePlugin],
     };
 
     // Should not throw an error
