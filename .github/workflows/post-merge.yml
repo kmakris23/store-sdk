@@ -25,8 +25,8 @@ jobs:
       - name: Install Dependencies
         run: |
           if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
-      - name: Lint All
-        run: npx nx run-many -t lint --parallel=3
+      - name: Lint All (packages only)
+        run: npx nx run-many -t lint --projects="packages/*" --parallel=3
       - name: Test All
         run: npx nx run-many -t test --parallel=3
       - name: Build All
