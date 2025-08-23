@@ -81,7 +81,6 @@ export class AppComponent implements OnInit {
       ) => {
         update(c);
         const totals = c?.totals;
-        console.log('Cart totals updated', totals);
         if (totals && totals.currency_code) {
           APP_CURRENCY_REF.code = totals.currency_code;
           APP_CURRENCY_REF.symbol = totals.currency_symbol;
@@ -90,7 +89,6 @@ export class AppComponent implements OnInit {
           APP_CURRENCY_REF.suffix = totals.currency_suffix || '';
           APP_CURRENCY_REF.minorUnit = totals.currency_minor_unit || 2;
           this.currency.set(APP_CURRENCY_REF); // notify local signal listeners
-          console.log('Currency updated from cart totals', APP_CURRENCY_REF);
         }
       }
     );
