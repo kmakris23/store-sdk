@@ -51,6 +51,7 @@ Follow existing plugin id patterns; if adding new plugin-specific behavior to co
 ## Testing (Library Focus)
 - Use Vitest; test config is via `tsconfig.spec.json`. Put tests under same directory tree (e.g., `src/lib/.../__tests__` or `tests/`) — follow existing naming `*.spec.ts`.
 - For new event or interceptor behavior, write unit tests that mock axios via dependency injection (consider exporting small helper or using axios adapters). Keep tests deterministic (no network).
+- Any change to a service (method signature, emitted events, URL/query construction, headers reliance) MUST be reflected in its corresponding `*.service.spec.ts` so tests stay in lockstep with runtime behavior. Update or add specs in the same commit.
 
 ## Build & Dev Workflows
 - Build all libraries: `npx nx run-many -t build` (root script `dev:rebuild` also resets Nx cache and rebuilds).
