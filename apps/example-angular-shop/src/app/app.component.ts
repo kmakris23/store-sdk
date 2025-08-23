@@ -2,6 +2,8 @@ import { Component, OnInit, signal, InjectionToken } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StoreSdk } from '@store-sdk/core';
+// Pull in module augmentation so Sdk.simpleJwt is typed in strict production builds
+import '@store-sdk/simple-jwt-login';
 
 export interface CurrencyInfo {
   code: string;
