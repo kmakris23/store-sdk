@@ -87,7 +87,7 @@ jobs:
             nx-${{ runner.os }}-
       - name: Run lint (all)
         run: |
-          npx nx affected -t lint --parallel=3
+          npx nx affected -t lint --parallel=3 --base=origin/main
 
   format:
     name: format check
@@ -132,7 +132,7 @@ jobs:
             nx-${{ runner.os }}-
       - name: Run Tests (all)
         run: |
-          npx nx affected -t lint --parallel=3
+          npx nx affected -t lint --parallel=3 --base=origin/main
       - name: Upload Coverage (if generated)
         if: always()
         uses: actions/upload-artifact@v4
@@ -168,7 +168,7 @@ jobs:
             nx-${{ runner.os }}-
       - name: build (all)
         run: |
-          npx nx affected -t build --parallel=3
+          npx nx affected -t build --parallel=3 --base=origin/main
       - name: Package Size Summary (optional)
         if: always()
         run: |
