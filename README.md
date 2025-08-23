@@ -37,7 +37,7 @@ Choose the authentication plugin that matches your WordPress setup:
 # For Simple JWT Login plugin
 npm install @store-sdk/simple-jwt-login
 
-# For JWT Authentication for WP REST API plugin  
+# For JWT Authentication for WP REST API plugin
 npm install @store-sdk/jwt-authentication-for-wp-rest-api
 
 # For Hippoo plugin
@@ -291,10 +291,10 @@ await StoreSdk.jwtAuth.auth.token({
 ```typescript
 await StoreSdk.init({
   baseUrl: 'https://your-woocommerce-site.com',
-  
+
   // Custom route namespace (default: 'wc/store/v1')
   routeNamespace: 'wc/store/v1',
-  
+
   // Nonce handling (for CSRF protection)
   nonce: {
     getToken: async () => localStorage.getItem('wc_nonce'),
@@ -302,7 +302,7 @@ await StoreSdk.init({
     clearToken: async () => localStorage.removeItem('wc_nonce'),
     disabled: false, // Set to true to disable nonce handling
   },
-  
+
   // Cart token handling
   cartToken: {
     getToken: async () => localStorage.getItem('cart_token'),
@@ -310,7 +310,7 @@ await StoreSdk.init({
     clearToken: async () => localStorage.removeItem('cart_token'),
     disabled: false, // Set to true to disable cart token handling
   },
-  
+
   // Authentication plugins
   plugins: [
     // Your authentication plugins here
@@ -333,7 +333,7 @@ export function useCart() {
   useEffect(() => {
     // Listen to cart updates
     const unsubscribe = StoreSdk.events.on('cart:updated', setCart);
-    
+
     // Initial cart fetch
     StoreSdk.store.cart.get().then(({ data }) => {
       setCart(data);
@@ -361,14 +361,15 @@ import { Injectable, signal } from '@angular/core';
 import { StoreSdk } from '@store-sdk/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CartService {
   cartCount = signal(0);
-  
+
   constructor() {
     StoreSdk.events.on('cart:updated', (cart) => {
-      const count = cart?.items?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
+      const count =
+        cart?.items?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
       this.cartCount.set(count);
     });
   }
