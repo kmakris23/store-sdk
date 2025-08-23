@@ -7,7 +7,7 @@ Concise, project-specific rules to make productive, low‑risk changes to this m
 **Do**
 
 - Keep commits minimal & purpose-driven, using conventional commit messages for package changes (release automation relies on them).
-- Respect existing lint + formatting (ESLint + Prettier). Run `nx lint <project>` before suggesting changes.
+- Respect existing lint + formatting (ESLint + Prettier). **ALL pull requests must pass format checks.** Run `npx prettier --check .` and `nx lint <project>` before suggesting changes.
 - Export new public APIs only via each package's `src/index.ts`.
 - Reuse existing patterns (services, events, interceptors, plugins); extend instead of inventing abstractions.
 
@@ -79,8 +79,10 @@ Follow existing `id` patterns. Any special-case in `Sdk.init` must be:
 <!-- Removed Node example application (@store-sdk/example-node) -->
 - Releases: automated via Nx + conventional commits (never hand-edit CHANGELOGs).
 
-## 🧹 Linting
+## 🧹 Linting & Formatting
 
+- **Format check (REQUIRED):** `npx prettier --check .` - **MUST pass** before any PR.
+- **Fix formatting issues:** `npx prettier --write .` - run if format check fails.
 - Lint single library: `nx lint <library>` (e.g. `nx lint core`) before committing service or API changes.
 
 ## ✨ Style & Types
@@ -91,6 +93,7 @@ Follow existing `id` patterns. Any special-case in `Sdk.init` must be:
 
 ## ✅ Safe Change Checklist (Before Proposing)
 
+- **Format check passes:** run `npx prettier --check .` and fix issues with `npx prettier --write .` if needed.
 - New service/event wired through `StoreService` / `sdk.events.ts`.
 - `Sdk.init` stays idempotent.
 - No root config / pipeline files touched unless requested.
