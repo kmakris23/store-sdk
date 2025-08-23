@@ -13,16 +13,10 @@
       "path": "./packages/jwt-authentication-for-wp-rest-api"
     },
     {
-      "path": "./apps/example-angular-e2e"
-    },
-    {
-      "path": "./apps/example-angular"
-    },
-    {
-      "path": "./apps/example-node"
-    },
-    {
       "path": "./packages/simple-jwt-login"
+    },
+    {
+      "path": "./apps/example-angular-shop"
     }
   ]
 }

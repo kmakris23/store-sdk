@@ -76,7 +76,7 @@ Follow existing `id` patterns. Any special-case in `Sdk.init` must be:
 - Build all libraries: `npx nx run-many -t build` (or `npm run dev:rebuild` to reset cache + rebuild).
 - Build single library: `nx build <library>` (e.g. `nx build core`).
 - Serve Angular example: `npm run serve:angular`.
-- Serve Node example: `nx serve @store-sdk/example-node`.
+<!-- Removed Node example application (@store-sdk/example-node) -->
 - Releases: automated via Nx + conventional commits (never hand-edit CHANGELOGs).
 
 ## 🧹 Linting
