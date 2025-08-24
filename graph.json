@@ -1,6 +1,260 @@
 {
   "graph": {
     "nodes": {
+      "jwt-authentication-for-wp-rest-api": {
+        "name": "jwt-authentication-for-wp-rest-api",
+        "type": "lib",
+        "data": {
+          "root": "packages/jwt-authentication-for-wp-rest-api",
+          "targets": {
+            "typecheck": {
+              "dependsOn": [
+                "^typecheck"
+              ],
+              "cache": true,
+              "inputs": [
+                "production",
+                "^production",
+                {
+                  "externalDependencies": [
+                    "typescript"
+                  ]
+                }
+              ],
+              "outputs": [
+                "{projectRoot}/dist/**/*.d.ts",
+                "{projectRoot}/dist/**/*.d.ts.map",
+                "{projectRoot}/dist/tsconfig.lib.tsbuildinfo",
+                "{projectRoot}/out-tsc/vitest/**/*.d.ts",
+                "{projectRoot}/out-tsc/vitest/**/*.d.ts.map",
+                "{projectRoot}/out-tsc/vitest/tsconfig.tsbuildinfo"
+              ],
+              "syncGenerators": [
+                "@nx/js:typescript-sync"
+              ],
+              "metadata": {
+                "technologies": [
+                  "typescript",
+                  "typescript"
+                ],
+                "description": "Runs type-checking for the project.",
+                "help": {
+                  "command": "npx tsc --build --help",
+                  "example": {
+                    "args": [
+                      "--force"
+                    ]
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "packages/jwt-authentication-for-wp-rest-api",
+                "command": "tsc --build --emitDeclarationOnly"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "build": {
+              "dependsOn": [
+                "^build"
+              ],
+              "options": {
+                "cwd": "packages/jwt-authentication-for-wp-rest-api",
+                "command": "tsc --build tsconfig.lib.json"
+              },
+              "cache": true,
+              "inputs": [
+                "{projectRoot}/package.json",
+                "{workspaceRoot}/tsconfig.base.json",
+                "{projectRoot}/tsconfig.lib.json",
+                "{projectRoot}/src/**/*.ts",
+                "!{projectRoot}/vite.config.ts",
+                "!{projectRoot}/vite.config.mts",
+                "!{projectRoot}/vitest.config.ts",
+                "!{projectRoot}/vitest.config.mts",
+                "!{projectRoot}/src/**/*.test.ts",
+                "!{projectRoot}/src/**/*.spec.ts",
+                "!{projectRoot}/src/**/*.test.tsx",
+                "!{projectRoot}/src/**/*.spec.tsx",
+                "!{projectRoot}/src/**/*.test.js",
+                "!{projectRoot}/src/**/*.spec.js",
+                "!{projectRoot}/src/**/*.test.jsx",
+                "!{projectRoot}/src/**/*.spec.jsx",
+                {
+                  "dependentTasksOutputFiles": "**/*.d.ts"
+                },
+                {
+                  "externalDependencies": [
+                    "typescript"
+                  ]
+                }
+              ],
+              "outputs": [
+                "{projectRoot}/dist"
+              ],
+              "syncGenerators": [
+                "@nx/js:typescript-sync"
+              ],
+              "metadata": {
+                "technologies": [
+                  "typescript"
+                ],
+                "description": "Builds the project with `tsc`.",
+                "help": {
+                  "command": "npx tsc --build --help",
+                  "example": {
+                    "args": [
+                      "--force"
+                    ]
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "configurations": {},
+              "parallelism": true
+            },
+            "build-deps": {
+              "dependsOn": [
+                "^build"
+              ],
+              "configurations": {},
+              "options": {},
+              "parallelism": true,
+              "executor": "nx:noop"
+            },
+            "watch-deps": {
+              "continuous": true,
+              "dependsOn": [
+                "build-deps"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "npx nx watch --projects jwt-authentication-for-wp-rest-api --includeDependentProjects -- npx nx build-deps jwt-authentication-for-wp-rest-api"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "lint": {
+              "cache": true,
+              "options": {
+                "cwd": "packages/jwt-authentication-for-wp-rest-api",
+                "command": "eslint ."
+              },
+              "inputs": [
+                "default",
+                "^default",
+                "{workspaceRoot}/eslint.config.mjs",
+                "{workspaceRoot}/packages/jwt-authentication-for-wp-rest-api/eslint.config.mjs",
+                "{workspaceRoot}/tools/eslint-rules/**/*",
+                {
+                  "externalDependencies": [
+                    "eslint"
+                  ]
+                }
+              ],
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "metadata": {
+                "technologies": [
+                  "eslint"
+                ],
+                "description": "Runs ESLint on project",
+                "help": {
+                  "command": "npx eslint --help",
+                  "example": {
+                    "options": {
+                      "max-warnings": 0
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "configurations": {},
+              "parallelism": true
+            },
+            "test": {
+              "options": {
+                "cwd": "packages/jwt-authentication-for-wp-rest-api",
+                "command": "vitest"
+              },
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production",
+                {
+                  "externalDependencies": [
+                    "vitest"
+                  ]
+                },
+                {
+                  "env": "CI"
+                }
+              ],
+              "outputs": [
+                "{projectRoot}/test-output/vitest/coverage"
+              ],
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Run Vite tests",
+                "help": {
+                  "command": "npx vitest --help",
+                  "example": {
+                    "options": {
+                      "bail": 1,
+                      "coverage": true
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "configurations": {},
+              "parallelism": true,
+              "dependsOn": [
+                "^build"
+              ]
+            },
+            "nx-release-publish": {
+              "executor": "@nx/js:release-publish",
+              "dependsOn": [
+                "^nx-release-publish"
+              ],
+              "options": {},
+              "configurations": {},
+              "parallelism": true
+            }
+          },
+          "metadata": {
+            "targetGroups": {},
+            "description": "JWT Authentication for WP REST API",
+            "js": {
+              "packageName": "@store-sdk/jwt-authentication-for-wp-rest-api",
+              "packageExports": {
+                "./package.json": "./package.json",
+                ".": {
+                  "types": "./dist/index.d.ts",
+                  "import": "./dist/index.js",
+                  "default": "./dist/index.js"
+                }
+              },
+              "packageMain": "./dist/index.js",
+              "isInPackageManagerWorkspaces": true
+            }
+          },
+          "name": "jwt-authentication-for-wp-rest-api",
+          "tags": [
+            "npm:public",
+            "npm:woocommerce",
+            "npm:sdk",
+            "npm:store-api",
+            "npm:typescript"
+          ],
+          "implicitDependencies": []
+        }
+      },
       "example-angular-shop": {
         "name": "example-angular-shop",
         "type": "app",
@@ -8,30 +262,61 @@
           "root": "apps/example-angular-shop",
           "targets": {
             "typecheck": {
-              "dependsOn": ["^typecheck"],
+              "dependsOn": [
+                "^typecheck"
+              ],
               "options": {
                 "cwd": "apps/example-angular-shop",
                 "command": "tsc --build --emitDeclarationOnly"
               },
               "cache": true,
               "inputs": [
-                "production",
+                "{workspaceRoot}/tsconfig.base.json",
+                "{projectRoot}/tsconfig.json",
+                "{projectRoot}/tsconfig.app.json",
+                "{projectRoot}/src/**/*.ts",
+                "!{projectRoot}/jest.config.ts",
+                "!{projectRoot}/src/test-setup.ts",
+                "!{projectRoot}/src/**/*.test.ts",
+                "!{projectRoot}/src/**/*.spec.ts",
+                "!{projectRoot}/vite.config.ts",
+                "!{projectRoot}/vite.config.mts",
+                "!{projectRoot}/vitest.config.ts",
+                "!{projectRoot}/vitest.config.mts",
+                "!{projectRoot}/src/**/*.test.tsx",
+                "!{projectRoot}/src/**/*.spec.tsx",
+                "!{projectRoot}/src/**/*.test.js",
+                "!{projectRoot}/src/**/*.spec.js",
+                "!{projectRoot}/src/**/*.test.jsx",
+                "!{projectRoot}/src/**/*.spec.jsx",
                 {
                   "dependentTasksOutputFiles": "**/*.d.ts"
                 },
                 {
-                  "externalDependencies": ["typescript"]
+                  "externalDependencies": [
+                    "typescript"
+                  ]
                 }
               ],
-              "outputs": [],
-              "syncGenerators": ["@nx/js:typescript-sync"],
+              "outputs": [
+                "{workspaceRoot}/dist/out-tsc/**/*.d.ts",
+                "{workspaceRoot}/dist/out-tsc/**/*.d.ts.map",
+                "{workspaceRoot}/dist/out-tsc/tsconfig.tsbuildinfo"
+              ],
+              "syncGenerators": [
+                "@nx/js:typescript-sync"
+              ],
               "metadata": {
-                "technologies": ["typescript"],
+                "technologies": [
+                  "typescript"
+                ],
                 "description": "Runs type-checking for the project.",
                 "help": {
                   "command": "npx tsc --build --help",
                   "example": {
-                    "args": ["--force"]
+                    "args": [
+                      "--force"
+                    ]
                   }
                 }
               },
@@ -47,11 +332,15 @@
             },
             "build": {
               "executor": "@angular/build:application",
-              "outputs": ["{options.outputPath}"],
+              "outputs": [
+                "{options.outputPath}"
+              ],
               "options": {
                 "outputPath": "dist/apps/example-angular-shop",
                 "browser": "apps/example-angular-shop/src/main.ts",
-                "polyfills": ["zone.js"],
+                "polyfills": [
+                  "zone.js"
+                ],
                 "tsConfig": "apps/example-angular-shop/tsconfig.app.json",
                 "assets": [
                   {
@@ -59,7 +348,9 @@
                     "input": "apps/example-angular-shop/public"
                   }
                 ],
-                "styles": ["apps/example-angular-shop/src/styles.css"]
+                "styles": [
+                  "apps/example-angular-shop/src/styles.css"
+                ]
               },
               "configurations": {
                 "production": {
@@ -146,40 +437,39 @@
           "root": "packages/simple-jwt-login",
           "targets": {
             "typecheck": {
-              "dependsOn": ["^typecheck"],
+              "dependsOn": [
+                "^typecheck"
+              ],
               "cache": true,
               "inputs": [
                 "production",
                 "^production",
                 {
-                  "externalDependencies": ["typescript"]
+                  "externalDependencies": [
+                    "typescript"
+                  ]
                 }
               ],
               "outputs": [
-                "{projectRoot}/**/*.js",
-                "{projectRoot}/**/*.cjs",
-                "{projectRoot}/**/*.mjs",
-                "{projectRoot}/**/*.jsx",
-                "{projectRoot}/**/*.js.map",
-                "{projectRoot}/**/*.jsx.map",
-                "{projectRoot}/**/*.d.ts",
-                "{projectRoot}/**/*.d.cts",
-                "{projectRoot}/**/*.d.mts",
-                "{projectRoot}/**/*.d.ts.map",
-                "{projectRoot}/**/*.d.cts.map",
-                "{projectRoot}/**/*.d.mts.map",
-                "{projectRoot}/tsconfig.tsbuildinfo",
                 "{projectRoot}/out-tsc/vitest/**/*.d.ts",
+                "{projectRoot}/out-tsc/vitest/**/*.d.ts.map",
                 "{projectRoot}/out-tsc/vitest/tsconfig.tsbuildinfo"
               ],
-              "syncGenerators": ["@nx/js:typescript-sync"],
+              "syncGenerators": [
+                "@nx/js:typescript-sync"
+              ],
               "metadata": {
-                "technologies": ["typescript", "typescript"],
+                "technologies": [
+                  "typescript",
+                  "typescript"
+                ],
                 "description": "Runs type-checking for the project.",
                 "help": {
                   "command": "npx tsc --build --help",
                   "example": {
-                    "args": ["--force"]
+                    "args": [
+                      "--force"
+                    ]
                   }
                 }
               },
@@ -192,30 +482,58 @@
               "parallelism": true
             },
             "build": {
-              "dependsOn": ["^build"],
+              "dependsOn": [
+                "^build"
+              ],
               "options": {
                 "cwd": "packages/simple-jwt-login",
                 "command": "tsc --build tsconfig.lib.json"
               },
               "cache": true,
               "inputs": [
-                "production",
+                "{projectRoot}/package.json",
+                "{workspaceRoot}/tsconfig.base.json",
+                "{projectRoot}/tsconfig.lib.json",
+                "{projectRoot}/src/**/*.ts",
+                "{projectRoot}/src/lib/types/jwt..typets",
+                "!{projectRoot}/vite.config.ts",
+                "!{projectRoot}/vite.config.mts",
+                "!{projectRoot}/vitest.config.ts",
+                "!{projectRoot}/vitest.config.mts",
+                "!{projectRoot}/src/**/*.test.ts",
+                "!{projectRoot}/src/**/*.spec.ts",
+                "!{projectRoot}/src/**/*.test.tsx",
+                "!{projectRoot}/src/**/*.spec.tsx",
+                "!{projectRoot}/src/**/*.test.js",
+                "!{projectRoot}/src/**/*.spec.js",
+                "!{projectRoot}/src/**/*.test.jsx",
+                "!{projectRoot}/src/**/*.spec.jsx",
                 {
                   "dependentTasksOutputFiles": "**/*.d.ts"
                 },
                 {
-                  "externalDependencies": ["typescript"]
+                  "externalDependencies": [
+                    "typescript"
+                  ]
                 }
               ],
-              "outputs": ["{projectRoot}/dist"],
-              "syncGenerators": ["@nx/js:typescript-sync"],
+              "outputs": [
+                "{projectRoot}/dist"
+              ],
+              "syncGenerators": [
+                "@nx/js:typescript-sync"
+              ],
               "metadata": {
-                "technologies": ["typescript"],
+                "technologies": [
+                  "typescript"
+                ],
                 "description": "Builds the project with `tsc`.",
                 "help": {
                   "command": "npx tsc --build --help",
                   "example": {
-                    "args": ["--force"]
+                    "args": [
+                      "--force"
+                    ]
                   }
                 }
               },
@@ -224,7 +542,9 @@
               "parallelism": true
             },
             "build-deps": {
-              "dependsOn": ["^build"],
+              "dependsOn": [
+                "^build"
+              ],
               "configurations": {},
               "options": {},
               "parallelism": true,
@@ -232,7 +552,9 @@
             },
             "watch-deps": {
               "continuous": true,
-              "dependsOn": ["build-deps"],
+              "dependsOn": [
+                "build-deps"
+              ],
               "executor": "nx:run-commands",
               "options": {
                 "command": "npx nx watch --projects simple-jwt-login --includeDependentProjects -- npx nx build-deps simple-jwt-login"
@@ -253,12 +575,18 @@
                 "{workspaceRoot}/packages/simple-jwt-login/eslint.config.mjs",
                 "{workspaceRoot}/tools/eslint-rules/**/*",
                 {
-                  "externalDependencies": ["eslint"]
+                  "externalDependencies": [
+                    "eslint"
+                  ]
                 }
               ],
-              "outputs": ["{options.outputFile}"],
+              "outputs": [
+                "{options.outputFile}"
+              ],
               "metadata": {
-                "technologies": ["eslint"],
+                "technologies": [
+                  "eslint"
+                ],
                 "description": "Runs ESLint on project",
                 "help": {
                   "command": "npx eslint --help",
@@ -283,15 +611,21 @@
                 "default",
                 "^production",
                 {
-                  "externalDependencies": ["vitest"]
+                  "externalDependencies": [
+                    "vitest"
+                  ]
                 },
                 {
                   "env": "CI"
                 }
               ],
-              "outputs": ["{projectRoot}\\test-output\\vitest\\coverage"],
+              "outputs": [
+                "{projectRoot}/test-output/vitest/coverage"
+              ],
               "metadata": {
-                "technologies": ["vite"],
+                "technologies": [
+                  "vite"
+                ],
                 "description": "Run Vite tests",
                 "help": {
                   "command": "npx vitest --help",
@@ -306,11 +640,15 @@
               "executor": "nx:run-commands",
               "configurations": {},
               "parallelism": true,
-              "dependsOn": ["^build"]
+              "dependsOn": [
+                "^build"
+              ]
             },
             "nx-release-publish": {
               "executor": "@nx/js:release-publish",
-              "dependsOn": ["^nx-release-publish"],
+              "dependsOn": [
+                "^nx-release-publish"
+              ],
               "options": {},
               "configurations": {},
               "parallelism": true
@@ -333,7 +671,263 @@
             }
           },
           "name": "simple-jwt-login",
-          "tags": ["npm:public"],
+          "tags": [
+            "npm:public"
+          ],
+          "implicitDependencies": []
+        }
+      },
+      "hippoo": {
+        "name": "hippoo",
+        "type": "lib",
+        "data": {
+          "root": "packages/hippoo",
+          "targets": {
+            "typecheck": {
+              "dependsOn": [
+                "^typecheck"
+              ],
+              "cache": true,
+              "inputs": [
+                "production",
+                "^production",
+                {
+                  "externalDependencies": [
+                    "typescript"
+                  ]
+                }
+              ],
+              "outputs": [
+                "{projectRoot}/dist/**/*.d.ts",
+                "{projectRoot}/dist/**/*.d.ts.map",
+                "{projectRoot}/dist/tsconfig.lib.tsbuildinfo",
+                "{projectRoot}/out-tsc/vitest/**/*.d.ts",
+                "{projectRoot}/out-tsc/vitest/**/*.d.ts.map",
+                "{projectRoot}/out-tsc/vitest/tsconfig.tsbuildinfo"
+              ],
+              "syncGenerators": [
+                "@nx/js:typescript-sync"
+              ],
+              "metadata": {
+                "technologies": [
+                  "typescript",
+                  "typescript"
+                ],
+                "description": "Runs type-checking for the project.",
+                "help": {
+                  "command": "npx tsc --build --help",
+                  "example": {
+                    "args": [
+                      "--force"
+                    ]
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "packages/hippoo",
+                "command": "tsc --build --emitDeclarationOnly"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "build": {
+              "dependsOn": [
+                "^build"
+              ],
+              "options": {
+                "cwd": "packages/hippoo",
+                "command": "tsc --build tsconfig.lib.json"
+              },
+              "cache": true,
+              "inputs": [
+                "{projectRoot}/package.json",
+                "{workspaceRoot}/tsconfig.base.json",
+                "{projectRoot}/tsconfig.lib.json",
+                "{projectRoot}/src/**/*.ts",
+                "!{projectRoot}/vite.config.ts",
+                "!{projectRoot}/vite.config.mts",
+                "!{projectRoot}/vitest.config.ts",
+                "!{projectRoot}/vitest.config.mts",
+                "!{projectRoot}/src/**/*.test.ts",
+                "!{projectRoot}/src/**/*.spec.ts",
+                "!{projectRoot}/src/**/*.test.tsx",
+                "!{projectRoot}/src/**/*.spec.tsx",
+                "!{projectRoot}/src/**/*.test.js",
+                "!{projectRoot}/src/**/*.spec.js",
+                "!{projectRoot}/src/**/*.test.jsx",
+                "!{projectRoot}/src/**/*.spec.jsx",
+                {
+                  "dependentTasksOutputFiles": "**/*.d.ts"
+                },
+                {
+                  "externalDependencies": [
+                    "typescript"
+                  ]
+                }
+              ],
+              "outputs": [
+                "{projectRoot}/dist"
+              ],
+              "syncGenerators": [
+                "@nx/js:typescript-sync"
+              ],
+              "metadata": {
+                "technologies": [
+                  "typescript"
+                ],
+                "description": "Builds the project with `tsc`.",
+                "help": {
+                  "command": "npx tsc --build --help",
+                  "example": {
+                    "args": [
+                      "--force"
+                    ]
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "configurations": {},
+              "parallelism": true
+            },
+            "build-deps": {
+              "dependsOn": [
+                "^build"
+              ],
+              "configurations": {},
+              "options": {},
+              "parallelism": true,
+              "executor": "nx:noop"
+            },
+            "watch-deps": {
+              "continuous": true,
+              "dependsOn": [
+                "build-deps"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "npx nx watch --projects hippoo --includeDependentProjects -- npx nx build-deps hippoo"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "lint": {
+              "cache": true,
+              "options": {
+                "cwd": "packages/hippoo",
+                "command": "eslint ."
+              },
+              "inputs": [
+                "default",
+                "^default",
+                "{workspaceRoot}/eslint.config.mjs",
+                "{workspaceRoot}/packages/hippoo/eslint.config.mjs",
+                "{workspaceRoot}/tools/eslint-rules/**/*",
+                {
+                  "externalDependencies": [
+                    "eslint"
+                  ]
+                }
+              ],
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "metadata": {
+                "technologies": [
+                  "eslint"
+                ],
+                "description": "Runs ESLint on project",
+                "help": {
+                  "command": "npx eslint --help",
+                  "example": {
+                    "options": {
+                      "max-warnings": 0
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "configurations": {},
+              "parallelism": true
+            },
+            "test": {
+              "options": {
+                "cwd": "packages/hippoo",
+                "command": "vitest"
+              },
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production",
+                {
+                  "externalDependencies": [
+                    "vitest"
+                  ]
+                },
+                {
+                  "env": "CI"
+                }
+              ],
+              "outputs": [
+                "{projectRoot}/test-output/vitest/coverage"
+              ],
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Run Vite tests",
+                "help": {
+                  "command": "npx vitest --help",
+                  "example": {
+                    "options": {
+                      "bail": 1,
+                      "coverage": true
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "configurations": {},
+              "parallelism": true,
+              "dependsOn": [
+                "^build"
+              ]
+            },
+            "nx-release-publish": {
+              "executor": "@nx/js:release-publish",
+              "dependsOn": [
+                "^nx-release-publish"
+              ],
+              "options": {},
+              "configurations": {},
+              "parallelism": true
+            }
+          },
+          "metadata": {
+            "targetGroups": {},
+            "description": "JWT Authentication for WP REST API",
+            "js": {
+              "packageName": "@store-sdk/hippoo",
+              "packageExports": {
+                "./package.json": "./package.json",
+                ".": {
+                  "types": "./dist/index.d.ts",
+                  "import": "./dist/index.js",
+                  "default": "./dist/index.js"
+                }
+              },
+              "packageMain": "./dist/index.js",
+              "isInPackageManagerWorkspaces": true
+            }
+          },
+          "name": "hippoo",
+          "tags": [
+            "npm:public",
+            "npm:woocommerce",
+            "npm:sdk",
+            "npm:store-api",
+            "npm:typescript"
+          ],
           "implicitDependencies": []
         }
       },
@@ -344,40 +938,39 @@
           "root": "packages/core",
           "targets": {
             "typecheck": {
-              "dependsOn": ["^typecheck"],
+              "dependsOn": [
+                "^typecheck"
+              ],
               "cache": true,
               "inputs": [
                 "production",
                 "^production",
                 {
-                  "externalDependencies": ["typescript"]
+                  "externalDependencies": [
+                    "typescript"
+                  ]
                 }
               ],
               "outputs": [
-                "{projectRoot}/**/*.js",
-                "{projectRoot}/**/*.cjs",
-                "{projectRoot}/**/*.mjs",
-                "{projectRoot}/**/*.jsx",
-                "{projectRoot}/**/*.js.map",
-                "{projectRoot}/**/*.jsx.map",
-                "{projectRoot}/**/*.d.ts",
-                "{projectRoot}/**/*.d.cts",
-                "{projectRoot}/**/*.d.mts",
-                "{projectRoot}/**/*.d.ts.map",
-                "{projectRoot}/**/*.d.cts.map",
-                "{projectRoot}/**/*.d.mts.map",
-                "{projectRoot}/tsconfig.tsbuildinfo",
                 "{projectRoot}/out-tsc/vitest/**/*.d.ts",
+                "{projectRoot}/out-tsc/vitest/**/*.d.ts.map",
                 "{projectRoot}/out-tsc/vitest/tsconfig.tsbuildinfo"
               ],
-              "syncGenerators": ["@nx/js:typescript-sync"],
+              "syncGenerators": [
+                "@nx/js:typescript-sync"
+              ],
               "metadata": {
-                "technologies": ["typescript", "typescript"],
+                "technologies": [
+                  "typescript",
+                  "typescript"
+                ],
                 "description": "Runs type-checking for the project.",
                 "help": {
                   "command": "npx tsc --build --help",
                   "example": {
-                    "args": ["--force"]
+                    "args": [
+                      "--force"
+                    ]
                   }
                 }
               },
@@ -390,28 +983,55 @@
               "parallelism": true
             },
             "build": {
-              "dependsOn": ["^build"],
+              "dependsOn": [
+                "^build"
+              ],
               "options": {
                 "cwd": "packages/core",
                 "command": "tsc --build tsconfig.lib.json"
               },
               "cache": true,
               "inputs": [
-                "production",
+                "{projectRoot}/package.json",
+                "{workspaceRoot}/tsconfig.base.json",
+                "{projectRoot}/tsconfig.lib.json",
+                "{projectRoot}/src/**/*.ts",
+                "!{projectRoot}/vite.config.ts",
+                "!{projectRoot}/vite.config.mts",
+                "!{projectRoot}/vitest.config.ts",
+                "!{projectRoot}/vitest.config.mts",
+                "!{projectRoot}/src/**/*.test.ts",
+                "!{projectRoot}/src/**/*.spec.ts",
+                "!{projectRoot}/src/**/*.test.tsx",
+                "!{projectRoot}/src/**/*.spec.tsx",
+                "!{projectRoot}/src/**/*.test.js",
+                "!{projectRoot}/src/**/*.spec.js",
+                "!{projectRoot}/src/**/*.test.jsx",
+                "!{projectRoot}/src/**/*.spec.jsx",
                 "^production",
                 {
-                  "externalDependencies": ["typescript"]
+                  "externalDependencies": [
+                    "typescript"
+                  ]
                 }
               ],
-              "outputs": ["{projectRoot}/dist"],
-              "syncGenerators": ["@nx/js:typescript-sync"],
+              "outputs": [
+                "{projectRoot}/dist"
+              ],
+              "syncGenerators": [
+                "@nx/js:typescript-sync"
+              ],
               "metadata": {
-                "technologies": ["typescript"],
+                "technologies": [
+                  "typescript"
+                ],
                 "description": "Builds the project with `tsc`.",
                 "help": {
                   "command": "npx tsc --build --help",
                   "example": {
-                    "args": ["--force"]
+                    "args": [
+                      "--force"
+                    ]
                   }
                 }
               },
@@ -420,7 +1040,9 @@
               "parallelism": true
             },
             "build-deps": {
-              "dependsOn": ["^build"],
+              "dependsOn": [
+                "^build"
+              ],
               "configurations": {},
               "options": {},
               "parallelism": true,
@@ -428,7 +1050,9 @@
             },
             "watch-deps": {
               "continuous": true,
-              "dependsOn": ["build-deps"],
+              "dependsOn": [
+                "build-deps"
+              ],
               "executor": "nx:run-commands",
               "options": {
                 "command": "npx nx watch --projects core --includeDependentProjects -- npx nx build-deps core"
@@ -449,12 +1073,18 @@
                 "{workspaceRoot}/packages/core/eslint.config.mjs",
                 "{workspaceRoot}/tools/eslint-rules/**/*",
                 {
-                  "externalDependencies": ["eslint"]
+                  "externalDependencies": [
+                    "eslint"
+                  ]
                 }
               ],
-              "outputs": ["{options.outputFile}"],
+              "outputs": [
+                "{options.outputFile}"
+              ],
               "metadata": {
-                "technologies": ["eslint"],
+                "technologies": [
+                  "eslint"
+                ],
                 "description": "Runs ESLint on project",
                 "help": {
                   "command": "npx eslint --help",
@@ -479,15 +1109,21 @@
                 "default",
                 "^production",
                 {
-                  "externalDependencies": ["vitest"]
+                  "externalDependencies": [
+                    "vitest"
+                  ]
                 },
                 {
                   "env": "CI"
                 }
               ],
-              "outputs": ["{projectRoot}\\test-output\\vitest\\coverage"],
+              "outputs": [
+                "{projectRoot}/test-output/vitest/coverage"
+              ],
               "metadata": {
-                "technologies": ["vite"],
+                "technologies": [
+                  "vite"
+                ],
                 "description": "Run Vite tests",
                 "help": {
                   "command": "npx vitest --help",
@@ -502,11 +1138,15 @@
               "executor": "nx:run-commands",
               "configurations": {},
               "parallelism": true,
-              "dependsOn": ["^build"]
+              "dependsOn": [
+                "^build"
+              ]
             },
             "nx-release-publish": {
               "executor": "@nx/js:release-publish",
-              "dependsOn": ["^nx-release-publish"],
+              "dependsOn": [
+                "^nx-release-publish"
+              ],
               "options": {},
               "configurations": {},
               "parallelism": true
@@ -539,9 +1179,47 @@
           ],
           "implicitDependencies": []
         }
+      },
+      "@store-sdk/source": {
+        "name": "@store-sdk/source",
+        "type": "app",
+        "data": {
+          "root": ".",
+          "name": "@store-sdk/source",
+          "includedScripts": [],
+          "tags": [
+            "npm:public"
+          ],
+          "metadata": {
+            "targetGroups": {},
+            "js": {
+              "packageName": "@store-sdk/source",
+              "isInPackageManagerWorkspaces": true
+            }
+          },
+          "targets": {
+            "nx-release-publish": {
+              "executor": "@nx/js:release-publish",
+              "dependsOn": [
+                "^nx-release-publish"
+              ],
+              "options": {},
+              "configurations": {},
+              "parallelism": true
+            }
+          },
+          "implicitDependencies": []
+        }
       }
     },
     "dependencies": {
+      "jwt-authentication-for-wp-rest-api": [
+        {
+          "source": "jwt-authentication-for-wp-rest-api",
+          "target": "core",
+          "type": "static"
+        }
+      ],
       "example-angular-shop": [
         {
           "source": "example-angular-shop",
@@ -561,7 +1239,15 @@
           "type": "static"
         }
       ],
-      "core": []
+      "hippoo": [
+        {
+          "source": "hippoo",
+          "target": "core",
+          "type": "static"
+        }
+      ],
+      "core": [],
+      "@store-sdk/source": []
     }
   }
 }
