@@ -14,5 +14,8 @@ export interface StoreSdkConfig {
     setToken?: (cartToken: string) => Promise<void>;
     clearToken?: () => Promise<void>;
   };
-  plugins?: StoreSdkPlugin<any>[];
+  /**
+   * Plugins extending the SDK. Use generic parameter on StoreSdkPlugin to strongly type plugin config.
+   */
+  plugins?: StoreSdkPlugin<unknown>[];
 }

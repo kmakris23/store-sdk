@@ -44,7 +44,8 @@ class HippooPlugin implements StoreSdkPlugin<HippoConfig> {
   }
 
   extend(sdk: Sdk) {
-    (sdk as any)._hippoo = this._hippoo;
+    // Internal augmentation
+    (sdk as unknown as { _hippoo: HippoService })._hippoo = this._hippoo;
 
     Object.defineProperty(sdk, 'hippoo', {
       get: () => this._hippoo,

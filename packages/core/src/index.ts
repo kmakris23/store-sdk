@@ -14,3 +14,8 @@ export * from './lib/configs/sdk.config.js';
 export * from './lib/types/api.js';
 export * from './lib/plugins/index.js';
 export * from './lib/utilities/axios.utility.js';
+
+// Plugin architecture support
+export { EventBus } from './lib/bus/event.bus.js';
+export * from './lib/sdk.events.js';
+export * from './lib/types/sdk.state.js';
