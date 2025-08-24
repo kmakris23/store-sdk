@@ -23,9 +23,11 @@ class PluginA {
     this.initCalled = true;
   }
 
-  registerEventHandlers(events: { on: (evt: string, cb: (authenticated: boolean) => void) => void }) {
+  registerEventHandlers(events: {
+    on: (evt: string, cb: (authenticated: boolean) => void) => void;
+  }) {
     this.eventHandlersCalled = true;
-  events.on('auth:changed', noop);
+    events.on('auth:changed', noop);
   }
 
   extend(sdk: TestSdkShape) {
@@ -48,9 +50,11 @@ class PluginB {
     this.initCalled = true;
   }
 
-  registerEventHandlers(events: { on: (evt: string, cb: (authenticated: boolean) => void) => void }) {
+  registerEventHandlers(events: {
+    on: (evt: string, cb: (authenticated: boolean) => void) => void;
+  }) {
     this.eventHandlersCalled = true;
-  events.on('auth:changed', noop);
+    events.on('auth:changed', noop);
   }
 
   extend(sdk: TestSdkShape) {
@@ -117,8 +121,12 @@ describe('Multiple Plugins Integration', () => {
     await sdk.init(config);
 
     // Both plugins should have added their extensions
-  expect((sdk as unknown as TestSdkShape).pluginA).toEqual({ name: 'Plugin A' });
-  expect((sdk as unknown as TestSdkShape).pluginB).toEqual({ name: 'Plugin B' });
+    expect((sdk as unknown as TestSdkShape).pluginA).toEqual({
+      name: 'Plugin A',
+    });
+    expect((sdk as unknown as TestSdkShape).pluginB).toEqual({
+      name: 'Plugin B',
+    });
   });
 
   it('should handle empty plugins array', async () => {

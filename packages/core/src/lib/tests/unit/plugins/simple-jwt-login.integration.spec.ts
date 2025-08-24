@@ -54,7 +54,9 @@ class MockSimpleJwtPlugin {
 
   extend(sdk: Sdk) {
     // Simulate extending the SDK with auth capabilities
-    (sdk as unknown as { simpleJwt?: { auth: unknown; users: unknown } }).simpleJwt = {
+    (
+      sdk as unknown as { simpleJwt?: { auth: unknown; users: unknown } }
+    ).simpleJwt = {
       auth: { isAuthenticated: () => true },
       users: { getCurrentUser: () => ({ id: 1 }) },
     };
@@ -113,7 +115,7 @@ describe('Simple JWT Login Plugin Integration', () => {
 
     config = {
       baseUrl: 'https://example.com',
-  plugins: [mockPlugin as unknown as never],
+      plugins: [mockPlugin as unknown as never],
       nonce: {
         clearToken: mockClearNonce,
       },
@@ -151,7 +153,7 @@ describe('Simple JWT Login Plugin Integration', () => {
 
     const configNoFetch = {
       ...config,
-  plugins: [mockPluginNoFetch as unknown as never],
+      plugins: [mockPluginNoFetch as unknown as never],
     };
 
     // Create a fresh SDK instance to avoid interference
@@ -186,16 +188,18 @@ describe('Simple JWT Login Plugin Integration', () => {
   it('should extend SDK with simple-jwt capabilities', async () => {
     await sdk.init(config);
 
-  const simpleJwt = (sdk as unknown as { simpleJwt: { auth: unknown; users: unknown } }).simpleJwt;
-  expect(simpleJwt).toBeDefined();
-  expect(simpleJwt.auth).toBeDefined();
-  expect(simpleJwt.users).toBeDefined();
+    const simpleJwt = (
+      sdk as unknown as { simpleJwt: { auth: unknown; users: unknown } }
+    ).simpleJwt;
+    expect(simpleJwt).toBeDefined();
+    expect(simpleJwt.auth).toBeDefined();
+    expect(simpleJwt.users).toBeDefined();
   });
 
   it('should work without nonce or cartToken configured', async () => {
     const configMinimal = {
       baseUrl: 'https://example.com',
-  plugins: [mockPlugin as unknown as never],
+      plugins: [mockPlugin as unknown as never],
     };
 
     // Should not throw

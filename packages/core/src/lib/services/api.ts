@@ -20,7 +20,7 @@ export function getHttpClient(): AxiosInstance {
 export const httpClient: AxiosInstance = new Proxy({} as AxiosInstance, {
   get(_t, prop: string | symbol) {
     const client = getHttpClient();
-  // Forward property access; TypeScript doesn't allow generic index on AxiosInstance
-  return (client as unknown as Record<string | symbol, unknown>)[prop];
+    // Forward property access; TypeScript doesn't allow generic index on AxiosInstance
+    return (client as unknown as Record<string | symbol, unknown>)[prop];
   },
 });
