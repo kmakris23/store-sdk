@@ -90,8 +90,8 @@ class SimpleJwtPlugin implements StoreSdkPlugin<SimpleJwtLoginConfig> {
   }
 
   extend(sdk: Sdk) {
-    (sdk as any)._auth = this._auth;
-    (sdk as any)._users = this._users;
+    (sdk as unknown as { _auth: AuthService })._auth = this._auth;
+    (sdk as unknown as { _users: UserService })._users = this._users;
 
     const simpleJwt = {
       auth: this._auth,

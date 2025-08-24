@@ -2,6 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Sdk } from '../../../sdk.js';
 import { StoreSdkConfig } from '../../../configs/sdk.config.js';
 import { SimpleJwtLoginConfig } from '../../../configs/simple.jwt.login.config.js';
+import { EventBus } from '../../../bus/event.bus.js';
+import { StoreSdkEvent } from '../../../sdk.events.js';
+import { StoreSdkState } from '../../../types/sdk.state.js';
 
 // We need to create a minimal mock of the simple-jwt-login plugin for testing
 // This simulates how the actual plugin would work with our new architecture
@@ -51,7 +54,7 @@ class MockSimpleJwtPlugin {
 
   extend(sdk: Sdk) {
     // Simulate extending the SDK with auth capabilities
-    (sdk as any).simpleJwt = {
+    (sdk as unknown as { simpleJwt?: { auth: unknown; users: unknown } }).simpleJwt = {
       auth: { isAuthenticated: () => true },
       users: { getCurrentUser: () => ({ id: 1 }) },
     };
@@ -110,7 +113,7 @@ describe('Simple JWT Login Plugin Integration', () => {
 
     config = {
       baseUrl: 'https://example.com',
-      plugins: [mockPlugin as any],
+  plugins: [mockPlugin as unknown as never],
       nonce: {
         clearToken: mockClearNonce,
       },
@@ -148,7 +151,7 @@ describe('Simple JWT Login Plugin Integration', () => {
 
     const configNoFetch = {
       ...config,
-      plugins: [mockPluginNoFetch as any],
+  plugins: [mockPluginNoFetch as unknown as never],
     };
 
     // Create a fresh SDK instance to avoid interference
@@ -183,15 +186,16 @@ describe('Simple JWT Login Plugin Integration', () => {
   it('should extend SDK with simple-jwt capabilities', async () => {
     await sdk.init(config);
 
-    expect((sdk as any).simpleJwt).toBeDefined();
-    expect((sdk as any).simpleJwt.auth).toBeDefined();
-    expect((sdk as any).simpleJwt.users).toBeDefined();
+  const simpleJwt = (sdk as unknown as { simpleJwt: { auth: unknown; users: unknown } }).simpleJwt;
+  expect(simpleJwt).toBeDefined();
+  expect(simpleJwt.auth).toBeDefined();
+  expect(simpleJwt.users).toBeDefined();
   });
 
   it('should work without nonce or cartToken configured', async () => {
     const configMinimal = {
       baseUrl: 'https://example.com',
-      plugins: [mockPlugin as any],
+  plugins: [mockPlugin as unknown as never],
     };
 
     // Should not throw

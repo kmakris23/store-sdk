@@ -3,6 +3,12 @@ import { Sdk } from '../../../sdk.js';
 import { StoreSdkConfig } from '../../../configs/sdk.config.js';
 
 // Mock plugins for testing multiple plugin scenarios
+interface TestSdkShape {
+  pluginA?: { name: string };
+  pluginB?: { name: string };
+}
+const noop = () => void 0;
+
 class PluginA {
   id = 'hippoo' as const;
   public initCalled = false;
@@ -17,14 +23,12 @@ class PluginA {
     this.initCalled = true;
   }
 
-  registerEventHandlers(events: any) {
+  registerEventHandlers(events: { on: (evt: string, cb: (authenticated: boolean) => void) => void }) {
     this.eventHandlersCalled = true;
-    events.on('auth:changed', (authenticated: boolean) => {
-      // Plugin A logic
-    });
+  events.on('auth:changed', noop);
   }
 
-  extend(sdk: any) {
+  extend(sdk: TestSdkShape) {
     this.extendCalled = true;
     sdk.pluginA = { name: 'Plugin A' };
   }
@@ -44,14 +48,12 @@ class PluginB {
     this.initCalled = true;
   }
 
-  registerEventHandlers(events: any) {
+  registerEventHandlers(events: { on: (evt: string, cb: (authenticated: boolean) => void) => void }) {
     this.eventHandlersCalled = true;
-    events.on('auth:changed', (authenticated: boolean) => {
-      // Plugin B logic
-    });
+  events.on('auth:changed', noop);
   }
 
-  extend(sdk: any) {
+  extend(sdk: TestSdkShape) {
     this.extendCalled = true;
     sdk.pluginB = { name: 'Plugin B' };
   }
@@ -91,7 +93,7 @@ describe('Multiple Plugins Integration', () => {
 
     config = {
       baseUrl: 'https://example.com',
-      plugins: [pluginA as any, pluginB as any],
+      plugins: [pluginA as unknown as never, pluginB as unknown as never],
     };
   });
 
@@ -115,8 +117,8 @@ describe('Multiple Plugins Integration', () => {
     await sdk.init(config);
 
     // Both plugins should have added their extensions
-    expect((sdk as any).pluginA).toEqual({ name: 'Plugin A' });
-    expect((sdk as any).pluginB).toEqual({ name: 'Plugin B' });
+  expect((sdk as unknown as TestSdkShape).pluginA).toEqual({ name: 'Plugin A' });
+  expect((sdk as unknown as TestSdkShape).pluginB).toEqual({ name: 'Plugin B' });
   });
 
   it('should handle empty plugins array', async () => {

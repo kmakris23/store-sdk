@@ -54,7 +54,7 @@ export const addRefreshTokenInterceptor = (
 
 const refreshTokenFailed = async (
   config: SimpleJwtLoginConfig,
-  reason?: any
+  reason?: unknown
 ) => {
   if (config.clearToken) {
     await config.clearToken();

@@ -45,7 +45,7 @@ class AuthPlugin implements StoreSdkPlugin<AuthConfig> {
   }
 
   extend(sdk: Sdk) {
-    (sdk as any)._hippoo = this._auth;
+    (sdk as unknown as { _hippoo: AuthService })._hippoo = this._auth;
 
     Object.defineProperty(sdk, 'auth', {
       get: () => this._auth,

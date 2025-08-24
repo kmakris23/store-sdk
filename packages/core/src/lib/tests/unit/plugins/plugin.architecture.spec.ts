@@ -47,7 +47,7 @@ class TestPlugin implements StoreSdkPlugin<{ testConfig: string }> {
 
   extend(sdk: Sdk): void {
     this.extendCalled = true;
-    (sdk as any).testExtension = 'extended';
+    (sdk as unknown as { testExtension?: string }).testExtension = 'extended';
   }
 }
 
@@ -125,7 +125,7 @@ describe('Plugin Architecture', () => {
   it('should allow plugins to extend the SDK', async () => {
     await sdk.init(config);
 
-    expect((sdk as any).testExtension).toBe('extended');
+  expect((sdk as unknown as { testExtension?: string }).testExtension).toBe('extended');
   });
 
   it('should handle plugins without registerEventHandlers method', async () => {
