@@ -1,109 +1,256 @@
 # GitHub Copilot / AI Agent Instructions
 
-Concise, project-specific rules to make productive, low‑risk changes to this monorepo.
+Comprehensive guide for efficiently working with the WooCommerce Store API SDK monorepo. This TypeScript-first SDK provides seamless integration with WooCommerce Store API endpoints, supporting guest and authenticated users through a plugin-based authentication system.
 
-## ✅ Do / ❌ Don't
+## 📋 Repository Overview
 
-**Do**
+**What it does**: TypeScript WooCommerce Store API SDK for headless e-commerce development, featuring comprehensive API coverage (products, cart, checkout, orders), event-driven architecture, and multi-authentication support.
 
-- Keep commits minimal & purpose-driven, using conventional commit messages for package changes (release automation relies on them).
-- Respect existing lint + formatting (ESLint + Prettier). **ALL pull requests must pass format checks.** Run `npx prettier --check .` and `nx lint <project>` before suggesting changes.
-- Export new public APIs only via each package's `src/index.ts`.
-- Reuse existing patterns (services, events, interceptors, plugins); extend instead of inventing abstractions.
+**Tech stack**: Node.js 20+ • Nx 21.4.1 monorepo • TypeScript 5.8 • Vitest testing • ESLint/Prettier • Angular 20 example
 
-**Don't**
+**Size**: Medium monorepo (~2000 files, ~1min install time) with 5 packages + 1 example app. Pure ESM (`"type": "module"`).
 
-- Modify root `package.json`, `nx.json`, any `CHANGELOG*`, or `renovate.json` unless explicitly requested.
-- Introduce CommonJS wrappers; repo is pure ESM (`"type": "module"`).
-- Add broad / unnecessary dependencies (prefer `axios`, `qs`, `date-fns`, or stdlib first).
+**Structure**:
 
-## 📁 Repository Layout
+- `packages/core` - Main WooCommerce Store SDK (81 unit tests)
+- `packages/simple-jwt-login` - Auth plugin for Simple JWT Login WordPress plugin
+- `packages/jwt-authentication-for-wp-rest-api` - Auth plugin for JWT Auth WP plugin
+- `packages/hippoo` - Auth plugin for Hippoo WordPress plugin
+- `apps/example-angular-shop` - Example Angular 20 application
 
-Managed by Nx.
+## 🚀 Environment Setup & Build Commands
 
-- `packages/core` – Core WooCommerce Store SDK (primary architectural reference)
-- Other packages: `simple-jwt-login`, `jwt-authentication-for-wp-rest-api`, `hippoo` (auth / plugin helpers; single entry export)
-- `apps/` – Example Angular + Node app (manual testing only; not published)
+**Prerequisites**: Node.js 20+, npm 10+ (verified with Node 20.19.4, npm 10.8.2)
 
-## 🏗 Core Architecture (`packages/core`)
+### Bootstrap (First Time Setup)
 
-Entry: `src/index.ts` re-exports only stable surface.
+```bash
+npm install  # ~60 seconds, includes all dependencies
+```
 
-- `Sdk` (`lib/sdk.ts`) – creates axios client (`createHttpClient`), installs interceptors, initializes plugins, prefetches cart, wires events
-- `StoreService` (`lib/services/store.service.ts`) – aggregates domain services (`cart`, `products`, `orders`, etc.) via getters; each file `<entity>.service.ts` with ctor `(state, config, events)`
-- Events – lightweight `EventBus` (`lib/bus/event.bus.ts`) with middleware, `once`, `waitFor`, scoped events; extend `sdk.events.ts`
-- HTTP – `createHttpClient` sets idempotent axios instance; `httpClient` proxy throws until init
-- Interceptors – nonce & cart token update + emit (`nonce:changed`, `cart:token:changed`)
-- Plugins – implement `StoreSdkPlugin`; special handling only where needed (`simple-jwt-login` login flow)
-- State – `StoreSdkState` holds only mutable runtime data (no derived values)
+**ALWAYS** run `npm install` before any other command - this is required and non-optional.
 
-## ➕ Adding a New Service
+### Build Commands (Validated Working Order)
 
-1. Create `packages/core/src/lib/services/store/<name>.service.ts` exporting `<PascalName>Service`.
-2. Constructor: `(state: StoreSdkState, config: StoreSdkConfig, events: EventBus<StoreSdkEvent>)`.
-3. Add private field + getter in `StoreService` (keep alphabetical order).
-4. Re-export any public types/functions via `src/index.ts` only.
+```bash
+# Build all projects (takes ~6-7 seconds)
+npx nx run-many -t build
 
-## 🔔 Extending Events
+# Build specific project
+npx nx build core
+npx nx build simple-jwt-login
 
-1. Add key in `sdk.events.ts` (use optional payload only when truly optional).
-2. Emit with `events.emit('your:event', payload)`; consumers use `on` / `waitFor`.
-3. Follow naming: `domain:action[:phase]` (e.g. `auth:token:refresh:start`).
+# Clean rebuild (resets Nx cache, takes ~7 seconds)
+npm run dev:rebuild
+```
 
-## 🔌 Plugins
+### Testing Commands
 
-Follow existing `id` patterns. Any special-case in `Sdk.init` must be:
+```bash
+# Run all tests (core has 81 passing tests, takes ~2 seconds)
+npx nx run-many -t test
 
-- Guarded by exact `plugin.id`
-- Minimal (delegate heavy logic into the plugin)
-- Free of cross-plugin branching
+# Test specific project
+npx nx test core
 
-## 🔐 Tokens & Auth Flow
+# Tests use Vitest, placed in src/lib/tests/ or alongside source files
+# Test files must be named *.spec.ts or *.test.ts
+```
 
-- Nonce + cart token updated transparently via interceptors (config may expose `getToken/setToken/clearToken`).
-- On `auth:changed` false: core clears tokens if `clearToken` hooks exist.
-- `simple-jwt-login` may `fetchCartOnLogin` (refetches post-auth).
+### Linting & Formatting (MANDATORY)
 
-## 🧪 Testing (Library Focus)
+```bash
+# Format check - MUST PASS before any PR
+npx prettier --check .
 
-- Vitest (`tsconfig.spec.json`). Place tests alongside sources (`src/lib/**`) or in `tests/`; name them `*.spec.ts`.
-- New events/interceptors: add/update unit tests; mock HTTP (`doGet/doPost/...`). No network calls.
-- Service changes (signatures, emitted events, URL/query, headers) MUST update matching `*.service.spec.ts` in the same commit.
-- Run tests per library: `nx test <library>` (e.g. `nx test core`).
+# Fix formatting issues
+npx prettier --write .
 
-## 🛠 Build & Dev Workflows
+# Lint all projects
+npx nx run-many -t lint
 
-- Build all libraries: `npx nx run-many -t build` (or `npm run dev:rebuild` to reset cache + rebuild).
-- Build single library: `nx build <library>` (e.g. `nx build core`).
-- Serve Angular example: `npm run serve:angular`.
-<!-- Removed Node example application (@store-sdk/example-node) -->
-- Releases: automated via Nx + conventional commits (never hand-edit CHANGELOGs).
+# Lint specific project
+npx nx lint core
+```
 
-## 🧹 Linting & Formatting
+### Development Server
 
-- **Format check (REQUIRED):** `npx prettier --check .` - **MUST pass** before any PR.
-- **Fix formatting issues:** `npx prettier --write .` - run if format check fails.
-- Lint single library: `nx lint <library>` (e.g. `nx lint core`) before committing service or API changes.
+```bash
+# Serve Angular example app (auto-rebuilds on changes)
+npm run serve:angular
+# Access at http://localhost:4200 (if port available)
+```
 
-## ✨ Style & Types
+## 🏗 Build System & Validation
 
-- Strict TS (`tsconfig.base.json`) – no `any`; prefer precise generics / utility types.
-- Export only what’s needed; avoid circular deps (especially with `index.ts`).
-- Use relative internal imports (`./lib/...`).
+**Build tools**: TypeScript compiler (`tsc`) for libraries, Angular CLI for apps, Nx for orchestration/caching
 
-## ✅ Safe Change Checklist (Before Proposing)
+**Critical validation steps**:
 
-- **Format check passes:** run `npx prettier --check .` and fix issues with `npx prettier --write .` if needed.
-- New service/event wired through `StoreService` / `sdk.events.ts`.
-- `Sdk.init` stays idempotent.
-- No root config / pipeline files touched unless requested.
-- Tests updated/added for new or changed public behavior.
+1. **Format check ALWAYS required**: `npx prettier --check .` must pass
+2. **Build validation**: All libraries use `tsc --build tsconfig.lib.json`
+3. **Lint before commit**: Run `npx nx lint <project>` for any service/API changes
+4. **Test coverage**: Core package has comprehensive unit test suite (81 tests)
 
-## 🔗 Quick References
+**Build timing**:
 
-- Orchestrator: `packages/core/src/lib/sdk.ts`
-- Event bus: `packages/core/src/lib/bus/event.bus.ts`
-- Interceptors: `packages/core/src/lib/interceptors/*.interceptor.ts`
-- Public API barrel: `packages/core/src/index.ts`
+- Clean install: ~60 seconds
+- Full build: ~6-7 seconds
+- Individual project build: ~1-2 seconds
+- Test suite: ~2 seconds
+- Lint all: ~3-5 seconds
 
-> Revise this file when architecture or patterns materially change; keep concise and actionable.
+**Common build issues**:
+
+- Missing `npm install` - always run first
+- Format check failures - run `npx prettier --write .` to fix
+- ESM module warnings - expected for CommonJS dependencies (qs)
+
+## 📁 Project Layout & Architecture
+
+### Root Structure
+
+```
+├── .github/workflows/        # CI/CD pipelines
+├── packages/                 # SDK packages
+│   ├── core/                # Main SDK package
+│   ├── simple-jwt-login/    # Auth plugin
+│   ├── jwt-authentication-for-wp-rest-api/  # Auth plugin
+│   └── hippoo/              # Auth plugin
+├── apps/
+│   └── example-angular-shop/  # Example Angular app
+├── package.json              # Root workspace config
+├── nx.json                   # Nx monorepo config
+├── tsconfig.base.json        # Shared TypeScript config
+├── eslint.config.mjs         # ESLint configuration
+└── .prettierrc               # Prettier config {"singleQuote": true}
+```
+
+### Core Package Architecture (`packages/core/src/`)
+
+```
+├── index.ts                  # Public API exports (ONLY TOUCH THIS FILE)
+└── lib/
+    ├── sdk.ts               # Main SDK orchestrator & initialization
+    ├── configs/             # Configuration types & interfaces
+    ├── services/
+    │   ├── api.js           # HTTP client (axios) & interceptors
+    │   └── store/           # Domain services (cart, products, orders, etc.)
+    ├── bus/
+    │   └── event.bus.ts     # Event system implementation
+    ├── interceptors/        # HTTP interceptors (nonce, cart tokens)
+    ├── plugins/             # Plugin architecture
+    ├── types/               # TypeScript type definitions
+    ├── utilities/           # Helper functions
+    └── tests/               # Unit tests (*.spec.ts)
+```
+
+**Key files to understand**:
+
+- `sdk.ts` - Main orchestrator (creates HTTP client, installs interceptors, initializes plugins)
+- `services/store.service.ts` - Aggregates all domain services via getters
+- `bus/event.bus.ts` - Event system with middleware, once, waitFor
+- `index.ts` - **ONLY** file for public API exports
+
+## 🔧 Development Workflow
+
+### Making Changes
+
+1. **ALWAYS**: Run `npx prettier --check .` first
+2. Make minimal, focused changes
+3. **Build validation**: `npx nx build <affected-project>`
+4. **Test validation**: `npx nx test <affected-project>`
+5. **Lint validation**: `npx nx lint <affected-project>`
+6. **Format validation**: `npx prettier --check .`
+
+### Adding New Services (Core Pattern)
+
+1. Create `packages/core/src/lib/services/store/<name>.service.ts`
+2. Constructor: `(state: StoreSdkState, config: StoreSdkConfig, events: EventBus<StoreSdkEvent>)`
+3. Add private field + getter to `StoreService` (alphabetical order)
+4. Export types/functions via `src/index.ts` ONLY
+5. Add corresponding `<name>.service.spec.ts` test file
+
+### Plugin Development
+
+- Implement `StoreSdkPlugin` interface
+- Use exact `plugin.id` patterns
+- Delegate logic to plugin, keep SDK core minimal
+- Follow existing auth plugin patterns
+
+## 🚨 Critical CI/CD Pipeline
+
+**GitHub Actions** (`.github/workflows/ci.yml`):
+
+1. **setup-and-cache**: Install deps, cache Nx
+2. **lint**: `npx nx affected -t lint` (parallel)
+3. **format**: `npx prettier --check .` (MUST PASS)
+4. **test**: `npx nx affected -t test` (parallel)
+5. **build**: `npx nx affected -t build` (parallel)
+
+**All PRs must pass**: format check, lint, tests, and build
+
+**Release automation**: Uses Nx + conventional commits - never hand-edit CHANGELOGs
+
+## ✅ Do's and ❌ Don'ts
+
+### ✅ Always Do
+
+- Run `npx prettier --check .` before any commit/PR
+- Use conventional commit messages for releases
+- Export new APIs only via each package's `src/index.ts`
+- Follow existing patterns (services, events, interceptors, plugins)
+- Keep commits minimal and focused
+- Update tests for service/API changes in same commit
+
+### ❌ Never Do
+
+- Modify `package.json`, `nx.json`, `CHANGELOG*`, `renovate.json` without explicit request
+- Introduce CommonJS wrappers (pure ESM repo)
+- Add unnecessary dependencies (prefer axios, qs, date-fns, stdlib)
+- Skip format checks - they will fail CI
+- Make cross-plugin dependencies or branching logic
+
+## 🧪 Testing Strategy
+
+**Framework**: Vitest with node environment, 81 tests in core package
+
+**Test locations**:
+
+- `src/lib/tests/unit/` for organized test suites
+- Adjacent to source files for focused testing
+- Name: `*.spec.ts` or `*.test.ts`
+
+**Test patterns**:
+
+- Mock HTTP calls (`doGet/doPost`) - no real network
+- Test event emissions and interceptor behavior
+- Service signature changes REQUIRE test updates
+- Plugin integration testing with multiple scenarios
+
+**Running tests**: `npx nx test <project>` or `npx nx run-many -t test`
+
+## 🔗 Quick Reference Commands
+
+```bash
+# Essential workflow commands (copy-paste ready)
+npm install                           # Bootstrap (required first)
+npx prettier --check .               # Format validation (required for PRs)
+npx prettier --write .               # Fix formatting issues
+npx nx run-many -t build            # Build all projects
+npx nx run-many -t test             # Test all projects
+npx nx run-many -t lint             # Lint all projects
+npm run dev:rebuild                  # Clean rebuild with cache reset
+
+# Individual project commands
+npx nx build core                    # Build core SDK
+npx nx test core                     # Test core SDK (81 tests)
+npx nx lint core                     # Lint core SDK
+
+# Development
+npm run serve:angular                # Start Angular example
+npx nx --version                     # Check Nx version (21.4.1)
+npx nx show projects                 # List all projects
+```
+
+**Trust these instructions** - all commands have been validated to work correctly. Only search for additional information if these instructions are incomplete or found to be incorrect.
