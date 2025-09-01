@@ -6,10 +6,6 @@
 ![Codecov](https://img.shields.io/codecov/c/github/kmakris23/store-sdk)
 ![NPM Version](https://img.shields.io/npm/v/%40store-sdk%2Fcore)
 
-> ⚠️ **This project is currently under active development.**
->
-> Features, APIs, and documentation may change frequently until a stable version is released.
-
 A modern, TypeScript-first SDK for seamless integration with the **WooCommerce Store API**. Built for headless and decoupled storefronts, this SDK provides comprehensive typed utilities and abstractions that simplify e-commerce development. Whether you're building with React, Angular, Vue, or vanilla JavaScript, this SDK offers a consistent, type-safe interface for all your WooCommerce needs. The modular architecture allows you to import only the features you need while maintaining excellent tree-shaking support.
 
 ## ✨ Features
