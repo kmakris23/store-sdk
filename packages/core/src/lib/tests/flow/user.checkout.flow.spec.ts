@@ -3,7 +3,7 @@ import { StoreSdk } from '../../../index.js';
 import { ProductResponse } from '../../types/store/product/product.response.js';
 import { CartItemResponse } from '../../types/store/cart-item/cart.item.response.js';
 
-const WP_BASE_URL = 'http://localhost:8080';
+const WP_BASE_URL = process.env.WP_BASE_URL || 'http://localhost:8080';
 const VALID_COUPON = 'SUMMER10';
 
 /**

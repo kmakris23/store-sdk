@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { StoreSdk } from '../../../index.js';
 
-const WP_BASE_URL = 'http://localhost:8080';
+const WP_BASE_URL = process.env.WP_BASE_URL || 'http://localhost:8080';
 
 describe('Integration: Product Categories', () => {
   beforeAll(async () => {

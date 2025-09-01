@@ -2,7 +2,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { StoreSdk } from '../../../index.js';
 
-const WP_BASE_URL = 'http://localhost:8080';
+const WP_BASE_URL = process.env.WP_BASE_URL || 'http://localhost:8080';
 // Adjust these coupon codes to match seeded coupons if needed.
 const VALID_COUPON = 'SUMMER10';
 const INVALID_COUPON = 'NOPE123';
