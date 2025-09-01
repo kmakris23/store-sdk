@@ -13,6 +13,7 @@
     "wp:env:up": "docker compose -f infra/wordpress/docker-compose.yml up -d db wp && docker compose -f infra/wordpress/docker-compose.yml run --rm wpcli",
     "wp:env:down": "docker compose -f infra/wordpress/docker-compose.yml down",
     "wp:env:clean": "docker compose -f infra/wordpress/docker-compose.yml down -v --remove-orphans",
+    "wp:env:rebuild": "npm run wp:env:clean && npm run wp:env:up",
     "wp:env:logs": "docker compose -f infra/wordpress/docker-compose.yml logs -f --tail=100 wp",
     "wp:cli": "docker compose -f infra/wordpress/docker-compose.yml run --rm wpcli wp",
     "wp:cli:fast": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp"

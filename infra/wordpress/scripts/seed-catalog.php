@@ -43,10 +43,30 @@ if ( ! taxonomy_exists( $attr_slug ) ) {
 $sizes = ['small','medium','large'];
 foreach($sizes as $s){ if( ! term_exists($s,$attr_slug) ) { wp_insert_term( ucfirst($s), $attr_slug, ['slug'=>$s] ); } }
 
-// If any product exists, treat as already seeded but still set option for guard.
+// Helper to ensure a coupon exists (idempotent)
+function ensure_coupon($code,$amount,$type){
+    $existing = get_page_by_title($code, OBJECT, 'shop_coupon');
+    if ( $existing ) { return; }
+    $cid = wp_insert_post([
+        'post_title' => $code,
+        'post_name'  => sanitize_title($code),
+        'post_type'  => 'shop_coupon',
+        'post_status'=> 'publish'
+    ]);
+    if ( is_wp_error($cid) ) { return; }
+    update_post_meta($cid,'discount_type',$type);
+    update_post_meta($cid,'coupon_amount',$amount);
+    update_post_meta($cid,'individual_use','no');
+    update_post_meta($cid,'usage_limit','');
+    update_post_meta($cid,'free_shipping','no');
+}
+
+// If any product exists, still ensure coupons then mark seeded.
 if ( get_posts(['post_type'=>'product','posts_per_page'=>1,'fields'=>'ids']) ) {
+    ensure_coupon('SUMMER10','10','fixed_cart');
+    ensure_coupon('PERCENT15','15','percent');
     update_option('store_sdk_seeded', 1, true);
-    echo "Products already present; marking seeded."; return; }
+    echo "Products already present; coupons ensured; marking seeded."; return; }
 
 echo "Generating products..."; 
 foreach($cat_ids as $cat_id){
@@ -101,4 +121,7 @@ foreach($cat_ids as $cat_id){
     }
 }
 update_option('store_sdk_seeded', 1, true);
-echo "Done.";
+// Ensure coupons after products created
+ensure_coupon('SUMMER10','10','fixed_cart');
+ensure_coupon('PERCENT15','15','percent');
+echo "Done (coupons ensured).";

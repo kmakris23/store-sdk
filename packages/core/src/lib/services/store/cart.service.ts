@@ -130,7 +130,7 @@ export class CartService extends BaseService {
    * @returns {CartResponse}
    */
   async applyCoupon(code: string): Promise<ApiResult<CartResponse>> {
-    const url = `/${this.endpoint}/apply-coupon/${code}`;
+    const url = `/${this.endpoint}/apply-coupon?code=${code}`;
 
     const options: AxiosRequestConfig = {};
 
@@ -157,7 +157,7 @@ export class CartService extends BaseService {
    * @returns {CartResponse}
    */
   async removeCoupon(code: string): Promise<ApiResult<CartResponse>> {
-    const url = `/${this.endpoint}/remove-coupon/${code}`;
+    const url = `/${this.endpoint}/remove-coupon?code=${code}`;
 
     const options: AxiosRequestConfig = {};
 
