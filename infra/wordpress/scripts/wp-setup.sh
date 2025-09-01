@@ -2,6 +2,7 @@
 set -euo pipefail
 
 log() { echo "[wp-setup] $*"; }
+fail() { echo "[wp-setup][FATAL] $*" >&2; exit 1; }
 
 # Prepare writable cache dir for WP-CLI to reduce repeated downloads
 export WP_CLI_CACHE_DIR="${WP_CLI_CACHE_DIR:-/tmp/wp-cli-cache}"
@@ -86,8 +87,13 @@ else
     VERSION_FLAG="--version=${WOO_COMMERCE_VERSION}"
   fi
   if ! install_with_retry woocommerce "$VERSION_FLAG"; then
-    log "WooCommerce failed to install after retries. Set WOO_COMMERCE_VERSION to a compatible version (e.g. 9.x) and re-run. Skipping seeding."
+    fail "WooCommerce failed to install after retries. Set WOO_COMMERCE_VERSION to a compatible version (e.g. 9.x) and re-run."
   fi
+fi
+
+# Validate WooCommerce active
+if ! wp plugin is-active woocommerce >/dev/null 2>&1; then
+  fail "WooCommerce plugin not active after installation attempts."
 fi
 
 # Simple JWT Login
@@ -100,7 +106,13 @@ else
   if [ -n "${SIMPLE_JWT_LOGIN_VERSION:-}" ]; then
     SJL_VERSION_FLAG="--version=${SIMPLE_JWT_LOGIN_VERSION}"
   fi
-  install_with_retry simple-jwt-login "$SJL_VERSION_FLAG" || wp plugin activate simple-jwt-login || true
+  if ! install_with_retry simple-jwt-login "$SJL_VERSION_FLAG"; then
+    fail "simple-jwt-login failed to install after retries."
+  fi
+fi
+
+if ! wp plugin is-active simple-jwt-login >/dev/null 2>&1; then
+  fail "simple-jwt-login plugin not active after installation attempts."
 fi
 
 # Basic WooCommerce setup (non-interactive) - safe to ignore errors if already configured
@@ -147,12 +159,13 @@ log "Customer: ${TEST_CUSTOMER_USER:-customer} / ${TEST_CUSTOMER_PASSWORD:-custo
 if wp plugin is-active woocommerce >/dev/null 2>&1; then
   if ! wp option get store_sdk_seeded >/dev/null 2>&1; then
     log "Seeding sample catalog (automatic)..."
-    wp eval-file /scripts/seed-catalog.php || log "Seeding encountered errors (continuing)."
+    if ! wp eval-file /scripts/seed-catalog.php; then
+      fail "Catalog seeding script errored."
+    fi
     if wp option get store_sdk_seeded >/dev/null 2>&1; then
-      log "Sample catalog seeding complete."
+      log "Sample catalog seeding complete (guard set)."
     else
-      log "Seeding did not set guard option; mark manually."
-      wp option add store_sdk_seeded 1 >/dev/null 2>&1 || true
+      fail "Catalog seeding guard option 'store_sdk_seeded' not set."
     fi
   else
     log "Sample catalog already seeded."
@@ -160,7 +173,12 @@ if wp plugin is-active woocommerce >/dev/null 2>&1; then
   # Configure WooCommerce (payment gateways etc.) once
   if ! wp option get store_sdk_wc_configured >/dev/null 2>&1; then
     log "Configuring WooCommerce (payments/shipping)..."
-    wp eval-file /scripts/configure-woocommerce.php || log "WooCommerce configuration encountered errors (continuing)."
+    if ! wp eval-file /scripts/configure-woocommerce.php; then
+      fail "WooCommerce configuration script failed."
+    fi
+    if ! wp option get store_sdk_wc_configured >/dev/null 2>&1; then
+      fail "WooCommerce configuration guard option 'store_sdk_wc_configured' missing after configuration script."
+    fi
   # Output current COD settings for debugging
   wp option get woocommerce_cod_settings || true
   # Force gateway list regeneration
@@ -169,7 +187,7 @@ if wp plugin is-active woocommerce >/dev/null 2>&1; then
     log "WooCommerce already configured."
   fi
 else
-  log "WooCommerce inactive; skipping catalog seeding."
+  fail "WooCommerce inactive; cannot proceed with catalog seeding."
 fi
 
 # If additional CLI args were provided (when reusing container), execute them after setup

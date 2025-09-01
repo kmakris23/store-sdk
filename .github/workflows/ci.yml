@@ -135,24 +135,14 @@ jobs:
           WOO_COMMERCE_VERSION: ''
         run: |
           set -euo pipefail
-          echo "Starting WordPress + WooCommerce environment..."
-          npm run wp:env:up:detached
-          echo "Waiting for WooCommerce configuration (timeout ~180s)..."
-          # Poll for guard option indicating configuration finished
-          ATTEMPTS=0
-          until npm run wp:cli:fast option get store_sdk_wc_configured >/dev/null 2>&1; do
-            ATTEMPTS=$((ATTEMPTS+1))
-            if [ "$ATTEMPTS" -gt 60 ]; then
-              echo "Timed out waiting for WooCommerce configuration" >&2
-              echo "Recent wpcli logs:" >&2
-              docker compose -f infra/wordpress/docker-compose.yml logs wpcli | tail -n 120 || true
-              exit 1
-            fi
-            sleep 3
-          done
-          echo "WooCommerce configured after $((ATTEMPTS*3))s. Verifying basic data..."
+          echo "Provisioning WordPress + WooCommerce (foreground, fail-fast)..."
+          npm run wp:env:up
+          echo "Provisioning completed; collecting diagnostics..."
           npm run wp:cli:fast option get woocommerce_cod_settings || true
-          npm run wp:cli:fast wc store products list --per-page=1 || true
+          # Verify seeding guard
+          npm run wp:cli:fast option get store_sdk_seeded || true
+          # List one product (fallback to 0 if none) to confirm catalog seeded
+          npm run wp:cli:fast post list --post_type=product --posts_per_page=1 --format=json || true
       - name: Run Tests (all)
         run: |
           npx nx affected -t test --parallel=3 --base=origin/main
