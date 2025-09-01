@@ -1,20 +1,10 @@
 # WooCommerce Store API SDK
 
 <!-- Status & Quality Badges -->
-<p align="left">
-  <!-- CI Workflow Status -->
-  <a href="https://github.com/kmakris23/store-sdk/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/kmakris23/store-sdk/actions/workflows/ci.yml/badge.svg?branch=main" /></a>
-  <!-- Test Coverage (Codecov) -->
-  <a href="https://codecov.io/gh/kmakris23/store-sdk"><img alt="Coverage" src="https://codecov.io/gh/kmakris23/store-sdk/branch/main/graph/badge.svg" /></a>
-  <!-- Core Package Version -->
-  <a href="https://www.npmjs.com/package/@store-sdk/core"><img alt="npm version" src="https://img.shields.io/npm/v/%40store-sdk%2Fcore.svg" /></a>
-  <!-- License -->
-  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a>
-  <!-- Bundle size placeholder (optional, replace when size tooling added) -->
-  <img alt="Tree-shakeable" src="https://img.shields.io/badge/tree--shaking-yes-success" />
-</p>
 
-> Badges show the current health of the project (build, tests, coverage, version). Coverage badge will display after the first successful run on the main branch with Codecov enabled.
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/kmakris23/store-sdk/post-merge.yml)
+![Codecov](https://img.shields.io/codecov/c/github/kmakris23/store-sdk)
+![NPM Version](https://img.shields.io/npm/v/%40store-sdk%2Fcore)
 
 > ⚠️ **This project is currently under active development.**
 >
