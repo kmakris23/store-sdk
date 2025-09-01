@@ -202,6 +202,8 @@ npm run serve:angular
 - Follow existing patterns (services, events, interceptors, plugins)
 - Keep commits minimal and focused
 - Update tests for service/API changes in same commit
+- Add / update unit or integration tests for every behavioral change (no untested code paths)
+- Maintain near-100% coverage (target ≥ 98% statements / lines for executable code). If coverage would drop, add tests or clearly justify excluded lines (types-only, config, generated, or pure re-export files)
 
 ### ❌ Never Do
 
@@ -229,6 +231,43 @@ npm run serve:angular
 - Plugin integration testing with multiple scenarios
 
 **Running tests**: `npx nx test <project>` or `npx nx run-many -t test`
+
+## 📈 Coverage Policy (MANDATORY)
+
+**Goal**: Keep executable source coverage effectively at 100% (minimum 98% statements & lines) for the `packages/core` library and any modified packages.
+
+### Principles
+
+- Every PR that changes runtime logic must include or update tests covering the new / altered branches, error paths, and edge cases.
+- Pure type definition, configuration, build, or barrel export files may be excluded from coverage (no executable logic). Do **not** exclude files with runtime branches just to raise numbers.
+- When adding a new feature, create tests first (red → green) where practical; at minimum ensure failing coverage locally would catch missing tests.
+- Interceptor, event bus, and utility edge branches (error handling, early returns, disposers) must be covered unless unreachable by design.
+- If a line cannot be reasonably tested (e.g., defensive impossible branch), annotate with a brief code comment explaining why.
+
+### Required Workflow Additions
+
+1. Run full test suite with coverage before pushing: `npx nx test core --coverage` (or run-many for multi-package changes).
+2. Verify thresholds (CI can be configured later to enforce; treat violations as blockers now).
+3. Refuse merging if coverage regresses below target without an explicit, reviewed justification.
+
+### Common Gaps To Watch
+
+- Early returns (guards) and error throw branches (e.g., uninitialized SDK, waitFor timeouts).
+- Middleware registration/disposal and event bus once / scope behaviors.
+- HTTP interceptor disabled paths and token refresh/error branches.
+- Utility error handling (Axios catch blocks) and optional parameter defaults.
+
+### Anti-Patterns (Avoid)
+
+- Adding broad coverage exclusions instead of writing tests.
+- Combining numerous unrelated changes in a single PR (harder to attribute coverage drops).
+- Relying only on integration tests for fine-grained logic (keep unit tests precise & fast).
+
+### When Coverage Dips Temporarily
+
+If refactors temporarily lower coverage, add a TODO comment plus a follow-up test task in the same PR description; resolve before merge if at all possible.
+
+> Treat high coverage as a quality gate: fast feedback, safer refactors, and clearer plugin/extensibility guarantees.
 
 ## 🔗 Quick Reference Commands
 
