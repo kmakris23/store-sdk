@@ -186,9 +186,9 @@ if wp plugin is-active woocommerce >/dev/null 2>&1; then
   else
     log "WooCommerce already configured."
   fi
-    # Ensure test coupons always present (idempotent)
-    log "Ensuring test coupons (SUMMER10, PERCENT15)..."
-    wp eval 'function ensure_coupon($c,$amt,$type){ $existing=get_page_by_title($c,OBJECT,"shop_coupon"); if($existing){ echo "Coupon $c exists\n"; return;} $cid=wp_insert_post(["post_title"=>$c,"post_name"=>sanitize_title($c),"post_type"=>"shop_coupon","post_status"=>"publish"]); if(is_wp_error($cid)){ echo "Failed create $c\n"; return;} update_post_meta($cid,"discount_type",$type); update_post_meta($cid,"coupon_amount",$amt); update_post_meta($cid,"individual_use","no"); update_post_meta($cid,"usage_limit",""); update_post_meta($cid,"free_shipping","no"); echo "Created coupon $c\n";} ensure_coupon("SUMMER10","10","fixed_cart"); ensure_coupon("PERCENT15","15","percent");'
+  # Ensure test coupons always present (idempotent)
+  log "Ensuring test coupons (SUMMER10, PERCENT15)..."
+  wp eval-file /scripts/ensure-test-coupons.php || true
 else
   fail "WooCommerce inactive; cannot proceed with catalog seeding."
 fi

@@ -1,6 +1,6 @@
 # Test Suites Overview
 
-> Auto-generated test documentation. Total tests: **128** across **28** spec files.
+> Auto-generated test documentation. Total tests: **123** across **27** spec files.
 
 Regenerate with: `npm run docs:tests`
 
@@ -19,7 +19,7 @@ Regenerate with: `npm run docs:tests`
 
 </details>
 
-<details><summary><strong>integration</strong> — 46 tests in 10 files</summary>
+<details><summary><strong>integration</strong> — 41 tests in 9 files</summary>
 
 | File                                                    | Suites | Tests |
 | ------------------------------------------------------- | ------ | ----- |
@@ -32,7 +32,6 @@ Regenerate with: `npm run docs:tests`
 | integration/product.reviews.integration.spec.ts         | 1      | 2     |
 | integration/product.taxonomies.integration.spec.ts      | 1      | 4     |
 | integration/products.integration.spec.ts                | 1      | 8     |
-| integration/wordpress.integration.spec.ts               | 1      | 5     |
 
 <details><summary>integration/cart.coupons.integration.spec.ts (6 tests)</summary>
 
@@ -126,17 +125,6 @@ Regenerate with: `npm run docs:tests`
   - filters by category (best-effort) if any category products seeded
   - search with unlikely token returns empty or array
   - sorts products by price descending (best-effort)
-
-</details>
-
-<details><summary>integration/wordpress.integration.spec.ts (5 tests)</summary>
-
-- **WordPress Store API Integration**
-  - lists products and returns pagination meta
-  - fetches a single product by id
-  - creates and manipulates a cart session (add/update/remove)
-  - updates customer shipping data and selects a shipping rate
-  - rejects shipping rate selection with invalid ids
 
 </details>
 
