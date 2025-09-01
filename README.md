@@ -1,5 +1,21 @@
 # WooCommerce Store API SDK
 
+<!-- Status & Quality Badges -->
+<p align="left">
+  <!-- CI Workflow Status -->
+  <a href="https://github.com/kmakris23/store-sdk/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/kmakris23/store-sdk/actions/workflows/ci.yml/badge.svg?branch=main" /></a>
+  <!-- Test Coverage (Codecov) -->
+  <a href="https://codecov.io/gh/kmakris23/store-sdk"><img alt="Coverage" src="https://codecov.io/gh/kmakris23/store-sdk/branch/main/graph/badge.svg" /></a>
+  <!-- Core Package Version -->
+  <a href="https://www.npmjs.com/package/@store-sdk/core"><img alt="npm version" src="https://img.shields.io/npm/v/%40store-sdk%2Fcore.svg" /></a>
+  <!-- License -->
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a>
+  <!-- Bundle size placeholder (optional, replace when size tooling added) -->
+  <img alt="Tree-shakeable" src="https://img.shields.io/badge/tree--shaking-yes-success" />
+</p>
+
+> Badges show the current health of the project (build, tests, coverage, version). Coverage badge will display after the first successful run on the main branch with Codecov enabled.
+
 > ⚠️ **This project is currently under active development.**
 >
 > Features, APIs, and documentation may change frequently until a stable version is released.
@@ -418,6 +434,25 @@ MIT License - see the [LICENSE](LICENSE) file for details.
 ## 🤝 Contributing
 
 Contributions are welcome! Please read our contributing guidelines before submitting PRs.
+
+## ✅ Test Coverage & Suites
+
+An overview of all test suites (unit, integration, flow) is auto-generated.
+
+<details>
+<summary><strong>View Test Suite Index</strong></summary>
+
+See the full, always up-to-date list (including individual test case names) in: [docs/TESTS.md](docs/TESTS.md)
+
+Regenerate locally:
+
+```bash
+npm run docs:tests
+```
+
+This parses all `*.spec.ts` / `*.test.ts` files under `packages/core/src/lib/tests` and groups them by category (unit / integration / flow). Each file’s describe blocks and test cases are listed.
+
+</details>
 
 ## 📞 Support
 

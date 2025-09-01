@@ -9,6 +9,7 @@
   "scripts": {
     "serve:angular": "nx serve example-angular-shop",
     "dev:rebuild": "rimraf .angular && nx reset && npx nx run-many -t build",
+    "docs:tests": "node scripts/generate-tests-doc.mjs && prettier --write docs/TESTS.md",
     "wp:env:up:detached": "docker compose -f infra/wordpress/docker-compose.yml up -d",
     "wp:env:up": "docker compose -f infra/wordpress/docker-compose.yml up -d db wp && docker compose -f infra/wordpress/docker-compose.yml run --rm wpcli",
     "wp:env:down": "docker compose -f infra/wordpress/docker-compose.yml down",

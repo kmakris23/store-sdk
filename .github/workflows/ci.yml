@@ -146,6 +146,24 @@ jobs:
       - name: Run Tests (all)
         run: |
           npx nx affected -t test --parallel=3 --base=origin/main
+      - name: Generate Test Docs
+        run: |
+          node scripts/generate-tests-doc.mjs
+      - name: Verify Test Docs Up To Date
+        run: |
+          if ! git diff --exit-code docs/TESTS.md; then \
+            echo "docs/TESTS.md is not up to date. Run 'npm run docs:tests' and commit the changes."; \
+            exit 1; \
+          fi
+      - name: Upload Coverage to Codecov
+        if: success() || failure()
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: .
+          flags: unit
+          fail_ci_if_error: false
+          verbose: false
       - name: Upload Coverage (if generated)
         if: always()
         uses: actions/upload-artifact@v4
