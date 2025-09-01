@@ -41,7 +41,7 @@ jobs:
 
       - name: Upload Unit Coverage to Codecov
         if: success() || failure()
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           directory: .
           flags: unit
@@ -63,7 +63,7 @@ jobs:
 
       - name: Upload Integration Coverage to Codecov
         if: success() || failure()
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           directory: .
           flags: integration
@@ -77,7 +77,7 @@ jobs:
 
       - name: Upload Flow Coverage to Codecov
         if: success() || failure()
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           directory: .
           flags: flow
