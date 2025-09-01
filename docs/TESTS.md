@@ -6,9 +6,9 @@ Regenerate with: `npm run docs:tests`
 
 <details><summary><strong>flow</strong> — 1 tests in 1 files</summary>
 
-| File | Suites | Tests |
-|------|--------|-------|
-| flow/user.checkout.flow.spec.ts | 1 | 1 |
+| File                            | Suites | Tests |
+| ------------------------------- | ------ | ----- |
+| flow/user.checkout.flow.spec.ts | 1      | 1     |
 
 <details><summary>flow/user.checkout.flow.spec.ts (1 tests)</summary>
 
@@ -21,17 +21,17 @@ Regenerate with: `npm run docs:tests`
 
 <details><summary><strong>integration</strong> — 41 tests in 9 files</summary>
 
-| File | Suites | Tests |
-|------|--------|-------|
-| integration/cart.coupons.integration.spec.ts | 1 | 6 |
-| integration/cart.items.integration.spec.ts | 1 | 4 |
-| integration/categories.integration.spec.ts | 1 | 9 |
-| integration/checkout.order.integration.spec.ts | 1 | 4 |
-| integration/product.attributes.integration.spec.ts | 1 | 2 |
-| integration/product.collection-data.integration.spec.ts | 1 | 2 |
-| integration/product.reviews.integration.spec.ts | 1 | 2 |
-| integration/product.taxonomies.integration.spec.ts | 1 | 4 |
-| integration/products.integration.spec.ts | 1 | 8 |
+| File                                                    | Suites | Tests |
+| ------------------------------------------------------- | ------ | ----- |
+| integration/cart.coupons.integration.spec.ts            | 1      | 6     |
+| integration/cart.items.integration.spec.ts              | 1      | 4     |
+| integration/categories.integration.spec.ts              | 1      | 9     |
+| integration/checkout.order.integration.spec.ts          | 1      | 4     |
+| integration/product.attributes.integration.spec.ts      | 1      | 2     |
+| integration/product.collection-data.integration.spec.ts | 1      | 2     |
+| integration/product.reviews.integration.spec.ts         | 1      | 2     |
+| integration/product.taxonomies.integration.spec.ts      | 1      | 4     |
+| integration/products.integration.spec.ts                | 1      | 8     |
 
 <details><summary>integration/cart.coupons.integration.spec.ts (6 tests)</summary>
 
@@ -132,25 +132,25 @@ Regenerate with: `npm run docs:tests`
 
 <details><summary><strong>unit</strong> — 81 tests in 17 files</summary>
 
-| File | Suites | Tests |
-|------|--------|-------|
-| unit/plugins/multiple-plugins.integration.spec.ts | 1 | 5 |
-| unit/plugins/plugin.architecture.spec.ts | 1 | 6 |
-| unit/plugins/simple-jwt-login.integration.spec.ts | 1 | 6 |
-| unit/services/cart.coupon.service.spec.ts | 1 | 9 |
-| unit/services/cart.item.service.spec.ts | 1 | 7 |
-| unit/services/cart.service.spec.ts | 1 | 9 |
-| unit/services/checkout.order.service.spec.ts | 1 | 2 |
-| unit/services/checkout.service.spec.ts | 1 | 5 |
-| unit/services/order.service.spec.ts | 1 | 3 |
-| unit/services/product.attribute.service.spec.ts | 1 | 3 |
-| unit/services/product.attribute.term.service.spec.ts | 1 | 3 |
-| unit/services/product.brand.service.spec.ts | 1 | 4 |
-| unit/services/product.category.service.spec.ts | 1 | 4 |
-| unit/services/product.collection.data.service.spec.ts | 1 | 3 |
-| unit/services/product.review.service.spec.ts | 1 | 3 |
-| unit/services/product.service.spec.ts | 1 | 6 |
-| unit/services/product.tag.service.spec.ts | 1 | 3 |
+| File                                                  | Suites | Tests |
+| ----------------------------------------------------- | ------ | ----- |
+| unit/plugins/multiple-plugins.integration.spec.ts     | 1      | 5     |
+| unit/plugins/plugin.architecture.spec.ts              | 1      | 6     |
+| unit/plugins/simple-jwt-login.integration.spec.ts     | 1      | 6     |
+| unit/services/cart.coupon.service.spec.ts             | 1      | 9     |
+| unit/services/cart.item.service.spec.ts               | 1      | 7     |
+| unit/services/cart.service.spec.ts                    | 1      | 9     |
+| unit/services/checkout.order.service.spec.ts          | 1      | 2     |
+| unit/services/checkout.service.spec.ts                | 1      | 5     |
+| unit/services/order.service.spec.ts                   | 1      | 3     |
+| unit/services/product.attribute.service.spec.ts       | 1      | 3     |
+| unit/services/product.attribute.term.service.spec.ts  | 1      | 3     |
+| unit/services/product.brand.service.spec.ts           | 1      | 4     |
+| unit/services/product.category.service.spec.ts        | 1      | 4     |
+| unit/services/product.collection.data.service.spec.ts | 1      | 3     |
+| unit/services/product.review.service.spec.ts          | 1      | 3     |
+| unit/services/product.service.spec.ts                 | 1      | 6     |
+| unit/services/product.tag.service.spec.ts             | 1      | 3     |
 
 <details><summary>unit/plugins/multiple-plugins.integration.spec.ts (5 tests)</summary>
 
@@ -319,7 +319,7 @@ Regenerate with: `npm run docs:tests`
 - **ProductService**
   - lists products without params and parses pagination headers
   - serializes complex query params including arrays and ordering
-  - handles _unstable_tax_ and _unstable_tax_operator param flattening and clears originals
+  - handles _unstable_tax_ and \_unstable_tax_operator param flattening and clears originals
   - gets single product by id
   - gets single product by slug
   - returns error on single product fetch failure
@@ -336,4 +336,3 @@ Regenerate with: `npm run docs:tests`
 </details>
 
 </details>
-
