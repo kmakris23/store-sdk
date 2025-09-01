@@ -96,8 +96,9 @@ describe('CheckoutService', () => {
       },
     };
     await service.processOrderAndPayment(createParams);
-    const url = mockedPost.mock.calls[0][0];
-    expect(url).toContain('billing_address%5Baddress_1%5D=a');
+    const [url, body] = mockedPost.mock.calls[0];
+    expect(url).toBe('/wp-json/wc/store/v1/checkout/');
+    expect((body as CheckoutCreateRequest).billing_address.address_1).toBe('a');
   });
 
   it('handles error on update', async () => {

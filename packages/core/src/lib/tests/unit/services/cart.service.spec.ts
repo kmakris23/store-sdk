@@ -104,7 +104,7 @@ describe('CartService', () => {
     mockedPost.mockResolvedValue({ data: cart(1) });
     await service.applyCoupon('SAVE20');
     expect(mockedPost.mock.calls[0][0]).toBe(
-      '/wp-json/wc/store/v1/cart/apply-coupon/SAVE20'
+      '/wp-json/wc/store/v1/cart/apply-coupon?code=SAVE20'
     );
   });
 
@@ -112,7 +112,7 @@ describe('CartService', () => {
     mockedPost.mockResolvedValue({ data: cart(1) });
     await service.removeCoupon('SAVE20');
     expect(mockedPost.mock.calls[0][0]).toBe(
-      '/wp-json/wc/store/v1/cart/remove-coupon/SAVE20'
+      '/wp-json/wc/store/v1/cart/remove-coupon?code=SAVE20'
     );
   });
 

@@ -8,7 +8,16 @@
   ],
   "scripts": {
     "serve:angular": "nx serve example-angular-shop",
-    "dev:rebuild": "rimraf .angular && nx reset && npx nx run-many -t build"
+    "dev:rebuild": "rimraf .angular && nx reset && npx nx run-many -t build",
+    "docs:tests": "node scripts/generate-tests-doc.mjs && prettier --write docs/TESTS.md",
+    "wp:env:up:detached": "docker compose -f infra/wordpress/docker-compose.yml up -d",
+    "wp:env:up": "docker compose -f infra/wordpress/docker-compose.yml up -d db wp && docker compose -f infra/wordpress/docker-compose.yml run --rm wpcli",
+    "wp:env:down": "docker compose -f infra/wordpress/docker-compose.yml down",
+    "wp:env:clean": "docker compose -f infra/wordpress/docker-compose.yml down -v --remove-orphans",
+    "wp:env:rebuild": "npm run wp:env:clean && npm run wp:env:up",
+    "wp:env:logs": "docker compose -f infra/wordpress/docker-compose.yml logs -f --tail=100 wp",
+    "wp:cli": "docker compose -f infra/wordpress/docker-compose.yml run --rm wpcli wp",
+    "wp:cli:fast": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp"
   },
   "devDependencies": {
     "@analogjs/vite-plugin-angular": "~1.19.1",
@@ -76,6 +85,12 @@
     "zone.js": "~0.15.0"
   },
   "nx": {
-    "includedScripts": []
+    "includedScripts": [
+      "wp:env:up",
+      "wp:env:down",
+      "wp:env:clean",
+      "wp:env:logs",
+      "wp:cli"
+    ]
   }
 }

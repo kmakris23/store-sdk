@@ -63,16 +63,15 @@ export class CheckoutService extends BaseService {
   async processOrderAndPayment(
     params: CheckoutCreateRequest
   ): Promise<ApiResult<CheckoutResponse>> {
-    const query = qs.stringify(params, { encode: true });
-    const url = `/${this.endpoint}/${query}`;
+    // Store API expects POST body with checkout payload at the base endpoint
+    const url = `/${this.endpoint}/`;
 
     const options: AxiosRequestConfig = {};
 
-    const { data, error } = await doPost<CheckoutResponse, unknown>(
-      url,
-      undefined,
-      options
-    );
+    const { data, error } = await doPost<
+      CheckoutResponse,
+      CheckoutCreateRequest
+    >(url, params, options);
 
     return { data, error };
   }
