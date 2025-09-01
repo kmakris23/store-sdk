@@ -20,8 +20,8 @@
     "wp:cli:fast": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp"
   },
   "devDependencies": {
-    "@analogjs/vite-plugin-angular": "~1.19.1",
-    "@analogjs/vitest-angular": "~1.19.1",
+    "@analogjs/vite-plugin-angular": "~1.20.0",
+    "@analogjs/vitest-angular": "~1.20.0",
     "@angular-devkit/core": "~20.1.0",
     "@angular-devkit/schematics": "~20.1.0",
     "@angular/build": "~20.1.0",
