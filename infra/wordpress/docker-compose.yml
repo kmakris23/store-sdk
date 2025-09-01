@@ -43,27 +43,28 @@ services:
         condition: service_started
     user: '33:33' # www-data for proper file permissions
     environment:
-      WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_USER: ${MYSQL_USER:-wordpress}
-      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
-      WORDPRESS_DB_NAME: ${MYSQL_DATABASE:-wordpress}
-      WP_URL: ${WP_URL:-http://localhost:8080}
-      WP_TITLE: ${WP_TITLE:-Test Site}
-      WP_ADMIN_USER: ${WP_ADMIN_USER:-admin}
-      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD:-admin}
-      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL:-admin@example.com}
-      JWT_SECRET: ${JWT_SECRET:-change_me}
-      TEST_CUSTOMER_USER: ${TEST_CUSTOMER_USER}
-      TEST_CUSTOMER_PASSWORD: ${TEST_CUSTOMER_PASSWORD}
-      TEST_CUSTOMER_EMAIL: ${TEST_CUSTOMER_EMAIL}
-      WC_STORE_ADDRESS: ${WC_STORE_ADDRESS}
-      WC_STORE_CITY: ${WC_STORE_CITY}
-      WC_STORE_COUNTRY: ${WC_STORE_COUNTRY}
-      WC_STORE_COUNTRY_CODE: ${WC_STORE_COUNTRY_CODE}
-      WC_STORE_POSTCODE: ${WC_STORE_POSTCODE}
-      WC_STORE_CURRENCY: ${WC_STORE_CURRENCY}
-      WC_STORE_SALES_TAX: ${WC_STORE_SALES_TAX}
-      WOO_COMMERCE_VERSION: ${WOO_COMMERCE_VERSION}
+      - WORDPRESS_DB_HOST=db:3306
+      - WORDPRESS_DB_USER=${MYSQL_USER:-wordpress}
+      - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD:-wordpress}
+      - WORDPRESS_DB_NAME=${MYSQL_DATABASE:-wordpress}
+      - WP_URL=${WP_URL:-http://localhost:8080}
+      - WP_TITLE=${WP_TITLE:-Test Site}
+      - WP_ADMIN_USER=${WP_ADMIN_USER:-admin}
+      - WP_ADMIN_PASSWORD=${WP_ADMIN_PASSWORD:-admin}
+      - WP_ADMIN_EMAIL=${WP_ADMIN_EMAIL:-admin@example.com}
+      - JWT_SECRET=${JWT_SECRET:-change_me}
+      - TEST_CUSTOMER_USER=${TEST_CUSTOMER_USER:-customer}
+      - TEST_CUSTOMER_PASSWORD=${TEST_CUSTOMER_PASSWORD:-customer123}
+      - TEST_CUSTOMER_EMAIL=${TEST_CUSTOMER_EMAIL:-customer@example.com}
+      - WC_STORE_ADDRESS=${WC_STORE_ADDRESS:-Syntagma Square}
+      - WC_STORE_CITY=${WC_STORE_CITY:-Athens}
+      - WC_STORE_COUNTRY=${WC_STORE_COUNTRY:-Greece}
+      - WC_STORE_COUNTRY_CODE=${WC_STORE_COUNTRY_CODE:-GR}
+      - WC_STORE_POSTCODE=${WC_STORE_POSTCODE:-10563}
+      - WC_STORE_CURRENCY=${WC_STORE_CURRENCY:-EUR}
+      - WC_STORE_SALES_TAX=${WC_STORE_SALES_TAX:-true}
+      - WOO_COMMERCE_VERSION=${WOO_COMMERCE_VERSION:-}
+      - WP_CLI_CACHE_DIR=/tmp/wp-cli-cache
     working_dir: /var/www/html
     volumes:
       - wp_data:/var/www/html

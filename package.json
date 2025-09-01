@@ -14,7 +14,8 @@
     "wp:env:down": "docker compose -f infra/wordpress/docker-compose.yml down",
     "wp:env:clean": "docker compose -f infra/wordpress/docker-compose.yml down -v --remove-orphans",
     "wp:env:logs": "docker compose -f infra/wordpress/docker-compose.yml logs -f --tail=100 wp",
-    "wp:cli": "docker compose -f infra/wordpress/docker-compose.yml run --rm wpcli wp"
+    "wp:cli": "docker compose -f infra/wordpress/docker-compose.yml run --rm wpcli wp",
+    "wp:cli:fast": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp"
   },
   "devDependencies": {
     "@analogjs/vite-plugin-angular": "~1.19.1",

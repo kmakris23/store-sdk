@@ -3,6 +3,10 @@ set -euo pipefail
 
 log() { echo "[wp-setup] $*"; }
 
+# Prepare writable cache dir for WP-CLI to reduce repeated downloads
+export WP_CLI_CACHE_DIR="${WP_CLI_CACHE_DIR:-/tmp/wp-cli-cache}"
+mkdir -p "$WP_CLI_CACHE_DIR" || true
+
 # Wait for DB
 attempts=0
 until wp db check >/dev/null 2>&1; do
@@ -46,16 +50,58 @@ fi
 wp option update siteurl "$SITE_URL" >/dev/null
 wp option update home "$SITE_URL" >/dev/null
 
-log "Installing & activating required plugins (WooCommerce, Simple JWT Login)..."
-if [ -n "${WOO_COMMERCE_VERSION:-}" ]; then
-  wp plugin install woocommerce --version="$WOO_COMMERCE_VERSION" --activate --force || true
+log "Ensuring required plugins present (WooCommerce, Simple JWT Login)..."
+
+install_with_retry() {
+  local plugin=$1
+  local version_flag=$2
+  local attempts=0
+  local max_attempts=3
+  while [ $attempts -lt $max_attempts ]; do
+    attempts=$((attempts+1))
+    if [ -n "$version_flag" ]; then
+      if wp plugin install "$plugin" $version_flag --activate >/dev/null 2>&1; then
+        return 0
+      fi
+    else
+      if wp plugin install "$plugin" --activate >/dev/null 2>&1; then
+        return 0
+      fi
+    fi
+    log "Install attempt $attempts for $plugin failed; retrying..."
+    sleep 2
+  done
+  return 1
+}
+
+# WooCommerce
+if wp plugin is-installed woocommerce >/dev/null 2>&1; then
+  # Activate if not active
+  if ! wp plugin is-active woocommerce >/dev/null 2>&1; then
+    wp plugin activate woocommerce || true
+  fi
 else
-  wp plugin install woocommerce --activate --force || true
+  VERSION_FLAG=""
+  if [ -n "${WOO_COMMERCE_VERSION:-}" ]; then
+    VERSION_FLAG="--version=${WOO_COMMERCE_VERSION}"
+  fi
+  if ! install_with_retry woocommerce "$VERSION_FLAG"; then
+    log "WooCommerce failed to install after retries. Set WOO_COMMERCE_VERSION to a compatible version (e.g. 9.x) and re-run. Skipping seeding."
+  fi
 fi
-if ! wp plugin is-installed woocommerce >/dev/null 2>&1; then
-  log "WooCommerce failed to install (version requirement mismatch?). Set WOO_COMMERCE_VERSION to a compatible version (e.g. 9.x) and re-run. Skipping seeding."
+
+# Simple JWT Login
+if wp plugin is-installed simple-jwt-login >/dev/null 2>&1; then
+  if ! wp plugin is-active simple-jwt-login >/dev/null 2>&1; then
+    wp plugin activate simple-jwt-login || true
+  fi
+else
+  SJL_VERSION_FLAG=""
+  if [ -n "${SIMPLE_JWT_LOGIN_VERSION:-}" ]; then
+    SJL_VERSION_FLAG="--version=${SIMPLE_JWT_LOGIN_VERSION}"
+  fi
+  install_with_retry simple-jwt-login "$SJL_VERSION_FLAG" || wp plugin activate simple-jwt-login || true
 fi
-wp plugin install simple-jwt-login --activate --force || wp plugin activate simple-jwt-login
 
 # Basic WooCommerce setup (non-interactive) - safe to ignore errors if already configured
 if ! wp option get woocommerce_store_address_1 >/dev/null 2>&1; then
