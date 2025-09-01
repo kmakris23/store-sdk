@@ -1,0 +1,90 @@
+name: coverage-report
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  id-token: write
+
+env:
+  NODE_VERSION: 20
+  NX_VERBOSE_LOGGING: false
+  NX_DAEMON: false
+
+jobs:
+  coverage:
+    name: coverage (unit / integration / flow)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Use Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install Dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
+
+      - name: Run Unit Tests (coverage)
+        run: |
+          cd packages/core && npx vitest run --coverage src/lib/tests/unit
+
+      - name: Upload Unit Coverage to Codecov
+        if: success() || failure()
+        uses: codecov/codecov-action@v4
+        with:
+          directory: .
+          flags: unit
+          fail_ci_if_error: false
+          verbose: false
+          use_oidc: true
+
+      - name: Start WordPress Environment
+        env:
+          WOO_COMMERCE_VERSION: ''
+        run: |
+          set -euo pipefail
+          npm run wp:env:up
+          npm run wp:cli:fast option get store_sdk_seeded || true
+
+      - name: Run Integration Tests (coverage)
+        run: |
+          cd packages/core && npx vitest run --coverage src/lib/tests/integration
+
+      - name: Upload Integration Coverage to Codecov
+        if: success() || failure()
+        uses: codecov/codecov-action@v4
+        with:
+          directory: .
+          flags: integration
+          fail_ci_if_error: false
+          verbose: false
+          use_oidc: true
+
+      - name: Run Flow Tests (coverage)
+        run: |
+          cd packages/core && npx vitest run --coverage src/lib/tests/flow
+
+      - name: Upload Flow Coverage to Codecov
+        if: success() || failure()
+        uses: codecov/codecov-action@v4
+        with:
+          directory: .
+          flags: flow
+          fail_ci_if_error: false
+          verbose: false
+          use_oidc: true
+
+      - name: Tear Down WordPress Environment
+        if: always()
+        run: npm run wp:env:down || true
