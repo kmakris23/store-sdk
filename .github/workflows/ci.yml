@@ -108,7 +108,60 @@ jobs:
           npx prettier --check .
 
   test:
-    name: unit tests
+    # DEPRECATED: unified test job replaced by granular jobs below
+    if: false
+    runs-on: ubuntu-latest
+    needs: [lint, format]
+    steps:
+      - run: echo "Replaced by test-unit, test-integration, and test-flow jobs."
+
+  test-unit:
+    name: tests / unit
+    runs-on: ubuntu-latest
+    needs: [lint, format]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Install Dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
+      - name: Restore Nx Cache
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-${{ github.sha }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-
+            nx-${{ runner.os }}-
+      - name: Run Unit Tests (fast, no WP env)
+        run: |
+          npx nx test core -- src/lib/tests/unit
+      - name: Upload Coverage to Codecov
+        if: success() || failure()
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: .
+          flags: unit
+          fail_ci_if_error: false
+          verbose: false
+      - name: Upload Coverage Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-unit
+          path: |
+            coverage
+            packages/**/coverage
+          if-no-files-found: ignore
+
+  test-integration:
+    name: tests / integration
     runs-on: ubuntu-latest
     needs: [lint, format]
     steps:
@@ -135,53 +188,125 @@ jobs:
           WOO_COMMERCE_VERSION: ''
         run: |
           set -euo pipefail
-          echo "Provisioning WordPress + WooCommerce (foreground, fail-fast)..."
+          echo "Provisioning WordPress + WooCommerce for integration tests..."
           npm run wp:env:up
-          echo "Provisioning completed; collecting diagnostics..."
-          npm run wp:cli:fast option get woocommerce_cod_settings || true
-          # Verify seeding guard
           npm run wp:cli:fast option get store_sdk_seeded || true
-          # List one product (fallback to 0 if none) to confirm catalog seeded
           npm run wp:cli:fast post list --post_type=product --posts_per_page=1 --format=json || true
-      - name: Run Tests (all)
+      - name: Run Integration Tests
         run: |
-          npx nx affected -t test --parallel=3 --base=origin/main
-      - name: Generate Test Docs
-        run: |
-          node scripts/generate-tests-doc.mjs
-      - name: Verify Test Docs Up To Date
-        run: |
-          if ! git diff --exit-code docs/TESTS.md; then \
-            echo "docs/TESTS.md is not up to date. Run 'npm run docs:tests' and commit the changes."; \
-            exit 1; \
-          fi
+          npx nx test core -- src/lib/tests/integration
       - name: Upload Coverage to Codecov
         if: success() || failure()
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: .
-          flags: unit
+          flags: integration
           fail_ci_if_error: false
           verbose: false
-      - name: Upload Coverage (if generated)
+      - name: Upload Coverage Artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage
+          name: coverage-integration
           path: |
             coverage
             packages/**/coverage
           if-no-files-found: ignore
       - name: Tear Down WordPress Environment
         if: always()
+        run: npm run wp:env:down || true
+
+  test-flow:
+    name: tests / flow
+    runs-on: ubuntu-latest
+    needs: [lint, format]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Install Dependencies
         run: |
-          npm run wp:env:down || true
+          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
+      - name: Restore Nx Cache
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-${{ github.sha }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock') }}-
+            nx-${{ runner.os }}-
+      - name: Start WordPress Environment
+        env:
+          WOO_COMMERCE_VERSION: ''
+        run: |
+          set -euo pipefail
+          echo "Provisioning WordPress + WooCommerce for flow tests..."
+          npm run wp:env:up
+          npm run wp:cli:fast option get store_sdk_seeded || true
+      - name: Run Flow Tests
+        run: |
+          npx nx test core -- src/lib/tests/flow
+      - name: Upload Coverage to Codecov
+        if: success() || failure()
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: .
+          flags: flow
+          fail_ci_if_error: false
+          verbose: false
+      - name: Upload Coverage Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-flow
+          path: |
+            coverage
+            packages/**/coverage
+          if-no-files-found: ignore
+      - name: Tear Down WordPress Environment
+        if: always()
+        run: npm run wp:env:down || true
+
+  test-docs:
+    name: tests / docs
+    runs-on: ubuntu-latest
+    needs: [test-unit, test-integration, test-flow]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Install Dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
+      - name: Generate Test Docs
+        run: node scripts/generate-tests-doc.mjs
+      - name: Verify Test Docs Up To Date
+        run: |
+          if ! git diff --exit-code docs/TESTS.md; then \
+            echo "docs/TESTS.md is not up to date. Run 'npm run docs:tests' and commit the changes."; \
+            exit 1; \
+          fi
+      - name: Upload TESTS.md Artifact (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tests-doc
+          path: docs/TESTS.md
 
   build:
     name: build
     runs-on: ubuntu-latest
-    needs: test
+    needs: [test-unit, test-integration, test-flow, test-docs]
     steps:
       - uses: actions/checkout@v5
         with:
