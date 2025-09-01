@@ -1,0 +1,75 @@
+services:
+  db:
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-wordpress}
+      MYSQL_USER: ${MYSQL_USER:-wordpress}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-wordpress}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ['CMD-SHELL', 'exit 0']
+      interval: 5s
+      timeout: 2s
+      retries: 5
+
+  wp:
+    image: wordpress:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - '8080:80'
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: ${MYSQL_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE:-wordpress}
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_DEBUG', true);
+        define('WP_DEBUG_LOG', true);
+        define('WP_ENVIRONMENT_TYPE', 'local');
+        define('SIMPLE_JWT_LOGIN_SECRET_KEY', getenv('JWT_SECRET') ?: 'change_me');
+    volumes:
+      - wp_data:/var/www/html
+      - ./scripts/mu-plugins:/var/www/html/wp-content/mu-plugins
+
+  wpcli:
+    image: wordpress:cli
+    depends_on:
+      wp:
+        condition: service_started
+    user: '33:33' # www-data for proper file permissions
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: ${MYSQL_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE:-wordpress}
+      WP_URL: ${WP_URL:-http://localhost:8080}
+      WP_TITLE: ${WP_TITLE:-Test Site}
+      WP_ADMIN_USER: ${WP_ADMIN_USER:-admin}
+      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD:-admin}
+      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL:-admin@example.com}
+      JWT_SECRET: ${JWT_SECRET:-change_me}
+      TEST_CUSTOMER_USER: ${TEST_CUSTOMER_USER}
+      TEST_CUSTOMER_PASSWORD: ${TEST_CUSTOMER_PASSWORD}
+      TEST_CUSTOMER_EMAIL: ${TEST_CUSTOMER_EMAIL}
+      WC_STORE_ADDRESS: ${WC_STORE_ADDRESS}
+      WC_STORE_CITY: ${WC_STORE_CITY}
+      WC_STORE_COUNTRY: ${WC_STORE_COUNTRY}
+      WC_STORE_COUNTRY_CODE: ${WC_STORE_COUNTRY_CODE}
+      WC_STORE_POSTCODE: ${WC_STORE_POSTCODE}
+      WC_STORE_CURRENCY: ${WC_STORE_CURRENCY}
+      WC_STORE_SALES_TAX: ${WC_STORE_SALES_TAX}
+      WOO_COMMERCE_VERSION: ${WOO_COMMERCE_VERSION}
+    working_dir: /var/www/html
+    volumes:
+      - wp_data:/var/www/html
+      - ./scripts:/scripts
+    entrypoint: ['bash', '/scripts/wp-setup.sh']
+
+volumes:
+  db_data:
+  wp_data:
