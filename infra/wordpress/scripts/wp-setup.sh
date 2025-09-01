@@ -15,6 +15,18 @@ until wp db check >/dev/null 2>&1; do
   sleep 2
 done
 
+# Fast path: allow skipping full setup when running ad-hoc WP-CLI commands in CI to avoid repeated plugin install noise
+if [ "${SKIP_WP_SETUP:-0}" = "1" ]; then
+  log "SKIP_WP_SETUP=1 set; skipping provisioning logic."
+  if [ "$#" -gt 0 ]; then
+    log "Executing passthrough (skip mode): $*"
+    exec "$@"
+  else
+    log "No command provided in skip mode; starting shell."
+    exec bash
+  fi
+fi
+
 SITE_URL="${WP_URL:-http://localhost:8080}"
 
 if wp core is-installed >/dev/null 2>&1; then
