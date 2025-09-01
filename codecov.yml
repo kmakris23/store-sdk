@@ -1,0 +1,56 @@
+# Codecov configuration for WooCommerce Store API SDK
+# Documentation: https://docs.codecov.com/docs/codecov-yaml
+
+# Coverage targets and thresholds
+coverage:
+  # Global coverage target
+  status:
+    project:
+      default:
+        target: 70% # Overall project coverage target
+        threshold: 2% # Allow 2% drop before failing
+        if_ci_failed: error # Fail if CI failed
+    patch:
+      default:
+        target: 80% # New code coverage target
+        threshold: 5% # Allow 5% drop for new code
+        if_ci_failed: error
+  # Coverage precision and display settings
+  precision: 2
+  round: down
+  range: '60...90'
+
+# Comment configuration for PRs
+comment:
+  layout: 'reach,diff,flags,tree'
+  behavior: default
+
+# Ignore paths that don't need coverage
+ignore:
+  - '**/*.spec.ts' # Test files
+  - '**/*.test.ts' # Test files
+  - '**/tests/**' # Test directories
+  - 'apps/**' # Example applications
+  - 'scripts/**' # Build/utility scripts
+  - 'infra/**' # Infrastructure code
+  - 'docs/**' # Documentation
+  - '**/*.config.ts' # Configuration files
+  - '**/*.config.js' # Configuration files
+  - '**/*.config.mjs' # Configuration files
+
+# Configure flags for different test types
+flags:
+  unit:
+    paths:
+      - 'packages/core/src/'
+    # Exclude integration/flow test output from unit flag
+    ignore:
+      - 'packages/core/src/lib/tests/'
+  integration:
+    paths:
+      - 'packages/core/src/'
+    # Include all source files for integration tests
+  flow:
+    paths:
+      - 'packages/core/src/'
+    # Include all source files for flow tests
