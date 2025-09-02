@@ -225,10 +225,15 @@ npm run serve:angular
 
 **Test patterns**:
 
-- Mock HTTP calls (`doGet/doPost`) - no real network
-- Test event emissions and interceptor behavior
-- Service signature changes REQUIRE test updates
-- Plugin integration testing with multiple scenarios
+- Mock HTTP calls (`doGet/doPost`) - no real network.
+- Test event emissions and interceptor behavior.
+- Service signature changes REQUIRE test updates.
+- Plugin integration testing with multiple scenarios.
+- Do NOT write ambiguous assertions like `expect(res.error || res.data).toBeTruthy()`. Always assert the intended path:
+  - Success path: `expect(res.error).toBeFalsy()` AND validate key fields on `res.data`.
+  - Failure path: `expect(res.error).toBeDefined()` AND assert `res.error.code` (regex or exact) AND `expect(res.data).toBeFalsy()`.
+- If multiple legitimate outcomes exist (environment variance), branch explicitly and assert each branch precisely—never rely on generic truthy checks.
+- Treat `rest_no_route` as a hard failure indicator (usually malformed endpoint). Fix the implementation instead of accepting it in tests.
 
 **Running tests**: `npx nx test <project>` or `npx nx run-many -t test`
 

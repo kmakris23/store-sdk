@@ -155,7 +155,7 @@ describe('CartService', () => {
     mockedPost.mockResolvedValue({ data: cart(1) });
     await service.selectShippingRate(5, 'flat_rate');
     expect(mockedPost.mock.calls[0][0]).toBe(
-      '/wp-json/wc/store/v1/cart/select-shipping-rate/package_id=5&rate_id=flat_rate'
+      '/wp-json/wc/store/v1/cart/select-shipping-rate?package_id=5&rate_id=flat_rate'
     );
   });
 

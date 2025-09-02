@@ -217,7 +217,8 @@ export class CartService extends BaseService {
     packageId: number,
     rateId: string
   ): Promise<ApiResult<CartResponse>> {
-    const url = `/${this.endpoint}/select-shipping-rate/package_id=${packageId}&rate_id=${rateId}`;
+    // Fixed: use query string form. Path segment form caused rest_no_route errors.
+    const url = `/${this.endpoint}/select-shipping-rate?package_id=${packageId}&rate_id=${rateId}`;
 
     const options: AxiosRequestConfig = {};
 

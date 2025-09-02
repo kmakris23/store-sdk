@@ -20,8 +20,19 @@ describe('Integration: Checkout & Order', () => {
 
   it('retrieves checkout data or empty-cart error', async () => {
     const checkout = await StoreSdk.store.checkout.get();
-    // Either we get data, or an empty-cart error; both acceptable
-    expect(checkout.data || checkout.error).toBeTruthy();
+    if (checkout.error) {
+      // Expect a recognizable checkout/cart related error code
+      expect(checkout.error.code).toMatch(
+        /cart|empty|checkout|nonce|required/i
+      );
+      expect(checkout.data).toBeFalsy();
+    } else {
+      expect(checkout.data).toBeTruthy();
+      if (checkout.data) {
+        // order_id may be undefined pre-submit; just ensure object shape
+        expect(typeof checkout.data).toBe('object');
+      }
+    }
   });
 
   it('fails to process order with missing billing fields (expect error)', async () => {
@@ -52,7 +63,13 @@ describe('Integration: Checkout & Order', () => {
       },
       payment_method: 'cod',
     });
-    expect(attempt.error || attempt.data).toBeTruthy();
+    expect(attempt.error).toBeTruthy();
+    if (attempt.error) {
+      expect(attempt.error.code).toMatch(
+        /invalid|required|billing|email|address/i
+      );
+    }
+    expect(attempt.data).toBeFalsy();
   });
 
   it('updates checkout (order notes) best-effort', async () => {
@@ -96,7 +113,17 @@ describe('Integration: Checkout & Order', () => {
       },
       payment_method: 'cod', // cash on delivery configured by provisioning script
     });
-    // We accept either a populated checkout response or an error (e.g., missing nonce/state); test resiliency
-    expect(create.error ? true : !!create.data).toBe(true);
+    if (create.error) {
+      // Expect recognizable error code (nonce/state/cart/payment validation)
+      expect(create.error.code).toMatch(
+        /nonce|payment|cart|empty|invalid|required/i
+      );
+      expect(create.data).toBeFalsy();
+    } else {
+      expect(create.data).toBeTruthy();
+      if (create.data) {
+        expect(typeof create.data).toBe('object');
+      }
+    }
   });
 });
