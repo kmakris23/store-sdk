@@ -146,20 +146,21 @@ describe('Flow: Guest user checkout creates order', () => {
     );
 
     // 7b. Retrieve the order via OrderService to confirm it exists
-    if (orderAttempt.data?.order_id && orderAttempt.data.order_key) {
-      const fetched = await StoreSdk.store.orders.get(
-        orderAttempt.data.order_key,
-        String(orderAttempt.data.order_id),
-        'flow.tester@example.com'
+    // Order must exist – assert required fields then fetch
+    const { order_id, order_key, status: createdStatus } = orderAttempt.data!;
+    expect(order_id).toBeGreaterThan(0);
+    expect(typeof order_key).toBe('string');
+    const fetched = await StoreSdk.store.orders.get(
+      order_key,
+      String(order_id),
+      'flow.tester@example.com'
+    );
+    expect(fetched.error).toBeFalsy();
+    expect(fetched.data?.id).toBe(order_id);
+    if (fetched.data?.status && createdStatus) {
+      expect(fetched.data.status.toLowerCase()).toBe(
+        createdStatus.toLowerCase()
       );
-      expect(fetched.error).toBeFalsy();
-      expect(fetched.data?.id).toBe(orderAttempt.data.order_id);
-      // Basic status consistency (case-insensitive)
-      if (fetched.data?.status) {
-        expect(fetched.data.status.toLowerCase()).toBe(
-          orderAttempt.data.status.toLowerCase()
-        );
-      }
     }
 
     // 8. Remove coupon
