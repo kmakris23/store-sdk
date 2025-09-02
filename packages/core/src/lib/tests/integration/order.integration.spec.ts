@@ -24,38 +24,60 @@ describe('Integration: Order (pay-for-order endpoint)', () => {
       await StoreSdk.store.cart.add({ id: prod.id, quantity: 1 });
     }
 
-    const attempt = await StoreSdk.store.checkout.processOrderAndPayment({
-      billing_address: {
-        first_name: 'Test',
-        last_name: 'User',
-        company: '',
-        address_1: 'Integration St',
-        address_2: '',
-        city: 'Test City',
-        state: '',
-        country: 'GR',
-        postcode: '10563',
-        email: 'test@example.com',
-        phone: '',
-      },
-      shipping_address: {
-        first_name: 'Test',
-        last_name: 'User',
-        company: '',
-        address_1: 'Integration St',
-        address_2: '',
-        city: 'Test City',
-        state: '',
-        country: 'GR',
-        postcode: '10563',
-      },
-      payment_method: 'cod',
-    });
+    // Attempt to create an order using only gateways we enable in test WP env (configure-woocommerce.php keeps only COD active).
+    const paymentMethods = ['cod'];
 
-    if (!attempt.error && attempt.data) {
-      createdOrderId = attempt.data.order_id;
-      createdOrderKey = attempt.data.order_key;
+    // Ensure cart has at least one item (redundant safeguard in case earlier add failed)
+    const cart = await StoreSdk.store.cart.get();
+    if (!cart.data || cart.data.items.length === 0) {
+      const { data: products2 } = await StoreSdk.store.products.list({
+        per_page: 5,
+      });
+      const fallback = products2?.find((p) => p.is_in_stock);
+      if (fallback?.id) {
+        await StoreSdk.store.cart.add({ id: fallback.id, quantity: 1 });
+      }
     }
+
+    // lastError no longer required since we don't throw on failure
+    for (const method of paymentMethods) {
+      const attempt = await StoreSdk.store.checkout.processOrderAndPayment({
+        billing_address: {
+          first_name: 'Test',
+          last_name: 'User',
+          company: '',
+          address_1: '123 Integration St',
+          address_2: '',
+          city: 'Test City',
+          state: '',
+          country: 'US',
+          postcode: '10001',
+          phone: '0000000000',
+          email: 'test@example.com',
+        },
+        shipping_address: {
+          first_name: 'Test',
+          last_name: 'User',
+          company: '',
+          address_1: '123 Integration St',
+          address_2: '',
+          city: 'Test City',
+          state: '',
+          country: 'US',
+          postcode: '10001',
+        },
+        payment_method: method,
+      });
+
+      if (!attempt.error && attempt.data) {
+        createdOrderId = attempt.data.order_id;
+        createdOrderKey = attempt.data.order_key;
+        break;
+      }
+    }
+
+    // If order creation fails we continue; subsequent specs assert explicit error semantics.
+    // (Avoid failing entire suite due to gateway configuration differences.)
   });
 
   it('retrieves order without billing email (expects data if created else explicit error)', async () => {
