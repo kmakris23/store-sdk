@@ -69,7 +69,7 @@ services:
     volumes:
       - wp_data:/var/www/html
       - ./scripts:/scripts
-    entrypoint: ['bash', '/scripts/wp-setup.sh']
+    entrypoint: ['bash', '/scripts/wp-entry.sh']
 
 volumes:
   db_data:
