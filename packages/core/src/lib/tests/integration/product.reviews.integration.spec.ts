@@ -51,7 +51,7 @@ describe('Integration: Product Reviews', () => {
     }
     if (total && Number(total) > 2) {
       // If more reviews than per_page, we expect multiple pages logically.
-      expect(Number(total) > 2 || true).toBe(true);
+      expect(Number(totalPages)).toBeGreaterThanOrEqual(2);
     }
   });
 
