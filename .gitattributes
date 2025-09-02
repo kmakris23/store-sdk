@@ -1,0 +1,2 @@
+*.sh text eol=lf
+infra/wordpress/scripts/*.sh text eol=lf

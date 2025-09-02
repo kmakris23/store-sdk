@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# Strict mode (portable). Enable pipefail only if supported.
+set -e
+set -u
+if (set -o pipefail) 2>/dev/null; then
+  set -o pipefail
+fi
 
 log() { echo "[wp-setup] $*"; }
 fail() { echo "[wp-setup][FATAL] $*" >&2; exit 1; }
