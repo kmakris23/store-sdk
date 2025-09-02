@@ -30,9 +30,9 @@ describe('Integration: Product Reviews', () => {
     const has5 = ratings.includes(5);
     const has4 = ratings.includes(4);
     const has3 = ratings.includes(3);
-    expect(has5 || true).toBe(true);
-    expect(has4 || true).toBe(true);
-    expect(has3 || true).toBe(true);
+    if (ratings.length >= 3) {
+      expect(has5 && has4 && has3).toBe(true);
+    }
     if (total) {
       // There are 100 products (10 categories * 10) * 3 reviews each = 300 expected.
       // Allow tolerance if catalog size changes; just assert >= 30.
