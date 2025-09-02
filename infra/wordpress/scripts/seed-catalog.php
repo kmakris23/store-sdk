@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Idempotent sample catalog seeding.
  * - Registers product_brand taxonomy (runtime)
@@ -7,12 +8,16 @@
  * Skips if any product already exists OR option store_sdk_seeded present.
  */
 
-if ( get_option( 'store_sdk_seeded' ) ) {
-    echo "Already seeded (store_sdk_seeded option)."; return; }
+if (get_option('store_sdk_seeded')) {
+    echo "Already seeded (store_sdk_seeded option).";
+    return;
+}
 
-if ( ! function_exists('register_taxonomy') ) { require_once ABSPATH . 'wp-includes/taxonomy.php'; }
+if (! function_exists('register_taxonomy')) {
+    require_once ABSPATH . 'wp-includes/taxonomy.php';
+}
 
-register_taxonomy('product_brand','product',[
+register_taxonomy('product_brand', 'product', [
     'label' => 'Brands',
     'public' => true,
     'show_in_rest' => true,
@@ -20,86 +25,130 @@ register_taxonomy('product_brand','product',[
 ]);
 
 // Helper: ensure term exists and return term_id
-function ensure_term($name,$slug,$tax){
-    $existing = term_exists( $slug, $tax );
-    if ( $existing ) { return (int)$existing['term_id']; }
-    $res = wp_insert_term( $name, $tax, ['slug'=>$slug] );
-    if ( is_wp_error($res) ) { return 0; }
+function ensure_term($name, $slug, $tax)
+{
+    $existing = term_exists($slug, $tax);
+    if ($existing) {
+        return (int)$existing['term_id'];
+    }
+    $res = wp_insert_term($name, $tax, ['slug' => $slug]);
+    if (is_wp_error($res)) {
+        return 0;
+    }
     return (int)$res['term_id'];
 }
 
+// Friendly taxonomy seed data
+$category_definitions = [
+    ['Apparel', 'apparel'],
+    ['Accessories', 'accessories'],
+    ['Electronics', 'electronics'],
+    ['Home & Kitchen', 'home-kitchen'],
+    ['Outdoor Gear', 'outdoor-gear'],
+    ['Books', 'books'],
+    ['Beauty & Care', 'beauty-care'],
+    ['Toys & Games', 'toys-games'],
+    ['Fitness', 'fitness'],
+    ['Office', 'office']
+];
+$tag_slugs = ['eco-friendly', 'new', 'bestseller', 'clearance', 'gift', 'premium', 'budget', 'limited', 'handmade', 'organic', 'durable', 'lightweight', 'waterproof', 'wireless', 'rechargeable'];
+$brand_definitions = [['Acme', 'acme'], ['NovaTech', 'novatech'], ['Evergreen', 'evergreen'], ['Zenith', 'zenith'], ['UrbanPulse', 'urbanpulse']];
+
 $cat_ids = [];
-for ($i=1;$i<=10;$i++){ $cat_ids[] = ensure_term("Category $i","category-$i",'product_cat'); }
+foreach ($category_definitions as $def) {
+    $cat_ids[] = ensure_term($def[0], $def[1], 'product_cat');
+}
 $tag_ids = [];
-for ($i=1;$i<=15;$i++){ $tag_ids[] = ensure_term("Tag $i","tag-$i",'product_tag'); }
+foreach ($tag_slugs as $slug) {
+    $tag_ids[] = ensure_term(ucwords(str_replace('-', ' ', $slug)), $slug, 'product_tag');
+}
 $brand_ids = [];
-for ($i=1;$i<=5;$i++){ $brand_ids[] = ensure_term("Brand $i","brand-$i",'product_brand'); }
+foreach ($brand_definitions as $def) {
+    $brand_ids[] = ensure_term($def[0], $def[1], 'product_brand');
+}
 
 // Attribute taxonomy for variable products
 $attr_slug = 'pa_size';
-if ( ! taxonomy_exists( $attr_slug ) ) {
-    register_taxonomy( $attr_slug, 'product', [ 'hierarchical'=>false, 'label'=>'Size', 'show_in_rest'=>true ] );
+if (! taxonomy_exists($attr_slug)) {
+    register_taxonomy($attr_slug, 'product', ['hierarchical' => false, 'label' => 'Size', 'show_in_rest' => true]);
 }
-$sizes = ['small','medium','large'];
-foreach($sizes as $s){ if( ! term_exists($s,$attr_slug) ) { wp_insert_term( ucfirst($s), $attr_slug, ['slug'=>$s] ); } }
+$sizes = ['small', 'medium', 'large'];
+foreach ($sizes as $s) {
+    if (! term_exists($s, $attr_slug)) {
+        wp_insert_term(ucfirst($s), $attr_slug, ['slug' => $s]);
+    }
+}
 
 // Helper to ensure a coupon exists (idempotent)
-function ensure_coupon($code,$amount,$type){
+function ensure_coupon($code, $amount, $type)
+{
     $existing = get_page_by_title($code, OBJECT, 'shop_coupon');
-    if ( $existing ) { return; }
+    if ($existing) {
+        return;
+    }
     $cid = wp_insert_post([
         'post_title' => $code,
         'post_name'  => sanitize_title($code),
         'post_type'  => 'shop_coupon',
-        'post_status'=> 'publish'
+        'post_status' => 'publish'
     ]);
-    if ( is_wp_error($cid) ) { return; }
-    update_post_meta($cid,'discount_type',$type);
-    update_post_meta($cid,'coupon_amount',$amount);
-    update_post_meta($cid,'individual_use','no');
-    update_post_meta($cid,'usage_limit','');
-    update_post_meta($cid,'free_shipping','no');
+    if (is_wp_error($cid)) {
+        return;
+    }
+    update_post_meta($cid, 'discount_type', $type);
+    update_post_meta($cid, 'coupon_amount', $amount);
+    update_post_meta($cid, 'individual_use', 'no');
+    update_post_meta($cid, 'usage_limit', '');
+    update_post_meta($cid, 'free_shipping', 'no');
 }
 
 // If any product exists, still ensure coupons then mark seeded.
-if ( get_posts(['post_type'=>'product','posts_per_page'=>1,'fields'=>'ids']) ) {
-    ensure_coupon('SUMMER10','10','fixed_cart');
-    ensure_coupon('PERCENT15','15','percent');
+if (get_posts(['post_type' => 'product', 'posts_per_page' => 1, 'fields' => 'ids'])) {
+    ensure_coupon('SUMMER10', '10', 'fixed_cart');
+    ensure_coupon('PERCENT15', '15', 'percent');
     update_option('store_sdk_seeded', 1, true);
-    echo "Products already present; coupons ensured; marking seeded."; return; }
+    echo "Products already present; coupons ensured; marking seeded.";
+    return;
+}
 
-echo "Generating products..."; 
-foreach($cat_ids as $cat_id){
-    $cat = get_term($cat_id,'product_cat');
-    if ( ! $cat || is_wp_error($cat) ) continue;
-    for($p=1;$p<=10;$p++){
+echo "Generating products...";
+// Product title components (cycled within each category for friendly names)
+$product_titles = ['Starter Pack', 'Essentials Kit', 'Premium Set', 'Classic Edition', 'Deluxe Pack', 'Bundle', 'Value Pack', 'Pro Edition', 'Lite Edition', 'Ultimate Edition'];
+$review_author_names = ['Alex', 'Jordan', 'Taylor'];
+
+foreach ($cat_ids as $cat_index => $cat_id) {
+    $cat = get_term($cat_id, 'product_cat');
+    if (! $cat || is_wp_error($cat)) continue;
+    for ($p = 1; $p <= 10; $p++) {
         $is_variable = ($p > 7); // last 3 variable
-        $title = $cat->name . ' Product ' . $p;
+        $title = $cat->name . ' ' . $product_titles[($p - 1) % count($product_titles)];
         $post_id = wp_insert_post([
             'post_title' => $title,
             'post_type' => 'product',
             'post_status' => 'publish',
-            'post_content' => 'Autogenerated product ' . $p . ' in ' . $cat->name . '.'
+            'post_content' => 'Autogenerated ' . strtolower($title) . ' in ' . $cat->name . ' category.'
         ]);
-        if ( is_wp_error($post_id) ) continue;
+        if (is_wp_error($post_id)) continue;
         wp_set_object_terms($post_id, [$cat_id], 'product_cat');
         // random tags
-        if ( $tag_ids ) {
-            shuffle($tag_ids); $slice = array_slice($tag_ids,0,3);
+        if ($tag_ids) {
+            shuffle($tag_ids);
+            $slice = array_slice($tag_ids, 0, 3);
             wp_set_object_terms($post_id, $slice, 'product_tag');
         }
-        if ( $brand_ids ) {
-            shuffle($brand_ids); wp_set_object_terms($post_id, [$brand_ids[0]], 'product_brand');
+        if ($brand_ids) {
+            shuffle($brand_ids);
+            wp_set_object_terms($post_id, [$brand_ids[0]], 'product_brand');
         }
-        if ( ! $is_variable ) {
-            $price = rand(10,200);
-            update_post_meta($post_id,'_price',$price);
-            update_post_meta($post_id,'_regular_price',$price);
-            update_post_meta($post_id,'_product_type','simple');
+        if (! $is_variable) {
+            $price = rand(10, 200);
+            update_post_meta($post_id, '_price', $price);
+            update_post_meta($post_id, '_regular_price', $price);
+            update_post_meta($post_id, '_product_type', 'simple');
         } else {
             wp_set_object_terms($post_id, $sizes, $attr_slug);
-            update_post_meta($post_id,'_product_attributes',[ $attr_slug => [ 'name'=>$attr_slug,'is_visible'=>1,'is_variation'=>1,'is_taxonomy'=>1 ] ]);
-            foreach($sizes as $s){
+            update_post_meta($post_id, '_product_attributes', [$attr_slug => ['name' => $attr_slug, 'is_visible' => 1, 'is_variation' => 1, 'is_taxonomy' => 1]]);
+            foreach ($sizes as $s) {
                 $variation_id = wp_insert_post([
                     'post_title'  => $title . ' - ' . $s,
                     'post_name'   => 'product-' . $post_id . '-variation-' . $s,
@@ -107,21 +156,64 @@ foreach($cat_ids as $cat_id){
                     'post_parent' => $post_id,
                     'post_type'   => 'product_variation'
                 ]);
-                if ( is_wp_error($variation_id) ) continue;
-                update_post_meta($variation_id,'attribute_' . $attr_slug,$s);
-                $price = rand(15,220);
-                update_post_meta($variation_id,'_price',$price);
-                update_post_meta($variation_id,'_regular_price',$price);
-                update_post_meta($variation_id,'_stock_status','instock');
+                if (is_wp_error($variation_id)) continue;
+                update_post_meta($variation_id, 'attribute_' . $attr_slug, $s);
+                $price = rand(15, 220);
+                update_post_meta($variation_id, '_price', $price);
+                update_post_meta($variation_id, '_regular_price', $price);
+                update_post_meta($variation_id, '_stock_status', 'instock');
             }
-            update_post_meta($post_id,'_product_type','variable');
+            update_post_meta($post_id, '_product_type', 'variable');
         }
-        update_post_meta($post_id,'_manage_stock','no');
-        update_post_meta($post_id,'_stock_status','instock');
+        update_post_meta($post_id, '_manage_stock', 'no');
+        update_post_meta($post_id, '_stock_status', 'instock');
+
+        // --- Seed sample product reviews (WooCommerce uses WP comments with type 'review' & meta 'rating') ---
+        // Provide a few deterministic yet varied review texts for test stability.
+        $review_texts = [
+            'Excellent quality – exceeded expectations.',
+            'Good value for money, would buy again.',
+            'Average overall; does the job.',
+            'Not bad, but there is room for improvement.',
+            'Fantastic – highly recommended!'
+        ];
+        // Deterministic set of 3 reviews to keep integration tests stable (ratings 5,4,3 for variety)
+        $ratings = [5, 4, 3]; // descending for predictable average (4.0)
+        $i = 0;
+        foreach ($ratings as $rating) {
+            // pick a text based on index without shuffling to keep order repeatable
+            $text = $review_texts[$i % count($review_texts)];
+            $commentdata = [
+                'comment_post_ID'      => $post_id,
+                'comment_author'       => $review_author_names[$i % count($review_author_names)],
+                'comment_author_email' => strtolower($review_author_names[$i % count($review_author_names)]) . $i . '@example.com',
+                'comment_content'      => $text,
+                'comment_type'         => 'review',
+                'comment_approved'     => 1,
+            ];
+            $comment_id = wp_insert_comment($commentdata);
+            if ($comment_id && ! is_wp_error($comment_id)) {
+                add_comment_meta($comment_id, 'rating', $rating, true);
+            }
+            $i++;
+        }
+        // Recalculate product rating / review meta so Store API reflects accurate counts
+        if (function_exists('wc_update_product_rating_counts')) {
+            wc_update_product_rating_counts($post_id);
+        }
+        if (function_exists('wc_update_product_review_count')) {
+            wc_update_product_review_count($post_id);
+        }
+        if (function_exists('wc_update_product_average_rating')) {
+            wc_update_product_average_rating($post_id);
+        }
+        if (function_exists('wc_delete_product_transients')) {
+            wc_delete_product_transients($post_id);
+        }
     }
 }
 update_option('store_sdk_seeded', 1, true);
 // Ensure coupons after products created
-ensure_coupon('SUMMER10','10','fixed_cart');
-ensure_coupon('PERCENT15','15','percent');
+ensure_coupon('SUMMER10', '10', 'fixed_cart');
+ensure_coupon('PERCENT15', '15', 'percent');
 echo "Done (coupons ensured).";
