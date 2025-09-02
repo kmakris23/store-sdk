@@ -70,7 +70,7 @@ describe('Integration: Product Reviews', () => {
     });
     if (filtered.data && filtered.data.length > 0) {
       const allMatch = filtered.data.every((r) => r.product_id === pid);
-      expect(allMatch || true).toBe(true);
+      expect(allMatch).toBe(true);
     } else {
       expect(Array.isArray(filtered.data)).toBe(true);
     }
