@@ -9,22 +9,6 @@ import { routes } from './app.routes';
 import { from } from 'rxjs';
 import { StoreSdk } from '@store-sdk/core';
 import { environment } from '../environments/environment.development';
-import { useSimpleJwt } from '@store-sdk/simple-jwt-login';
-
-const simpleJwtPlugin = useSimpleJwt({
-  fetchCartOnLogin: true,
-  revokeTokenBeforeLogin: true,
-  autoLoginUrl: environment.baseUrl,
-  autoLoginRedirectUrl: `${environment.baseUrl}/checkout`,
-  getToken: async () =>
-    (await Promise.resolve(localStorage.getItem('simple_jwt'))) as string,
-  setToken: async (token: string) => {
-    await Promise.resolve(localStorage.setItem('simple_jwt', token));
-  },
-  clearToken: async () => {
-    await Promise.resolve(localStorage.removeItem('simple_jwt'));
-  },
-});
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -61,7 +45,7 @@ export const appConfig: ApplicationConfig = {
               await Promise.resolve(localStorage.setItem('cart_token', value));
             },
           },
-          plugins: [simpleJwtPlugin],
+          // No auth plugins: guest cart + checkout only.
         })
       )
     ),
