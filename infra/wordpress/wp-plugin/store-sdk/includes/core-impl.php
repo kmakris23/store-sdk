@@ -51,7 +51,7 @@ if (!defined('STORESDK_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN')) define('STORESDK_JW
 if (!defined('STORESDK_JWT_ENABLE_FRONT_CHANNEL')) define('STORESDK_JWT_ENABLE_FRONT_CHANNEL', true);
 if (!defined('STORESDK_JWT_ERROR_ON_INVALID_BEARER')) define('STORESDK_JWT_ERROR_ON_INVALID_BEARER', false);
 
-function storesdk_jwt_default_expiration(){ return (int)apply_filters('storesdk_jwt_token_expiration',(int)STORESDK_JWT_ACCESS_TTL); }
+function storesdk_jwt_default_expiration(){ return (int)STORESDK_JWT_ACCESS_TTL; }
 function storesdk_base64url_encode($d){ return rtrim(strtr(base64_encode($d), '+/', '-_'), '='); }
 function storesdk_base64url_decode($d){ $r=strlen($d)%4; if($r){$d.=str_repeat('=',4-$r);} return base64_decode(strtr($d,'-_','+/')); }
 function storesdk_jwt_sign($hp){ return storesdk_base64url_encode(hash_hmac('sha256',$hp,STORESDK_JWT_SECRET,true)); }

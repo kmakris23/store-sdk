@@ -50,7 +50,7 @@ Yes, if you configure a strong secret and pair with standard protections (HTTPS,
 No. It implements minimal HS256 signing internally to keep footprint low.
 
 = Can I customize access token lifetime? =
-Yes via the `STORESDK_JWT_ACCESS_TTL` constant or the `storesdk_jwt_token_expiration` filter.
+Yes via the `STORESDK_JWT_ACCESS_TTL` constant.
 
 = How do I revoke all existing access tokens for a user? =
 Call the `/revoke` endpoint with scope `all` while authenticated (cookie or bearer). This clears refresh tokens and bumps an internal version invalidating prior access tokens.

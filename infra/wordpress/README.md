@@ -126,9 +126,7 @@ It provides lightweight JWT issuance, one-time autologin tokens, refresh token r
 
 ### Filter Hooks
 
-| Filter                          | Purpose                                         |
-| ------------------------------- | ----------------------------------------------- |
-| `storesdk_jwt_token_expiration` | Override access token TTL (return int seconds). |
+| (none currently) | — |
 
 ### Example `wp-config.php` Snippet
 
