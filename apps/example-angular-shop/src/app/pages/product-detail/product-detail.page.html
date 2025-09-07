@@ -1,44 +1,44 @@
-<ng-container *ngIf="product(); else loadingTpl">
-  <div class="grid gap-8 items-start grid-cols-1 md:grid-cols-2">
-    <div class="grid gap-2 grid-cols-3">
-      <img
-        *ngFor="let img of product()?.images"
-        [src]="img.src"
-        [alt]="img.alt || product()?.name"
-        loading="lazy"
-        class="w-full aspect-square object-contain bg-slate-100 border border-slate-200 rounded p-1"
-      />
-    </div>
-    <div>
-      <h1 class="text-2xl font-semibold mb-2">{{ product()?.name }}</h1>
-      <p class="text-xl font-semibold text-slate-800 mb-4">
-        {{ product()?.prices?.price | price }}
-      </p>
-      <div
-        class="prose prose-sm max-w-none mb-4"
-        [innerHTML]="product()?.description"
-      ></div>
-      <div class="flex items-center gap-4">
-        <label class="flex items-center gap-2 text-sm"
-          >Qty:
-          <input
-            type="number"
-            min="1"
-            [value]="qty"
-            (input)="qty = $any($event.target).valueAsNumber || 1"
-            class="w-20 px-2 py-1 border rounded"
-          />
-        </label>
-        <button
-          (click)="addToCart()"
-          class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded text-sm font-medium"
-        >
-          Add to Cart
-        </button>
-      </div>
+@if (product()) {
+<div class="grid gap-8 items-start grid-cols-1 md:grid-cols-2">
+  <div class="grid gap-2 grid-cols-3">
+    @for (img of product()?.images; track img.src) {
+    <img
+      [src]="img.src"
+      [alt]="img.alt || product()?.name"
+      loading="lazy"
+      class="w-full aspect-square object-contain bg-slate-100 border border-slate-200 rounded p-1"
+    />
+    }
+  </div>
+  <div>
+    <h1 class="text-2xl font-semibold mb-2">{{ product()?.name }}</h1>
+    <p class="text-xl font-semibold text-slate-800 mb-4">
+      {{ product()?.prices?.price | price }}
+    </p>
+    <div
+      class="prose prose-sm max-w-none mb-4"
+      [innerHTML]="product()?.description"
+    ></div>
+    <div class="flex items-center gap-4">
+      <label class="flex items-center gap-2 text-sm"
+        >Qty:
+        <input
+          type="number"
+          min="1"
+          [value]="qty"
+          (input)="qty = $any($event.target).valueAsNumber || 1"
+          class="w-20 px-2 py-1 border rounded"
+        />
+      </label>
+      <button
+        (click)="addToCart()"
+        class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded text-sm font-medium"
+      >
+        Add to Cart
+      </button>
     </div>
   </div>
-</ng-container>
-<ng-template #loadingTpl>
-  <p class="text-sm text-slate-500">Loading product...</p>
-</ng-template>
+</div>
+} @else {
+<p class="text-sm text-slate-500">Loading product...</p>
+}

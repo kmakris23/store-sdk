@@ -1,5 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { PricePipe } from '../../pipes/price.pipe';
 import { StoreSdk } from '@store-sdk/core';
 
@@ -16,7 +17,7 @@ interface CartData {
 @Component({
   selector: 'app-cart-page',
   standalone: true,
-  imports: [CommonModule, PricePipe],
+  imports: [CommonModule, RouterModule, PricePipe],
   templateUrl: './cart.page.html',
 })
 export class CartPageComponent implements OnInit {

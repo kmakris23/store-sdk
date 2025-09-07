@@ -2,8 +2,6 @@ import { Component, OnInit, signal, InjectionToken } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StoreSdk } from '@store-sdk/core';
-// Pull in module augmentation so Sdk.simpleJwt is typed in strict production builds
-import '@store-sdk/simple-jwt-login';
 
 export interface CurrencyInfo {
   code: string;
@@ -32,28 +30,13 @@ export const APP_CURRENCY_REF: CurrencyInfo = {
 export class AppComponent implements OnInit {
   title = 'example-angular-shop';
   cartCount = signal<number>(0);
-  authenticated = signal<boolean>(false);
   // Local signal mirrors mutable provider object; consumers injecting APP_CURRENCY get the same live object
   currency = signal<CurrencyInfo>(APP_CURRENCY_REF);
 
   ngOnInit(): void {
     StoreSdk.events.onAny((e, p) => console.log('SDK Event', e, p));
-    StoreSdk.events.on('auth:changed', async (a) => {
-      const loggedIn = !!a;
-      this.authenticated.set(loggedIn);
-      if (loggedIn) {
-        await this.fetchCartAndCurrency();
-      } else {
-        // reset mutable ref + signal
-        APP_CURRENCY_REF.code = 'USD';
-        APP_CURRENCY_REF.symbol = '$';
-        APP_CURRENCY_REF.prefix = '$';
-        APP_CURRENCY_REF.suffix = '';
-        APP_CURRENCY_REF.minorUnit = 2;
-        this.currency.set(APP_CURRENCY_REF);
-      }
-    });
-    this.authenticated.set(!!StoreSdk.state.authenticated);
+    // No auth: always attempt to fetch cart (will create guest cart as needed)
+    this.fetchCartAndCurrency();
     interface MiniCartItem {
       quantity?: number;
     }
@@ -111,9 +94,6 @@ export class AppComponent implements OnInit {
     )?.totals;
     if (existingTotals?.currency_code) {
       this.setCurrencyFromTotals(existingTotals);
-    } else if (this.authenticated()) {
-      // fetch if already authenticated
-      this.fetchCartAndCurrency();
     }
   }
 
@@ -142,7 +122,5 @@ export class AppComponent implements OnInit {
     }
   }
 
-  async logout() {
-    await StoreSdk.simpleJwt?.auth.revokeToken();
-  }
+  // logout removed (guest-only demo)
 }
