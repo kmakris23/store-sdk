@@ -34,48 +34,46 @@ export class CheckoutPageComponent implements OnInit {
   orderId = signal<number | null>(null);
 
   // Cart snapshot
-  cart = signal<
-    | {
-        items?: {
-          name: string;
-          quantity: number;
-          prices?: { price?: string };
-        }[];
-        totals?: {
-          total_items?: string;
-          total_shipping?: string;
-          total_discount?: string;
-          total_price?: string;
-        };
-        payment_methods?: string[];
-        shipping_rates?: ShippingPackage[];
-        billing_address?: {
-          first_name: string;
-          last_name: string;
-          company: string;
-          address_1: string;
-          address_2: string;
-          city: string;
-          state: string;
-          postcode: string;
-          country: string;
-          email: string;
-          phone: string;
-        };
-        shipping_address?: {
-          first_name: string;
-          last_name: string;
-          company: string;
-          address_1: string;
-          address_2: string;
-          city: string;
-          state: string;
-          postcode: string;
-          country: string;
-          phone: string;
-        };
-      } | null
-  >(null);
+  cart = signal<{
+    items?: {
+      name: string;
+      quantity: number;
+      prices?: { price?: string };
+    }[];
+    totals?: {
+      total_items?: string;
+      total_shipping?: string;
+      total_discount?: string;
+      total_price?: string;
+    };
+    payment_methods?: string[];
+    shipping_rates?: ShippingPackage[];
+    billing_address?: {
+      first_name: string;
+      last_name: string;
+      company: string;
+      address_1: string;
+      address_2: string;
+      city: string;
+      state: string;
+      postcode: string;
+      country: string;
+      email: string;
+      phone: string;
+    };
+    shipping_address?: {
+      first_name: string;
+      last_name: string;
+      company: string;
+      address_1: string;
+      address_2: string;
+      city: string;
+      state: string;
+      postcode: string;
+      country: string;
+      phone: string;
+    };
+  } | null>(null);
 
   // Address forms (initialize with reasonable defaults for demo)
   billing = signal({
