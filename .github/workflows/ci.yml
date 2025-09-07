@@ -172,6 +172,11 @@ jobs:
       - name: Run Flow Tests
         run: |
           cd packages/core && npx vitest run --coverage src/lib/tests/flow
+      - name: Run WP Plugin Tests
+        env:
+          WP_BASE_URL: http://localhost:8080
+        run: |
+          npx vitest run scripts/tests
       - name: Tear Down WordPress Environment
         if: always()
         run: npm run wp:env:down || true

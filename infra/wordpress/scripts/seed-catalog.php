@@ -216,4 +216,4 @@ update_option('store_sdk_seeded', 1, true);
 // Ensure coupons after products created
 ensure_coupon('SUMMER10', '10', 'fixed_cart');
 ensure_coupon('PERCENT15', '15', 'percent');
-echo "Done (coupons ensured).";
+echo "Done (coupons ensured).\n";

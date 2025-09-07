@@ -144,10 +144,41 @@ if [ "$CURRENT_PERMALINK" != "/%postname%/" ]; then
   wp rewrite flush --hard
 fi
 
-# Ensure JWT secret constant present in wp-config.php (WordPress image supports appending)
+# Ensure JWT secret constants present in wp-config.php (WordPress image supports appending)
 if ! grep -q 'SIMPLE_JWT_LOGIN_SECRET_KEY' wp-config.php; then
   log "Adding SIMPLE_JWT_LOGIN_SECRET_KEY to wp-config.php"
   echo "define('SIMPLE_JWT_LOGIN_SECRET_KEY', '$(printf %q "${JWT_SECRET:-change_me}")');" >> wp-config.php
+fi
+if ! grep -q 'STORESDK_JWT_ENABLED' wp-config.php; then
+  log "Adding STORESDK_JWT_ENABLED to wp-config.php"
+  echo "define('STORESDK_JWT_ENABLED', true);" >> wp-config.php
+fi
+if ! grep -q 'STORESDK_JWT_SECRET' wp-config.php; then
+  log "Adding STORESDK_JWT_SECRET to wp-config.php (re-uses JWT_SECRET env)"
+  echo "define('STORESDK_JWT_SECRET', '$(printf %q "${JWT_SECRET:-change_me}")');" >> wp-config.php
+fi
+
+# ---------------------------------------------------------------------------
+# Verify Store SDK JWT plugin presence & REST route registration
+# ---------------------------------------------------------------------------
+log "Verifying Store SDK JWT plugin..."
+if wp plugin is-installed store-sdk-jwt-auth >/dev/null 2>&1; then
+  if ! wp plugin is-active store-sdk-jwt-auth >/dev/null 2>&1; then
+    log "Activating store-sdk-jwt-auth plugin"
+    wp plugin activate store-sdk-jwt-auth || log "[storesdk-jwt][WARN] Activation failed"
+  fi
+  wp eval '
+    $server = rest_get_server();
+    $routes = $server ? $server->get_routes() : [];
+    $warn = function($m){ echo "[storesdk-jwt][WARN] $m\n"; };
+    if (!function_exists("storesdk_jwt_encode")) { $warn("storesdk_jwt_encode() missing (core not loaded)"); } else { echo "[storesdk-jwt] core functions loaded\n"; }
+    foreach (["token","validate","autologin","one-time-token","refresh"] as $endpoint) {
+      $path = "/store-sdk-auth/v1/$endpoint";
+      if (isset($routes[$path])) { echo "[storesdk-jwt] $path route registered\n"; } else { $warn("$endpoint route not registered"); }
+    }
+  ' || true
+else
+  log "[storesdk-jwt][WARN] Plugin store-sdk-jwt-auth not installed"
 fi
 
 # Create a test customer user if configured
