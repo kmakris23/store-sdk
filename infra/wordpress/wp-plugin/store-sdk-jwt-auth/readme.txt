@@ -1,23 +1,4 @@
-=== Store SDK ===
-Contributors: storesdk
-Tags: jwt, authentication, woocommerce, headless, api
-Requires at least: 6.3
-Tested up to: 6.6
-Requires PHP: 8.0
-Stable tag: 1.0.0
-License: MIT
-License URI: https://opensource.org/licenses/MIT
-
-Authentication (JWT) endpoints providing first-class auth support for the @store-sdk/core package: issue, refresh, validate, revoke, one-time autologin tokens.
-
-== Description ==
-This plugin provides lightweight JSON Web Token (JWT) authentication endpoints designed specifically to pair with the `@store-sdk/core` package for headless WooCommerce builds. It intentionally keeps dependencies minimal while supporting common workflows:
-
-* Issue access + refresh tokens (`/token`)
-* Rotate refresh tokens (`/refresh`)
-* Validate access tokens (`/validate`)
-* One-time token generation (`/one-time-token`) and browser autologin (`/autologin`)
-* Revoke tokens globally or refresh-only (`/revoke`)
+Deprecated placeholder for old slug. Use plugin under `../store-sdk` directory.
 
 Security features:
 

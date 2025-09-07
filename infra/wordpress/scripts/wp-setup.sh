@@ -161,11 +161,11 @@ fi
 # ---------------------------------------------------------------------------
 # Verify Store SDK JWT plugin presence & REST route registration
 # ---------------------------------------------------------------------------
-log "Verifying Store SDK JWT plugin..."
-if wp plugin is-installed store-sdk-jwt-auth >/dev/null 2>&1; then
-  if ! wp plugin is-active store-sdk-jwt-auth >/dev/null 2>&1; then
-    log "Activating store-sdk-jwt-auth plugin"
-    wp plugin activate store-sdk-jwt-auth || log "[storesdk-jwt][WARN] Activation failed"
+log "Verifying Store SDK plugin (slug: store-sdk)..."
+if wp plugin is-installed store-sdk >/dev/null 2>&1; then
+  if ! wp plugin is-active store-sdk >/dev/null 2>&1; then
+    log "Activating store-sdk plugin"
+    wp plugin activate store-sdk || log "[storesdk-jwt][WARN] Activation failed"
   fi
   wp eval '
     $server = rest_get_server();
@@ -178,7 +178,7 @@ if wp plugin is-installed store-sdk-jwt-auth >/dev/null 2>&1; then
     }
   ' || true
 else
-  log "[storesdk-jwt][WARN] Plugin store-sdk-jwt-auth not installed"
+  log "[storesdk-jwt][WARN] Plugin store-sdk not installed"
 fi
 
 # Create a test customer user if configured

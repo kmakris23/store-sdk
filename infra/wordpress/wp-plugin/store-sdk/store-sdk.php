@@ -8,17 +8,13 @@
  * Author URI: https://github.com/kmakris23
  * License: MIT
  * License URI: https://opensource.org/licenses/MIT
- * Text Domain: store-sdk-jwt-auth
+ * Text Domain: store-sdk
  * Requires at least: 6.3
  * Requires PHP: 8.0
  * Tested up to: 6.6
  * Tags: jwt, authentication, woocommerce, headless, api
  */
 
-// Safety
-if ( ! defined( 'ABSPATH' ) ) {
-  exit;
-}
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-// Load shared core implementation (contains all logic & routes)
 require_once __DIR__ . '/includes/core-impl.php';

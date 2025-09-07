@@ -11,15 +11,10 @@ import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 
 const ROOT = process.cwd();
-const srcDir = join(
-  ROOT,
-  'infra',
-  'wordpress',
-  'wp-plugin',
-  'store-sdk-jwt-auth'
-);
+// Source plugin directory (new unified slug)
+const srcDir = join(ROOT, 'infra', 'wordpress', 'wp-plugin', 'store-sdk');
 const distDir = join(ROOT, 'dist', 'wp-plugin');
-const buildDir = join(distDir, 'store-sdk-jwt-auth');
+const buildDir = join(distDir, 'store-sdk');
 
 rmSync(distDir, { recursive: true, force: true });
 mkdirSync(buildDir, { recursive: true });
@@ -31,7 +26,7 @@ cpSync(srcDir, buildDir, { recursive: true });
 // (In future: prune tests, examples, infra-only comments if added)
 
 // Create zip (attempt native PowerShell first, fallback to *nix zip if available)
-const zipName = 'store-sdk-jwt-auth.zip';
+const zipName = 'store-sdk.zip';
 const zipPath = join(distDir, zipName);
 let zipCreated = false;
 try {

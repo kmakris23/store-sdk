@@ -78,9 +78,9 @@ curl "http://localhost:8080/wp-json/simple-jwt-login/v1/auth?email=$($env:TEST_C
 
 Response contains a token you can use in `Authorization: Bearer <token>` for authenticated Store API calls.
 
-## Store SDK JWT mu-plugin (Custom Auth Layer)
+## Store SDK Auth Plugin
 
-In addition to the Simple JWT Login plugin, this environment ships with a purpose-built **must‑use plugin**: `store-sdk-jwt-auth`.
+This environment includes the unified authentication plugin (slug: `store-sdk`).
 
 It provides lightweight JWT issuance, one-time autologin tokens, refresh token rotation, and forced authentication via `Authorization: Bearer` without depending on external plugins. Configure the constants below and apply recommended hardening for production use.
 
@@ -158,11 +158,11 @@ define('STORESDK_JWT_ENABLE_FRONT_CHANNEL', false);
 
 ### When To Use This vs Simple JWT Login
 
-| Scenario                                                       | Recommended Approach                                             |
-| -------------------------------------------------------------- | ---------------------------------------------------------------- |
-| Local integration tests needing one-time / refresh / autologin | Store SDK mu-plugin (default config)                             |
-| Production minimal dependency JWT with custom flows            | Store SDK mu-plugin (hardened config + external rate limiting)   |
-| Need admin UI for revocation / blacklisting                    | Combine mu-plugin with an additional management plugin or extend |
+| Scenario                                                       | Recommended Approach                                               |
+| -------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Local integration tests needing one-time / refresh / autologin | Store SDK auth plugin (default config)                             |
+| Production minimal dependency JWT with custom flows            | Store SDK auth plugin (hardened config + external rate limiting)   |
+| Need admin UI for revocation / blacklisting                    | Extend the Store SDK plugin or pair with an admin management tool |
 
 Select based on operational requirements; both options can coexist if endpoints are namespaced distinctly (already the case here).
 
