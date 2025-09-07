@@ -158,10 +158,10 @@ define('STORESDK_JWT_ENABLE_FRONT_CHANNEL', false);
 
 ### When To Use This vs Simple JWT Login
 
-| Scenario                                                       | Recommended Approach                                               |
-| -------------------------------------------------------------- | ------------------------------------------------------------------ |
-| Local integration tests needing one-time / refresh / autologin | Store SDK auth plugin (default config)                             |
-| Production minimal dependency JWT with custom flows            | Store SDK auth plugin (hardened config + external rate limiting)   |
+| Scenario                                                       | Recommended Approach                                              |
+| -------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Local integration tests needing one-time / refresh / autologin | Store SDK auth plugin (default config)                            |
+| Production minimal dependency JWT with custom flows            | Store SDK auth plugin (hardened config + external rate limiting)  |
 | Need admin UI for revocation / blacklisting                    | Extend the Store SDK plugin or pair with an admin management tool |
 
 Select based on operational requirements; both options can coexist if endpoints are namespaced distinctly (already the case here).
