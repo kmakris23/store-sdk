@@ -44,6 +44,15 @@ export class Sdk {
       addRefreshTokenInterceptor(config, this._auth);
     }
 
+    // Set initial authentication state based on config
+    // This is useful if the token is already set
+    if (config.auth?.getToken) {
+      config.auth.getToken().then((token) => {
+        StoreSdk.state.authenticated = !!token;
+        StoreSdk.events.emit('auth:changed', !!token);
+      });
+    }
+
     const allPlugins = [...(config.plugins ?? [])];
     for (const plugin of allPlugins) {
       plugin.init();
