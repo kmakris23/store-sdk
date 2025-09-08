@@ -4,7 +4,7 @@ import {
   AuthTokenRequest,
   AuthTokenResponse,
 } from 'src/lib/types/auth/token/index.js';
-import { doGet, doPost } from 'src/lib/utilities/axios.utility.js';
+import { doGet, doPost } from '../../utilities/axios.utility.js';
 import {
   AuthRevokeRequest,
   AuthRevokeResponse,
