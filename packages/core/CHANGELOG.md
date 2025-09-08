@@ -1,3 +1,7 @@
+## 1.3.0-alpha.0 (2025-09-08)
+
+This was a version bump only for core to align it with other projects, there were no code changes.
+
 ## 1.2.0-alpha.0 (2025-09-08)
 
 ### 🚀 Features
