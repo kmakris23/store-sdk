@@ -1,3 +1,7 @@
+## 1.3.4-alpha.0 (2025-09-08)
+
+This was a version bump only for simple-jwt-login to align it with other projects, there were no code changes.
+
 ## 1.3.3-alpha.0 (2025-09-08)
 
 This was a version bump only for simple-jwt-login to align it with other projects, there were no code changes.
