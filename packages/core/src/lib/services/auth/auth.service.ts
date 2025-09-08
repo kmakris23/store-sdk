@@ -15,9 +15,22 @@ import { AuthOneTimeTokenRequest } from '../../types/auth/one-time-token/auth.on
 import { AuthOneTimeTokenResponse } from '../../types/auth/one-time-token/auth.one.time.token.response.js';
 import { AuthStatusResponse } from '../../types/auth/status/auth.status.response.js';
 import { BaseService } from '../base.service.js';
+import qs from 'qs';
 
 export class AuthService extends BaseService {
-  private readonly endpoint = 'wp-json/wc/store-sdk/v1/auth';
+  private readonly endpoint = 'wp-json/store-sdk/v1/auth';
+
+  async getAutoLoginUrl(redirectUrl?: string) {
+    const jwt = await this.config.auth?.getToken?.();
+
+    const params = qs.stringify({
+      token: jwt,
+      redirectUrl: redirectUrl ?? '/my-account',
+    });
+
+    const endpoint = `wp-json/store-sdk/autologin`;
+    return `${this.config.auth?.autoLoginUrl}/${endpoint}?${params}`;
+  }
 
   async token(
     body: AuthTokenRequest,

@@ -163,7 +163,7 @@ add_action('rest_api_init', function () {
 		'permission_callback' => '__return_true',
 		'callback' => function (WP_REST_Request $r) {
 			if (!storesdk_jwt_plugin_active()) {
-				return new WP_Error('storesdk_jwt.inactive', __('Store SDK JWT authentication inactive', 'store-sdk'), ['status' => 503]);
+				return new WP_Error('storesdk_jwt.inactive', __('Store SDK JWT authentication inactive', 'store-sdk'), ['status' => 400]);
 			}
 			return storesdk_rest_issue_token($r);
 		},
@@ -178,7 +178,7 @@ add_action('rest_api_init', function () {
 		'permission_callback' => '__return_true',
 		'callback' => function (WP_REST_Request $r) {
 			if (!storesdk_jwt_plugin_active()) {
-				return new WP_Error('storesdk_jwt.inactive', __('Store SDK JWT authentication inactive', 'store-sdk'), ['status' => 503]);
+				return new WP_Error('storesdk_jwt.inactive', __('Store SDK JWT authentication inactive', 'store-sdk'), ['status' => 400]);
 			}
 			return storesdk_rest_autologin($r);
 		},
@@ -192,7 +192,7 @@ add_action('rest_api_init', function () {
 		'permission_callback' => function () { return is_user_logged_in(); },
 		'callback' => function (WP_REST_Request $r) {
 			if (!storesdk_jwt_plugin_active()) {
-				return new WP_Error('storesdk_jwt.inactive', __('Store SDK JWT authentication inactive', 'store-sdk'), ['status' => 503]);
+				return new WP_Error('storesdk_jwt.inactive', __('Store SDK JWT authentication inactive', 'store-sdk'), ['status' => 400]);
 			}
 			return storesdk_rest_one_time_token($r);
 		},
@@ -203,7 +203,7 @@ add_action('rest_api_init', function () {
 		'permission_callback' => '__return_true',
 		'callback' => function (WP_REST_Request $r) {
 			if (!storesdk_jwt_plugin_active()) {
-				return new WP_Error('storesdk_jwt.inactive', __('Store SDK JWT authentication inactive', 'store-sdk'), ['status' => 503]);
+				return new WP_Error('storesdk_jwt.inactive', __('Store SDK JWT authentication inactive', 'store-sdk'), ['status' => 400]);
 			}
 			return storesdk_rest_refresh_token($r);
 		},
@@ -214,7 +214,7 @@ add_action('rest_api_init', function () {
 		'permission_callback' => function () { return is_user_logged_in() || storesdk_current_user_from_bearer(); },
 		'callback' => function (WP_REST_Request $r) {
 			if (!storesdk_jwt_plugin_active()) {
-				return new WP_Error('storesdk_jwt.inactive', __('Store SDK JWT authentication inactive', 'store-sdk'), ['status' => 503]);
+				return new WP_Error('storesdk_jwt.inactive', __('Store SDK JWT authentication inactive', 'store-sdk'), ['status' => 400]);
 			}
 			return storesdk_rest_revoke_tokens($r);
 		},
@@ -551,7 +551,7 @@ if (STORESDK_JWT_PLUGIN_ACTIVE) add_action('rest_api_init', function () {
 	register_rest_route('store-sdk/v1/auth', '/validate', ['methods' => 'GET', 'callback' => function (WP_REST_Request $r) {
 		$h = storesdk_get_authorization_header();
 		if (!$h || !preg_match('/^Bearer\s+(.*)$/i', $h, $m)) {
-			return new WP_Error('storesdk_jwt.missing_token', __('Missing bearer token', 'store-sdk'), ['status' => 401]);
+			return new WP_Error('storesdk_jwt.missing_token', __('Missing bearer token', 'store-sdk'), ['status' => 400]);
 		}
 		$payload = storesdk_jwt_decode($m[1]);
 		if (is_wp_error($payload)) return $payload;
@@ -560,7 +560,7 @@ if (STORESDK_JWT_PLUGIN_ACTIVE) add_action('rest_api_init', function () {
 			if ($u) {
 				$cur = storesdk_get_token_version($u->ID);
 				if ($cur > 1 && (empty($payload['ver']) || (int)$payload['ver'] !== $cur)) {
-					return new WP_Error('storesdk_jwt.version_mismatch', __('Token revoked', 'store-sdk'), ['status' => 401]);
+					return new WP_Error('storesdk_jwt.version_mismatch', __('Token revoked', 'store-sdk'), ['status' => 400]);
 				}
 			}
 		}

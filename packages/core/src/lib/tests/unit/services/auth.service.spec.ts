@@ -97,7 +97,7 @@ describe('AuthService', () => {
     expect(names).toContain('auth:login:success');
     expect(names).toContain('auth:changed');
     expect(mockedPost.mock.calls[0][0]).toBe(
-      '/wp-json/wc/store-sdk/v1/auth/token'
+      '/wp-json/store-sdk/v1/auth/token'
     );
   });
 
@@ -128,11 +128,11 @@ describe('AuthService', () => {
     expect(data).toEqual(loginResponse);
     // first call revoke
     expect(mockedPost.mock.calls[0][0]).toBe(
-      '/wp-json/wc/store-sdk/v1/auth/revoke'
+      '/wp-json/store-sdk/v1/auth/revoke'
     );
     // second call login
     expect(mockedPost.mock.calls[1][0]).toBe(
-      '/wp-json/wc/store-sdk/v1/auth/token'
+      '/wp-json/store-sdk/v1/auth/token'
     );
   });
 
@@ -178,7 +178,7 @@ describe('AuthService', () => {
     expect(setToken).toHaveBeenCalledWith('newT');
     expect(evs.map((e) => e.event)).toContain('auth:token:refresh:success');
     expect(mockedPost.mock.calls[0][0]).toBe(
-      '/wp-json/wc/store-sdk/v1/auth/refresh'
+      '/wp-json/store-sdk/v1/auth/refresh'
     );
   });
 
@@ -221,7 +221,7 @@ describe('AuthService', () => {
     expect(names).toContain('auth:token:revoke:success');
     expect(names).toContain('auth:changed');
     expect(mockedPost.mock.calls[0][0]).toBe(
-      '/wp-json/wc/store-sdk/v1/auth/revoke'
+      '/wp-json/store-sdk/v1/auth/revoke'
     );
   });
 
@@ -259,7 +259,7 @@ describe('AuthService', () => {
     expect(error).toBeFalsy();
     expect(data?.one_time_token).toBe('one');
     expect(mockedPost.mock.calls[0][0]).toBe(
-      '/wp-json/wc/store-sdk/v1/auth/one-time-token'
+      '/wp-json/store-sdk/v1/auth/one-time-token'
     );
   });
 
@@ -281,7 +281,7 @@ describe('AuthService', () => {
     const { data } = await service.validate();
     expect(data?.valid).toBe(true);
     expect(mockedGet.mock.calls[0][0]).toBe(
-      '/wp-json/wc/store-sdk/v1/auth/validate'
+      '/wp-json/store-sdk/v1/auth/validate'
     );
   });
 
@@ -300,7 +300,7 @@ describe('AuthService', () => {
     const { data } = await service.status();
     expect(data?.active).toBe(true);
     expect(mockedGet.mock.calls[0][0]).toBe(
-      '/wp-json/wc/store-sdk/v1/auth/status'
+      '/wp-json/store-sdk/v1/auth/status'
     );
   });
 });

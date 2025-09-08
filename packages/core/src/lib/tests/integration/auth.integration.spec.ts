@@ -8,12 +8,22 @@ const CUSTOMER_PASS = process.env.TEST_CUSTOMER_PASSWORD || 'customer123';
 
 // Simple holder for tokens captured through config callbacks
 let accessToken = '';
+let refreshToken = '';
 
 const config: StoreSdkConfig = {
   baseUrl: WP_BASE_URL,
   auth: {
+    getToken: async () => {
+      return accessToken;
+    },
     setToken: async (t: string) => {
       accessToken = t;
+    },
+    getRefreshToken: async () => {
+      return refreshToken;
+    },
+    setRefreshToken: async (t: string) => {
+      refreshToken = t;
     },
     clearToken: async () => {
       accessToken = '';
@@ -24,8 +34,6 @@ const config: StoreSdkConfig = {
 // Initialize SDK once and use exposed auth facade
 const sdk = StoreSdk;
 // We'll init lazily in beforeAll so baseUrl & config callbacks are wired
-
-let refreshToken: string | undefined;
 let pluginActive: boolean | undefined;
 
 describe('Integration: Auth', () => {
@@ -60,7 +68,9 @@ describe('Integration: Auth', () => {
     expect(error).toBeFalsy();
     expect(data?.token).toBeTruthy();
     expect(accessToken).toBe(data?.token);
-    refreshToken = data?.refresh_token;
+    if (data?.refresh_token) {
+      refreshToken = data.refresh_token;
+    }
   });
 
   it('validates current access token', async () => {

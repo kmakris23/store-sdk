@@ -3,6 +3,7 @@ import { StoreSdkPlugin } from '../plugins/plugin.js';
 export interface StoreSdkConfig {
   baseUrl: string;
   auth?: {
+    autoLoginUrl?: string;
     /**
      * Fetch the cart after login.
      * This is useful if you want to ensure the cart is up-to-date after a user logs in.

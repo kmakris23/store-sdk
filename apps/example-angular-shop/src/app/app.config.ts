@@ -19,6 +19,20 @@ export const appConfig: ApplicationConfig = {
       from(
         StoreSdk.init({
           baseUrl: environment.baseUrl,
+          auth: {
+            getToken: async () =>
+              (await Promise.resolve(localStorage.getItem('token'))) as string,
+            setToken: async (value) => {
+              await Promise.resolve(localStorage.setItem('token', value));
+            },
+            getRefreshToken: async () =>
+              (await Promise.resolve(
+                localStorage.getItem('re_token')
+              )) as string,
+            setRefreshToken: async (value) => {
+              await Promise.resolve(localStorage.setItem('re_token', value));
+            },
+          },
           nonce: {
             disabled: false,
             clearToken: async () => {

@@ -1,45 +1,44 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { StoreSdk } from '../../../index.js';
-import { AuthService } from '../../services/auth/auth.service.js';
-import { StoreSdkConfig } from '../../configs/sdk.config.js';
-import { EventBus } from '../../bus/event.bus.js';
-import { StoreSdkEvent } from '../../sdk.events.js';
-import { StoreSdkState } from '../../types/sdk.state.js';
 
 const WP_BASE_URL = process.env.WP_BASE_URL || 'http://localhost:8080';
 const CUSTOMER_USER = process.env.TEST_CUSTOMER_USER || 'customer';
 const CUSTOMER_PASS = process.env.TEST_CUSTOMER_PASSWORD || 'customer123';
 
-let capturedToken = '';
-const config: StoreSdkConfig = {
-  baseUrl: WP_BASE_URL,
-  auth: {
-    setToken: async (t: string) => {
-      capturedToken = t;
-    },
-    getToken: async () => capturedToken,
-    clearToken: async () => {
-      capturedToken = '';
-    },
-    revokeTokenBeforeLogin: false,
-  },
-};
-
-const state: StoreSdkState = {};
-const events = new EventBus<StoreSdkEvent>();
-const authService = new AuthService(state, config, events);
 let pluginActive = true;
+// Simple holder for tokens captured through config callbacks
+let accessToken = '';
+let refreshToken = '';
 
 describe('Flow: Customer Checkout', () => {
   beforeAll(async () => {
-    await StoreSdk.init({ baseUrl: WP_BASE_URL });
-    const status = await authService.status();
+    await StoreSdk.init({
+      baseUrl: WP_BASE_URL,
+      auth: {
+        getToken: async () => {
+          return accessToken;
+        },
+        setToken: async (t: string) => {
+          accessToken = t;
+        },
+        clearToken: async () => {
+          accessToken = '';
+        },
+        getRefreshToken: async () => {
+          return refreshToken;
+        },
+        setRefreshToken: async (t: string) => {
+          refreshToken = t;
+        },
+      },
+    });
+    const status = await StoreSdk.auth.status();
     pluginActive = !!status.data?.active;
   });
 
   it('login -> categories -> products -> cart -> checkout', async () => {
     if (pluginActive) {
-      const login = await authService.token({
+      const login = await StoreSdk.auth.token({
         login: CUSTOMER_USER,
         password: CUSTOMER_PASS,
       });
@@ -47,7 +46,7 @@ describe('Flow: Customer Checkout', () => {
       expect(login.data?.token).toBeTruthy();
 
       // Validate endpoint should succeed using injected Authorization header
-      const validate = await authService.validate();
+      const validate = await StoreSdk.auth.validate();
       expect(validate.error).toBeFalsy();
       // Basic shape assertion if available
       if (validate.data) {
