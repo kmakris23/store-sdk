@@ -23,18 +23,11 @@ import {
 import { AuthValidateResponse } from '../../../types/auth/validate/index.js';
 import { AuthStatusResponse } from '../../../types/auth/status/index.js';
 
-vi.mock('../../../utilities/axios.utility.js', () => ({
-  doGet: vi.fn(),
-  doPost: vi.fn(),
-}));
-// Also mock via absolute import path used inside the service under test
-vi.mock('src/lib/utilities/axios.utility.js', () => ({
-  doGet: vi.fn(),
-  doPost: vi.fn(),
-}));
-const axiosMocks = { doGet: vi.fn(), doPost: vi.fn() };
-vi.doMock('../../../utilities/axios.utility.js', () => axiosMocks);
-vi.doMock('src/lib/utilities/axios.utility.js', () => axiosMocks);
+// Single source of truth for axios utility mocks (both relative and absolute import paths)
+// Use vi.hoisted to avoid TDZ when Vitest hoists vi.mock calls
+const axiosMockRefs = vi.hoisted(() => ({ doGet: vi.fn(), doPost: vi.fn() }));
+vi.mock('../../../utilities/axios.utility.js', () => axiosMockRefs);
+vi.mock('src/lib/utilities/axios.utility.js', () => axiosMockRefs);
 import { doGet, doPost } from '../../../utilities/axios.utility.js';
 
 type AuthServiceType = InstanceType<
@@ -60,8 +53,10 @@ describe('AuthService', () => {
   };
 
   beforeEach(async () => {
-    mockedGet = axiosMocks.doGet as MockedFunction<typeof doGet>;
-    mockedPost = axiosMocks.doPost as MockedFunction<typeof doPost>;
+    mockedGet = axiosMockRefs.doGet as unknown as MockedFunction<typeof doGet>;
+    mockedPost = axiosMockRefs.doPost as unknown as MockedFunction<
+      typeof doPost
+    >;
     vi.clearAllMocks();
     // reset singleton state & events instead of reassigning object
     StoreSdk.state.cart = undefined;
@@ -72,7 +67,8 @@ describe('AuthService', () => {
     config = { baseUrl: 'https://example.com', auth: {} };
     const mod = await import('../../../services/auth/auth.service.js');
     const AuthService = mod.AuthService;
-    service = new AuthService(config);
+    // Use the shared StoreSdk.state so mutations are observable in assertions
+    service = new AuthService(StoreSdk.state, config, events);
   });
 
   it('logs in and sets token, emits events, updates authenticated state', async () => {

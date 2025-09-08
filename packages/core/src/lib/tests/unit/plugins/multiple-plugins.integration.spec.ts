@@ -66,7 +66,12 @@ class PluginB {
 // Mock dependencies
 vi.mock('../../../services/api.js', () => ({
   createHttpClient: vi.fn(),
-  httpClient: {},
+  httpClient: {
+    interceptors: {
+      request: { use: vi.fn() },
+      response: { use: vi.fn() },
+    },
+  },
 }));
 
 vi.mock('../../../interceptors/cart.token.interceptor.js', () => ({
