@@ -1,6 +1,6 @@
 {
   "name": "@store-sdk/jwt-authentication-for-wp-rest-api",
-  "version": "1.1.1",
+  "version": "1.2.0-alpha.0",
   "repository": {
     "url": "https://github.com/kmakris23/store-sdk",
     "directory": ""
@@ -34,13 +34,13 @@
     "name": "jwt-authentication-for-wp-rest-api"
   },
   "peerDependencies": {
-    "@store-sdk/core": "1.1.1",
+    "@store-sdk/core": "1.2.0-alpha.0",
     "axios": "^1.11.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@store-sdk/core": "1.1.1"
+    "@store-sdk/core": "1.2.0-alpha.0"
   }
 }

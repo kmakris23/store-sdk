@@ -1,3 +1,26 @@
+## 1.2.0-alpha.0 (2025-09-08)
+
+### 🚀 Features
+
+- create comprehensive README.md with detailed documentation ([d466536](https://github.com/kmakris23/store-sdk/commit/d466536))
+- Implement enhanced plugin architecture with event handler registration and include Angular example in CI builds ([fcf9ac3](https://github.com/kmakris23/store-sdk/commit/fcf9ac3))
+- enhance cart and order integration tests, improve error handling and assertions ([649641d](https://github.com/kmakris23/store-sdk/commit/649641d))
+- Implement Store SDK JWT Authentication Plugin ([098a02a](https://github.com/kmakris23/store-sdk/commit/098a02a))
+- Refactor Store SDK authentication plugin structure and update documentation for unified JWT support ([b39db7f](https://github.com/kmakris23/store-sdk/commit/b39db7f))
+- Add JWT support configuration and enhance user creation logic in setup script ([853a08b](https://github.com/kmakris23/store-sdk/commit/853a08b))
+- **auth:** implement token management and refresh functionality ([3511c31](https://github.com/kmakris23/store-sdk/commit/3511c31))
+
+### 🩹 Fixes
+
+- Adjust table formatting in README for clarity on recommended approaches ([92ccab5](https://github.com/kmakris23/store-sdk/commit/92ccab5))
+- **deps:** update angular monorepo to ~20.2.0 ([823cb86](https://github.com/kmakris23/store-sdk/commit/823cb86))
+- **package:** add missing newline at end of file ([1d6fc0a](https://github.com/kmakris23/store-sdk/commit/1d6fc0a))
+
+### ❤️ Thank You
+
+- Copilot @Copilot
+- kmakris23
+
 ## 1.1.1 (2025-08-20)
 
 ### 🩹 Fixes

@@ -1,3 +1,11 @@
+## 1.2.0-alpha.0 (2025-09-08)
+
+### 🚀 Features
+
+- **auth:** implement token management and refresh functionality ([3511c31](https://github.com/kmakris23/store-sdk/commit/3511c31))
+- enhance cart and order integration tests, improve error handling and assertions ([649641d](https://github.com/kmakris23/store-sdk/commit/649641d))
+- Implement enhanced plugin architecture with event handler registration and include Angular example in CI builds ([fcf9ac3](https://github.com/kmakris23/store-sdk/commit/fcf9ac3))
+
 ## 1.1.1 (2025-08-20)
 
 This was a version bump only for core to align it with other projects, there were no code changes.
