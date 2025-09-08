@@ -1,3 +1,13 @@
+## 1.3.3-alpha.0 (2025-09-08)
+
+### 🚀 Features
+
+- **auth:** initialize authentication state based on provided token ([442c25f](https://github.com/kmakris23/store-sdk/commit/442c25f))
+
+### 🩹 Fixes
+
+- **auth:** correct token retrieval logic in refresh token interceptor ([1a491d6](https://github.com/kmakris23/store-sdk/commit/1a491d6))
+
 ## 1.3.2-alpha.0 (2025-09-08)
 
 ### 🚀 Features
