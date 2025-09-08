@@ -1,13 +1,12 @@
 # WordPress + WooCommerce Test Environment
 
-Environment for running a real WordPress + WooCommerce instance with both Simple JWT Login and the custom Store SDK JWT mu‑plugin enabled. Suitable for development and can be adapted for production with the hardening steps outlined below.
+Environment for running a real WordPress + WooCommerce instance with the Store SDK JWT mu‑plugin enabled. Suitable for development and can be adapted for production with the hardening steps outlined below.
 
 ## Features
 
 - WordPress (latest official image) + MariaDB 11
 - Automatic install & idempotent setup via `wpcli` one-shot container
-- WooCommerce + Simple JWT Login auto-installed & activated
-- JWT secret injected as constant `SIMPLE_JWT_LOGIN_SECRET_KEY`
+- WooCommerce auto-installed & activated
 - Optional test customer user
 - Basic WooCommerce store settings applied
 - Pretty permalinks enabled
@@ -62,21 +61,7 @@ If you want to skip seeding entirely, create the guard manually before first run
 npm run wp:cli -- option add store_sdk_seeded 1
 ```
 
-## Obtaining a JWT (Simple JWT Login)
-
-Endpoint pattern (GET or POST):
-
-```
-GET /wp-json/simple-jwt-login/v1/auth?email=<EMAIL>&password=<PASSWORD>
-```
-
-Example (PowerShell):
-
-```powershell
-curl "http://localhost:8080/wp-json/simple-jwt-login/v1/auth?email=$($env:TEST_CUSTOMER_EMAIL)&password=$($env:TEST_CUSTOMER_PASSWORD)"
-```
-
-Response contains a token you can use in `Authorization: Bearer <token>` for authenticated Store API calls.
+<!-- Simple JWT Login plugin has been removed from this environment. Use the Store SDK Auth endpoints instead. -->
 
 ## Store SDK Auth Plugin
 

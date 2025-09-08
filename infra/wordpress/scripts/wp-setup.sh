@@ -56,7 +56,7 @@ fi
 wp option update siteurl "$SITE_URL" >/dev/null
 wp option update home "$SITE_URL" >/dev/null
 
-log "Ensuring required plugins present (WooCommerce, Simple JWT Login)..."
+log "Ensuring required plugins present (WooCommerce)..."
 
 install_with_retry() {
   local plugin=$1
@@ -101,24 +101,6 @@ if ! wp plugin is-active woocommerce >/dev/null 2>&1; then
   fail "WooCommerce plugin not active after installation attempts."
 fi
 
-# Simple JWT Login
-if wp plugin is-installed simple-jwt-login >/dev/null 2>&1; then
-  if ! wp plugin is-active simple-jwt-login >/dev/null 2>&1; then
-    wp plugin activate simple-jwt-login || true
-  fi
-else
-  SJL_VERSION_FLAG=""
-  if [ -n "${SIMPLE_JWT_LOGIN_VERSION:-}" ]; then
-    SJL_VERSION_FLAG="--version=${SIMPLE_JWT_LOGIN_VERSION}"
-  fi
-  if ! install_with_retry simple-jwt-login "$SJL_VERSION_FLAG"; then
-    fail "simple-jwt-login failed to install after retries."
-  fi
-fi
-
-if ! wp plugin is-active simple-jwt-login >/dev/null 2>&1; then
-  fail "simple-jwt-login plugin not active after installation attempts."
-fi
 
 # Basic WooCommerce setup (non-interactive) - safe to ignore errors if already configured
 if ! wp option get woocommerce_store_address_1 >/dev/null 2>&1; then
