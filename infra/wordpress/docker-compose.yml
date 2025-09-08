@@ -37,7 +37,7 @@ services:
     volumes:
       - wp_data:/var/www/html
       # Mount shared plugin implementation (single source of truth)
-      - ./wp-plugin/store-sdk:/var/www/html/wp-content/plugins/store-sdk:ro
+      - ../../plugins/store-sdk:/var/www/html/wp-content/plugins/store-sdk:ro
 
   wpcli:
     image: wordpress:cli
@@ -73,7 +73,7 @@ services:
       - wp_data:/var/www/html
       - ./scripts:/scripts
       # Mount plugin implementation for wpcli
-      - ./wp-plugin/store-sdk:/var/www/html/wp-content/plugins/store-sdk:ro
+      - ../../plugins/store-sdk:/var/www/html/wp-content/plugins/store-sdk:ro
     entrypoint: ['bash', '/scripts/wp-entry.sh']
 
 volumes:

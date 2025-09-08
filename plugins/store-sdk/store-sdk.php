@@ -17,4 +17,13 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-require_once __DIR__ . '/includes/core-impl.php';
+$__storesdk_core_impl = __DIR__ . '/includes/core-impl.php';
+if ( ! file_exists( $__storesdk_core_impl ) ) {
+	// Provide a clearer diagnostic instead of a raw fatal
+	if ( function_exists( 'wp_die' ) ) {
+		wp_die( 'Store SDK plugin incomplete: missing includes/core-impl.php. Rebuild the plugin zip using the packaging script.' );
+	} else {
+		throw new RuntimeException( 'Store SDK plugin incomplete: missing includes/core-impl.php.' );
+	}
+}
+require_once $__storesdk_core_impl;

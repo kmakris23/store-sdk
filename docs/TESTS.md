@@ -1,6 +1,6 @@
 # Test Suites Overview
 
-> Auto-generated test documentation. Total tests: **123** across **27** spec files.
+> Auto-generated test documentation. Total tests: **165** across **38** spec files.
 
 Regenerate with: `npm run docs:tests`
 
@@ -19,19 +19,33 @@ Regenerate with: `npm run docs:tests`
 
 </details>
 
-<details><summary><strong>integration</strong> — 41 tests in 9 files</summary>
+<details><summary><strong>integration</strong> — 50 tests in 11 files</summary>
 
 | File                                                    | Suites | Tests |
 | ------------------------------------------------------- | ------ | ----- |
+| integration/cart.core.integration.spec.ts               | 1      | 6     |
 | integration/cart.coupons.integration.spec.ts            | 1      | 6     |
 | integration/cart.items.integration.spec.ts              | 1      | 4     |
 | integration/categories.integration.spec.ts              | 1      | 9     |
 | integration/checkout.order.integration.spec.ts          | 1      | 4     |
+| integration/order.integration.spec.ts                   | 1      | 2     |
 | integration/product.attributes.integration.spec.ts      | 1      | 2     |
 | integration/product.collection-data.integration.spec.ts | 1      | 2     |
-| integration/product.reviews.integration.spec.ts         | 1      | 2     |
+| integration/product.reviews.integration.spec.ts         | 1      | 3     |
 | integration/product.taxonomies.integration.spec.ts      | 1      | 4     |
 | integration/products.integration.spec.ts                | 1      | 8     |
+
+<details><summary>integration/cart.core.integration.spec.ts (6 tests)</summary>
+
+- **Integration: Cart Core Operations**
+  - retrieves initial cart (may be empty)
+  - adds an item then updates quantity best-effort
+  - removes an item when key available (graceful if none)
+  - applies and removes coupon via cart service (best-effort)
+  - updates customer information (best-effort)
+  - selects shipping rate (likely error if no rates)
+
+</details>
 
 <details><summary>integration/cart.coupons.integration.spec.ts (6 tests)</summary>
 
@@ -80,6 +94,14 @@ Regenerate with: `npm run docs:tests`
 
 </details>
 
+<details><summary>integration/order.integration.spec.ts (2 tests)</summary>
+
+- **Integration: Order (pay-for-order endpoint)**
+  - retrieves order without billing email (expects data if created else explicit error)
+  - retrieves order with billing email (expects data if created else explicit error)
+
+</details>
+
 <details><summary>integration/product.attributes.integration.spec.ts (2 tests)</summary>
 
 - **Integration: Product Attributes & Terms**
@@ -96,11 +118,12 @@ Regenerate with: `npm run docs:tests`
 
 </details>
 
-<details><summary>integration/product.reviews.integration.spec.ts (2 tests)</summary>
+<details><summary>integration/product.reviews.integration.spec.ts (3 tests)</summary>
 
 - **Integration: Product Reviews**
-  - lists product reviews (may be empty)
+  - lists product reviews (expects deterministic seeding of 3 reviews per product)
   - lists reviews with small per_page (pagination sanity)
+  - filters reviews by product_id (best-effort, tolerant)
 
 </details>
 
@@ -130,13 +153,21 @@ Regenerate with: `npm run docs:tests`
 
 </details>
 
-<details><summary><strong>unit</strong> — 81 tests in 17 files</summary>
+<details><summary><strong>unit</strong> — 114 tests in 26 files</summary>
 
 | File                                                  | Suites | Tests |
 | ----------------------------------------------------- | ------ | ----- |
+| unit/api.http-client.spec.ts                          | 1      | 1     |
+| unit/axios.utility.error.spec.ts                      | 1      | 1     |
+| unit/axios.utility.methods.spec.ts                    | 1      | 5     |
+| unit/event.bus.extra.spec.ts                          | 1      | 2     |
+| unit/event.bus.spec.ts                                | 1      | 10    |
+| unit/interceptors.spec.ts                             | 1      | 4     |
+| unit/jwt.utility.spec.ts                              | 1      | 5     |
 | unit/plugins/multiple-plugins.integration.spec.ts     | 1      | 5     |
 | unit/plugins/plugin.architecture.spec.ts              | 1      | 6     |
 | unit/plugins/simple-jwt-login.integration.spec.ts     | 1      | 6     |
+| unit/sdk.guard.spec.ts                                | 1      | 2     |
 | unit/services/cart.coupon.service.spec.ts             | 1      | 9     |
 | unit/services/cart.item.service.spec.ts               | 1      | 7     |
 | unit/services/cart.service.spec.ts                    | 1      | 9     |
@@ -151,6 +182,77 @@ Regenerate with: `npm run docs:tests`
 | unit/services/product.review.service.spec.ts          | 1      | 3     |
 | unit/services/product.service.spec.ts                 | 1      | 6     |
 | unit/services/product.tag.service.spec.ts             | 1      | 3     |
+| unit/services/store.service.spec.ts                   | 1      | 3     |
+
+<details><summary>unit/api.http-client.spec.ts (1 tests)</summary>
+
+- **api http client**
+  - createHttpClient is idempotent and proxy forwards methods
+
+</details>
+
+<details><summary>unit/axios.utility.error.spec.ts (1 tests)</summary>
+
+- **axios.utility error path**
+  - returns error structure on axios error
+
+</details>
+
+<details><summary>unit/axios.utility.methods.spec.ts (5 tests)</summary>
+
+- **axios.utility helper methods**
+  - doGet invokes request with method get
+  - doPost sends data with method post
+  - doPut sends data with method put
+  - doDelete uses delete method
+  - doHead sets method head and custom validateStatus
+
+</details>
+
+<details><summary>unit/event.bus.extra.spec.ts (2 tests)</summary>
+
+- **EventBus extra coverage**
+  - middleware disposer removes middleware
+  - onAny disposer removes handler
+
+</details>
+
+<details><summary>unit/event.bus.spec.ts (10 tests)</summary>
+
+- **EventBus**
+  - on / emit / off basic flow
+  - once only fires a single time
+  - emit without payload for void events
+  - emitIf respects condition and returns boolean
+  - middleware chains in order then listeners fire
+  - onAny receives all events after specific handlers
+  - waitFor resolves when predicate matches, supports timeout
+  - waitFor rejects on timeout
+  - scope shares underlying listeners via prefix
+  - clear removes all listeners, any listeners, and middleware
+
+</details>
+
+<details><summary>unit/interceptors.spec.ts (4 tests)</summary>
+
+- **Interceptors**
+  - cart token interceptor adds header, sets state, emits event
+  - cart token interceptor disabled path
+  - nonce interceptor adds header and emits event
+  - nonce interceptor disabled path
+
+</details>
+
+<details><summary>unit/jwt.utility.spec.ts (5 tests)</summary>
+
+- **jwt.utility**
+  - getJwtExpiration returns null when no token
+  - getJwtExpiration returns a future date
+  - isJwtExpired true for missing token
+  - isJwtExpired false for future token
+  - isJwtExpired true for past token
+
+</details>
 
 <details><summary>unit/plugins/multiple-plugins.integration.spec.ts (5 tests)</summary>
 
@@ -184,6 +286,14 @@ Regenerate with: `npm run docs:tests`
   - should clear tokens on logout
   - should extend SDK with simple-jwt capabilities
   - should work without nonce or cartToken configured
+
+</details>
+
+<details><summary>unit/sdk.guard.spec.ts (2 tests)</summary>
+
+- **Sdk guards**
+  - throws when accessing store before init
+  - second init call is a no-op
 
 </details>
 
@@ -332,6 +442,15 @@ Regenerate with: `npm run docs:tests`
   - lists tags
   - lists tags with params
   - handles list error
+
+</details>
+
+<details><summary>unit/services/store.service.spec.ts (3 tests)</summary>
+
+- **StoreService (composition)**
+  - exposes all expected service getters
+  - returns the same reference for repeated getter access (singleton per sub-service)
+  - does not mutate provided state object reference
 
 </details>
 

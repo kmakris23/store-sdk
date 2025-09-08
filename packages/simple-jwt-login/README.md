@@ -5,7 +5,7 @@
 
 ## Replacement
 
-Use the consolidated WordPress plugin `infra/wordpress/wp-plugin/store-sdk` (slug: `store-sdk`) and integrate through `@store-sdk/core`.
+Use the consolidated WordPress plugin `plugins/store-sdk` (slug: `store-sdk`) and integrate through `@store-sdk/core`.
 
 ## Legacy Build (Not Recommended)
 

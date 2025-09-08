@@ -10,7 +10,7 @@ npm install @store-sdk/jwt-authentication-for-wp-rest-api
 
 ## Migration
 
-Adopt the consolidated JWT auth plugin shipped under the `infra/wordpress/wp-plugin` directory and consume it through `@store-sdk/core`.
+Adopt the consolidated WordPress authentication plugin now located at `plugins/store-sdk` and consume it through `@store-sdk/core`.
 
 ## Support
 
