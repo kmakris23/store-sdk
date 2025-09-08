@@ -27,7 +27,7 @@ import { AuthStatusResponse } from '../../../types/auth/status/index.js';
 // Use vi.hoisted to avoid TDZ when Vitest hoists vi.mock calls
 const axiosMockRefs = vi.hoisted(() => ({ doGet: vi.fn(), doPost: vi.fn() }));
 vi.mock('../../../utilities/axios.utility.js', () => axiosMockRefs);
-vi.mock('src/lib/utilities/axios.utility.js', () => axiosMockRefs);
+vi.mock('../../utilities/axios.utility.js', () => axiosMockRefs);
 import { doGet, doPost } from '../../../utilities/axios.utility.js';
 
 type AuthServiceType = InstanceType<

@@ -3,7 +3,7 @@ import { ApiResult } from '../../types/api.js';
 import {
   AuthTokenRequest,
   AuthTokenResponse,
-} from 'src/lib/types/auth/token/index.js';
+} from '../../types/auth/token/index.js';
 import { doGet, doPost } from '../../utilities/axios.utility.js';
 import {
   AuthRevokeRequest,
@@ -12,7 +12,7 @@ import {
 import { AuthRefreshRequest } from '../../types/auth/refresh/index.js';
 import { AuthValidateResponse } from '../../types/auth/validate/index.js';
 import { AuthOneTimeTokenRequest } from '../../types/auth/one-time-token/auth.one.time.token.request.js';
-import { AuthOneTimeTokenResponse } from 'src/lib/types/auth/one-time-token/auth.one.time.token.response.js';
+import { AuthOneTimeTokenResponse } from '../../types/auth/one-time-token/auth.one.time.token.response.js';
 import { AuthStatusResponse } from '../../types/auth/status/auth.status.response.js';
 import { BaseService } from '../base.service.js';
 
