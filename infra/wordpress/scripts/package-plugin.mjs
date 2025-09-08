@@ -6,7 +6,7 @@ import {
   writeFileSync,
   readFileSync,
 } from 'node:fs';
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 
@@ -31,8 +31,13 @@ const zipPath = join(distDir, zipName);
 let zipCreated = false;
 try {
   // Use double quotes for paths (handles spaces); Compress-Archive requires literal path to contents
-  execSync(
-    `powershell -NoProfile -Command Compress-Archive -Path "${buildDir}/*" -DestinationPath "${zipPath}" -Force`,
+  execFileSync(
+    'powershell',
+    [
+      '-NoProfile',
+      '-Command',
+      `Compress-Archive -Path '${buildDir}/*' -DestinationPath '${zipPath}' -Force`,
+    ],
     {
       stdio: 'inherit',
     }
@@ -44,7 +49,10 @@ try {
 
 if (!zipCreated) {
   try {
-    execSync(`zip -r ${zipPath} .`, { cwd: buildDir, stdio: 'inherit' });
+    execFileSync('zip', ['-r', zipPath, '.'], {
+      cwd: buildDir,
+      stdio: 'inherit',
+    });
     zipCreated = true;
   } catch {
     console.error(
