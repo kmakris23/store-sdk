@@ -181,10 +181,11 @@ else
   log "[storesdk-jwt][WARN] Plugin store-sdk not installed"
 fi
 
-# Create a test customer user if configured
-if [ -n "${TEST_CUSTOMER_USER:-}" ] && ! wp user get "$TEST_CUSTOMER_USER" >/dev/null 2>&1; then
-  log "Creating test customer user '${TEST_CUSTOMER_USER}'"
-  wp user create "$TEST_CUSTOMER_USER" "${TEST_CUSTOMER_EMAIL:-customer@example.com}" --user_pass="${TEST_CUSTOMER_PASSWORD:-customer123}" --role=customer
+# Create a test customer user (always ensure exists) using env overrides or defaults
+TEST_CUSTOMER_USER_EFFECTIVE="${TEST_CUSTOMER_USER:-customer}"
+if ! wp user get "$TEST_CUSTOMER_USER_EFFECTIVE" >/dev/null 2>&1; then
+  log "Creating test customer user '$TEST_CUSTOMER_USER_EFFECTIVE'"
+  wp user create "$TEST_CUSTOMER_USER_EFFECTIVE" "${TEST_CUSTOMER_EMAIL:-customer@example.com}" --user_pass="${TEST_CUSTOMER_PASSWORD:-customer123}" --role=customer || log "[WARN] Failed to create test customer user"
 fi
 
 log "Setup complete. Site available at: $SITE_URL"

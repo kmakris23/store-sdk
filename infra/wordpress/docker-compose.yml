@@ -33,6 +33,8 @@ services:
         define('WP_DEBUG_LOG', true);
         define('WP_ENVIRONMENT_TYPE', 'local');
         define('SIMPLE_JWT_LOGIN_SECRET_KEY', getenv('JWT_SECRET') ?: 'change_me');
+        define('STORESDK_JWT_ENABLED', true);
+        define('STORESDK_JWT_SECRET', getenv('JWT_SECRET') ?: 'change_me');
     volumes:
       - wp_data:/var/www/html
       # Mount shared plugin implementation (single source of truth)

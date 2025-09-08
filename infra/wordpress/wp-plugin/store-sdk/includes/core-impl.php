@@ -122,16 +122,74 @@ function storesdk_jwt_decode($t)
   return $p;
 }
 
-if (STORESDK_JWT_PLUGIN_ACTIVE) add_action('rest_api_init', function () {
-  register_rest_route('store-sdk-auth/v1', '/token', ['methods' => 'POST', 'callback' => 'storesdk_rest_issue_token', 'permission_callback' => '__return_true', 'args' => ['login' => ['required' => true], 'password' => ['required' => true], 'refresh_ttl' => ['required' => false]]]);
-  register_rest_route('store-sdk-auth/v1', '/autologin', ['methods' => 'POST,GET', 'callback' => 'storesdk_rest_autologin', 'permission_callback' => '__return_true', 'args' => ['token' => ['required' => true], 'redirect' => ['required' => false]]]);
-  register_rest_route('store-sdk-auth/v1', '/one-time-token', ['methods' => 'POST', 'callback' => 'storesdk_rest_one_time_token', 'permission_callback' => function () {
-    return is_user_logged_in();
-  }, 'args' => ['ttl' => ['required' => false]]]);
-  register_rest_route('store-sdk-auth/v1', '/refresh', ['methods' => 'POST', 'callback' => 'storesdk_rest_refresh_token', 'permission_callback' => '__return_true', 'args' => ['refresh_token' => ['required' => true]]]);
-  register_rest_route('store-sdk-auth/v1', '/revoke', ['methods' => 'POST', 'callback' => 'storesdk_rest_revoke_tokens', 'permission_callback' => function () {
-    return is_user_logged_in() || storesdk_current_user_from_bearer();
-  }, 'args' => ['scope' => ['required' => false]]]);
+function storesdk_jwt_plugin_active() {
+  return defined('STORESDK_JWT_PLUGIN_ACTIVE') && STORESDK_JWT_PLUGIN_ACTIVE;
+}
+
+add_action('rest_api_init', function () {
+  // Register routes unconditionally so tests don't miss them if activation check timing differs
+  register_rest_route('store-sdk-auth/v1', '/token', [
+    'methods'  => 'POST',
+    'permission_callback' => '__return_true',
+    'callback' => function (WP_REST_Request $r) {
+      if (!storesdk_jwt_plugin_active()) {
+        return new WP_Error('storesdk_jwt.inactive', __('Store SDK JWT authentication inactive', 'store-sdk'), ['status' => 503]);
+      }
+      return storesdk_rest_issue_token($r);
+    },
+    'args' => [
+      'login' => ['required' => true],
+      'password' => ['required' => true],
+      'refresh_ttl' => ['required' => false],
+    ],
+  ]);
+  register_rest_route('store-sdk-auth/v1', '/autologin', [
+    'methods' => 'POST,GET',
+    'permission_callback' => '__return_true',
+    'callback' => function (WP_REST_Request $r) {
+      if (!storesdk_jwt_plugin_active()) {
+        return new WP_Error('storesdk_jwt.inactive', __('Store SDK JWT authentication inactive', 'store-sdk'), ['status' => 503]);
+      }
+      return storesdk_rest_autologin($r);
+    },
+    'args' => [
+      'token' => ['required' => true],
+      'redirect' => ['required' => false],
+    ],
+  ]);
+  register_rest_route('store-sdk-auth/v1', '/one-time-token', [
+    'methods' => 'POST',
+    'permission_callback' => function () { return is_user_logged_in(); },
+    'callback' => function (WP_REST_Request $r) {
+      if (!storesdk_jwt_plugin_active()) {
+        return new WP_Error('storesdk_jwt.inactive', __('Store SDK JWT authentication inactive', 'store-sdk'), ['status' => 503]);
+      }
+      return storesdk_rest_one_time_token($r);
+    },
+    'args' => [ 'ttl' => ['required' => false] ],
+  ]);
+  register_rest_route('store-sdk-auth/v1', '/refresh', [
+    'methods' => 'POST',
+    'permission_callback' => '__return_true',
+    'callback' => function (WP_REST_Request $r) {
+      if (!storesdk_jwt_plugin_active()) {
+        return new WP_Error('storesdk_jwt.inactive', __('Store SDK JWT authentication inactive', 'store-sdk'), ['status' => 503]);
+      }
+      return storesdk_rest_refresh_token($r);
+    },
+    'args' => [ 'refresh_token' => ['required' => true] ],
+  ]);
+  register_rest_route('store-sdk-auth/v1', '/revoke', [
+    'methods' => 'POST',
+    'permission_callback' => function () { return is_user_logged_in() || storesdk_current_user_from_bearer(); },
+    'callback' => function (WP_REST_Request $r) {
+      if (!storesdk_jwt_plugin_active()) {
+        return new WP_Error('storesdk_jwt.inactive', __('Store SDK JWT authentication inactive', 'store-sdk'), ['status' => 503]);
+      }
+      return storesdk_rest_revoke_tokens($r);
+    },
+    'args' => [ 'scope' => ['required' => false] ],
+  ]);
 });
 
 function storesdk_get_token_version($uid)
