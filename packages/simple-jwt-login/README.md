@@ -1,11 +1,26 @@
-# simple-jwt-login
+> **Status: Deprecated**  
+> This package is no longer supported. Functionality has migrated to the unified Store SDK WordPress authentication plugin powering `@store-sdk/core`.
 
-This library was generated with [Nx](https://nx.dev).
+# simple-jwt-login (Deprecated)
 
-## Building
+## Replacement
 
-Run `nx build simple-jwt-login` to build the library.
+Use the consolidated WordPress plugin `plugins/store-sdk` (slug: `store-sdk`) and integrate through `@store-sdk/core`.
 
-## Running unit tests
+## Legacy Build (Not Recommended)
 
-Run `nx test simple-jwt-login` to execute the unit tests via [Vitest](https://vitest.dev/).
+You can still build:
+
+```
+nx build simple-jwt-login
+```
+
+## Legacy Tests
+
+```
+nx test simple-jwt-login
+```
+
+## Support Policy
+
+No further enhancements or bug fixes. Only potential critical security advisories may trigger action (possibly full deprecation / unpublish).

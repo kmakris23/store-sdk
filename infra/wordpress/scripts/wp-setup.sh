@@ -56,7 +56,7 @@ fi
 wp option update siteurl "$SITE_URL" >/dev/null
 wp option update home "$SITE_URL" >/dev/null
 
-log "Ensuring required plugins present (WooCommerce, Simple JWT Login)..."
+log "Ensuring required plugins present (WooCommerce)..."
 
 install_with_retry() {
   local plugin=$1
@@ -101,24 +101,6 @@ if ! wp plugin is-active woocommerce >/dev/null 2>&1; then
   fail "WooCommerce plugin not active after installation attempts."
 fi
 
-# Simple JWT Login
-if wp plugin is-installed simple-jwt-login >/dev/null 2>&1; then
-  if ! wp plugin is-active simple-jwt-login >/dev/null 2>&1; then
-    wp plugin activate simple-jwt-login || true
-  fi
-else
-  SJL_VERSION_FLAG=""
-  if [ -n "${SIMPLE_JWT_LOGIN_VERSION:-}" ]; then
-    SJL_VERSION_FLAG="--version=${SIMPLE_JWT_LOGIN_VERSION}"
-  fi
-  if ! install_with_retry simple-jwt-login "$SJL_VERSION_FLAG"; then
-    fail "simple-jwt-login failed to install after retries."
-  fi
-fi
-
-if ! wp plugin is-active simple-jwt-login >/dev/null 2>&1; then
-  fail "simple-jwt-login plugin not active after installation attempts."
-fi
 
 # Basic WooCommerce setup (non-interactive) - safe to ignore errors if already configured
 if ! wp option get woocommerce_store_address_1 >/dev/null 2>&1; then
@@ -144,16 +126,48 @@ if [ "$CURRENT_PERMALINK" != "/%postname%/" ]; then
   wp rewrite flush --hard
 fi
 
-# Ensure JWT secret constant present in wp-config.php (WordPress image supports appending)
+# Ensure JWT secret constants present in wp-config.php (WordPress image supports appending)
 if ! grep -q 'SIMPLE_JWT_LOGIN_SECRET_KEY' wp-config.php; then
   log "Adding SIMPLE_JWT_LOGIN_SECRET_KEY to wp-config.php"
   echo "define('SIMPLE_JWT_LOGIN_SECRET_KEY', '$(printf %q "${JWT_SECRET:-change_me}")');" >> wp-config.php
 fi
+if ! grep -q 'STORESDK_JWT_ENABLED' wp-config.php; then
+  log "Adding STORESDK_JWT_ENABLED to wp-config.php"
+  echo "define('STORESDK_JWT_ENABLED', true);" >> wp-config.php
+fi
+if ! grep -q 'STORESDK_JWT_SECRET' wp-config.php; then
+  log "Adding STORESDK_JWT_SECRET to wp-config.php (re-uses JWT_SECRET env)"
+  echo "define('STORESDK_JWT_SECRET', '$(printf %q "${JWT_SECRET:-change_me}")');" >> wp-config.php
+fi
 
-# Create a test customer user if configured
-if [ -n "${TEST_CUSTOMER_USER:-}" ] && ! wp user get "$TEST_CUSTOMER_USER" >/dev/null 2>&1; then
-  log "Creating test customer user '${TEST_CUSTOMER_USER}'"
-  wp user create "$TEST_CUSTOMER_USER" "${TEST_CUSTOMER_EMAIL:-customer@example.com}" --user_pass="${TEST_CUSTOMER_PASSWORD:-customer123}" --role=customer
+# ---------------------------------------------------------------------------
+# Verify Store SDK JWT plugin presence & REST route registration
+# ---------------------------------------------------------------------------
+log "Verifying Store SDK plugin (slug: store-sdk)..."
+if wp plugin is-installed store-sdk >/dev/null 2>&1; then
+  if ! wp plugin is-active store-sdk >/dev/null 2>&1; then
+    log "Activating store-sdk plugin"
+    wp plugin activate store-sdk || log "[storesdk-jwt][WARN] Activation failed"
+  fi
+  wp eval '
+    $server = rest_get_server();
+    $routes = $server ? $server->get_routes() : [];
+    $warn = function($m){ echo "[storesdk-jwt][WARN] $m\n"; };
+    if (!function_exists("storesdk_jwt_encode")) { $warn("storesdk_jwt_encode() missing (core not loaded)"); } else { echo "[storesdk-jwt] core functions loaded\n"; }
+    foreach (["token","validate","autologin","one-time-token","refresh"] as $endpoint) {
+      $path = "/store-sdk/v1/auth/$endpoint";
+      if (isset($routes[$path])) { echo "[storesdk-jwt] $path route registered\n"; } else { $warn("$endpoint route not registered"); }
+    }
+  ' || true
+else
+  log "[storesdk-jwt][WARN] Plugin store-sdk not installed"
+fi
+
+# Create a test customer user (always ensure exists) using env overrides or defaults
+TEST_CUSTOMER_USER_EFFECTIVE="${TEST_CUSTOMER_USER:-customer}"
+if ! wp user get "$TEST_CUSTOMER_USER_EFFECTIVE" >/dev/null 2>&1; then
+  log "Creating test customer user '$TEST_CUSTOMER_USER_EFFECTIVE'"
+  wp user create "$TEST_CUSTOMER_USER_EFFECTIVE" "${TEST_CUSTOMER_EMAIL:-customer@example.com}" --user_pass="${TEST_CUSTOMER_PASSWORD:-customer123}" --role=customer || log "[WARN] Failed to create test customer user"
 fi
 
 log "Setup complete. Site available at: $SITE_URL"

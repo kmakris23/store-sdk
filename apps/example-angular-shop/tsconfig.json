@@ -19,8 +19,11 @@
   "files": [],
   "include": [],
   "references": [
-    { "path": "../../packages/simple-jwt-login" },
-    { "path": "../../packages/core" },
-    { "path": "./tsconfig.app.json" }
+    {
+      "path": "../../packages/core"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    }
   ]
 }
