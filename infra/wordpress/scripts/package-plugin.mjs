@@ -25,43 +25,78 @@ cpSync(srcDir, buildDir, { recursive: true });
 // Ensure no dev-only artifacts
 // (In future: prune tests, examples, infra-only comments if added)
 
-// Create zip (attempt native PowerShell first, fallback to *nix zip if available)
-// IMPORTANT: We archive the parent folder (store-sdk) itself so WordPress extracts to /wp-content/plugins/store-sdk/...
-// If we only zip the *contents*, WP may place files directly or mis-detect structure, causing missing includes.
+// Create zip containing ONLY the contents of the plugin directory (no wrapping folder)
+// WordPress will place these into a folder named after the zip (store-sdk) during installation.
 const zipName = 'store-sdk.zip';
 const zipPath = join(distDir, zipName);
 let zipCreated = false;
+
+// Preferred: tar (bsdtar) with -C into buildDir and archive '.' contents
 try {
-  // Compress the directory (not its globbed children) so the top-level folder is preserved.
-  execFileSync(
-    'powershell',
-    [
-      '-NoProfile',
-      '-Command',
-      // Using -Path on the directory itself ensures the folder name becomes the root entry in the archive
-      `Compress-Archive -Path '${buildDir}' -DestinationPath '${zipPath}' -Force`,
-    ],
-    { stdio: 'inherit' }
-  );
+  execFileSync('tar', ['-a', '-c', '-f', zipPath, '-C', buildDir, '.'], {
+    stdio: 'inherit',
+  });
   zipCreated = true;
-} catch {
-  // Ignore and try *nix zip
+} catch (tarErr) {
+  console.warn(
+    '[package-plugin] tar content-only packaging failed:',
+    tarErr?.message || tarErr
+  );
+}
+
+if (!zipCreated) {
+  // PowerShell fallback: use wildcard to include children only
+  try {
+    execFileSync(
+      'powershell',
+      [
+        '-NoProfile',
+        '-Command',
+        // Compress all child entries; quoting * so expansion happens inside PowerShell
+        `Compress-Archive -Path '${buildDir}/*' -DestinationPath '${zipPath}' -Force`,
+      ],
+      { stdio: 'inherit' }
+    );
+    zipCreated = true;
+  } catch (psErr) {
+    console.warn(
+      '[package-plugin] PowerShell content-only packaging failed:',
+      psErr?.message || psErr
+    );
+  }
 }
 
 if (!zipCreated) {
   try {
-    // Run from distDir so we can include the folder name explicitly
-    execFileSync('zip', ['-r', zipPath, 'store-sdk'], {
-      cwd: distDir,
+    // zip CLI fallback (run inside buildDir so adding . adds contents only)
+    execFileSync('zip', ['-r', zipPath, '.'], {
+      cwd: buildDir,
       stdio: 'inherit',
     });
     zipCreated = true;
-  } catch {
+  } catch (zipErr) {
     console.error(
-      '[package-plugin] Failed to create zip with both PowerShell Compress-Archive and zip command.'
+      '[package-plugin] Failed to create zip with tar, PowerShell, and zip:',
+      zipErr?.message || zipErr
     );
     process.exit(1);
   }
+}
+
+// Verify archive DOES NOT contain a top-level store-sdk/ folder entry (heuristic scan)
+try {
+  const raw = readFileSync(zipPath).toString('latin1');
+  // If we see 'store-sdk/store-sdk.php' it indicates we accidentally nested a folder.
+  if (/store-sdk\/store-sdk\.php/.test(raw)) {
+    console.warn(
+      '[package-plugin] Detected nested folder in zip; expected flat content.'
+    );
+  }
+} catch (verifyErr) {
+  console.warn(
+    '[package-plugin] Verification read failed:',
+    verifyErr?.message || verifyErr
+  );
 }
 
 // Compute SHA256 hash in pure Node (cross-platform)
@@ -69,4 +104,4 @@ const hash = createHash('sha256').update(readFileSync(zipPath)).digest('hex');
 writeFileSync(join(distDir, 'SHA256SUMS.txt'), `${hash}  ${zipName}\n`);
 
 console.log(`[package-plugin] Source: ${srcDir}`);
-console.log(`Plugin packaged at: ${zipPath}`);
+console.log(`Plugin (contents-only) packaged at: ${zipPath}`);
