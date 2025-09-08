@@ -20,18 +20,26 @@ export const addRefreshTokenInterceptor = (
       ) {
         originalRequest._retry = true; // Mark the request as retried to avoid infinite loops.
         try {
-          if (!config.auth?.getRefreshToken || !config.auth.getRefreshToken) {
+          if (!config.auth?.getRefreshToken || !config.auth.getToken) {
             return await refreshTokenFailed(config);
           }
 
           const refreshToken = await config.auth.getRefreshToken();
           if (!refreshToken) return await refreshTokenFailed(config);
 
+          const token = await config.auth.getToken();
+          if (!token) return await refreshTokenFailed(config);
+
           const { data, error } = await auth.refreshToken(
             {
               refresh_token: refreshToken,
             },
-            { _retry: true } as AxiosRequestConfig
+            {
+              _retry: true,
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            } as AxiosRequestConfig
           );
           if (error) return await refreshTokenFailed(config, error);
           if (!data) return await refreshTokenFailed(config);
