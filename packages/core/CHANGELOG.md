@@ -1,3 +1,9 @@
+## 1.3.1-alpha.0 (2025-09-08)
+
+### 🚀 Features
+
+- **auth:** enhance authentication flow with token management and auto-login URL ([4ee683b](https://github.com/kmakris23/store-sdk/commit/4ee683b))
+
 ## 1.3.0-alpha.0 (2025-09-08)
 
 This was a version bump only for core to align it with other projects, there were no code changes.
