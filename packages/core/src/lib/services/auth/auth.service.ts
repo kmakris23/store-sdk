@@ -59,6 +59,9 @@ export class AuthService extends BaseService {
 
         this.config.auth.setToken(data?.token ?? '');
       }
+      if (this.config.auth?.setRefreshToken) {
+        this.config.auth.setRefreshToken(data?.refresh_token ?? '');
+      }
     }
 
     return { data: data, error };
