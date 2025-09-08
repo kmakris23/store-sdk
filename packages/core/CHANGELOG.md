@@ -1,3 +1,9 @@
+## 1.3.2-alpha.0 (2025-09-08)
+
+### 🚀 Features
+
+- **auth:** add support for setting refresh token in token response ([91f13bf](https://github.com/kmakris23/store-sdk/commit/91f13bf))
+
 ## 1.3.1-alpha.0 (2025-09-08)
 
 ### 🚀 Features
