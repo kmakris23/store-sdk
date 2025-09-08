@@ -73,11 +73,11 @@ It provides lightweight JWT issuance, one-time autologin tokens, refresh token r
 
 | Endpoint                                           | Method(s) | Purpose                                                                  |
 | -------------------------------------------------- | --------- | ------------------------------------------------------------------------ |
-| `/wp-json/store-sdk-auth/v1/token`                 | POST      | Issue access + refresh token (login/email + password).                   |
-| `/wp-json/store-sdk-auth/v1/one-time-token`        | POST      | Issue single-use autologin token (requires existing auth).               |
-| `/wp-json/store-sdk-auth/v1/autologin`             | POST/GET  | Consume one-time token; establishes WP auth cookies (optional redirect). |
-| `/wp-json/store-sdk-auth/v1/refresh`               | POST      | Rotate refresh token and obtain new access + refresh tokens.             |
-| `/wp-json/store-sdk-auth/v1/validate`              | GET       | Validate an access token (returns payload).                              |
+| `/wp-json/store-sdk/v1/auth/token`                 | POST      | Issue access + refresh token (login/email + password).                   |
+| `/wp-json/store-sdk/v1/auth/one-time-token`        | POST      | Issue single-use autologin token (requires existing auth).               |
+| `/wp-json/store-sdk/v1/auth/autologin`             | POST/GET  | Consume one-time token; establishes WP auth cookies (optional redirect). |
+| `/wp-json/store-sdk/v1/auth/refresh`               | POST      | Rotate refresh token and obtain new access + refresh tokens.             |
+| `/wp-json/store-sdk/v1/auth/validate`              | GET       | Validate an access token (returns payload).                              |
 | Front-channel (`/?storesdk_autologin=1&token=...`) | GET       | Browser deep link autologin (optional redirect).                         |
 
 ### Request Parameters (Summary)

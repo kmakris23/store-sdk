@@ -158,7 +158,7 @@ function storesdk_jwt_plugin_active() {
 
 add_action('rest_api_init', function () {
 	// Register routes unconditionally so tests don't miss them if activation check timing differs
-	register_rest_route('store-sdk-auth/v1', '/token', [
+	register_rest_route('store-sdk/v1/auth', '/token', [
 		'methods'  => 'POST',
 		'permission_callback' => '__return_true',
 		'callback' => function (WP_REST_Request $r) {
@@ -173,7 +173,7 @@ add_action('rest_api_init', function () {
 			'refresh_ttl' => ['required' => false],
 		],
 	]);
-	register_rest_route('store-sdk-auth/v1', '/autologin', [
+	register_rest_route('store-sdk/v1/auth', '/autologin', [
 		'methods' => 'POST,GET',
 		'permission_callback' => '__return_true',
 		'callback' => function (WP_REST_Request $r) {
@@ -187,7 +187,7 @@ add_action('rest_api_init', function () {
 			'redirect' => ['required' => false],
 		],
 	]);
-	register_rest_route('store-sdk-auth/v1', '/one-time-token', [
+	register_rest_route('store-sdk/v1/auth', '/one-time-token', [
 		'methods' => 'POST',
 		'permission_callback' => function () { return is_user_logged_in(); },
 		'callback' => function (WP_REST_Request $r) {
@@ -198,7 +198,7 @@ add_action('rest_api_init', function () {
 		},
 		'args' => [ 'ttl' => ['required' => false] ],
 	]);
-	register_rest_route('store-sdk-auth/v1', '/refresh', [
+	register_rest_route('store-sdk/v1/auth', '/refresh', [
 		'methods' => 'POST',
 		'permission_callback' => '__return_true',
 		'callback' => function (WP_REST_Request $r) {
@@ -209,7 +209,7 @@ add_action('rest_api_init', function () {
 		},
 		'args' => [ 'refresh_token' => ['required' => true] ],
 	]);
-	register_rest_route('store-sdk-auth/v1', '/revoke', [
+	register_rest_route('store-sdk/v1/auth', '/revoke', [
 		'methods' => 'POST',
 		'permission_callback' => function () { return is_user_logged_in() || storesdk_current_user_from_bearer(); },
 		'callback' => function (WP_REST_Request $r) {
@@ -548,7 +548,7 @@ function storesdk_get_authorization_header()
 }
 
 if (STORESDK_JWT_PLUGIN_ACTIVE) add_action('rest_api_init', function () {
-	register_rest_route('store-sdk-auth/v1', '/validate', ['methods' => 'GET', 'callback' => function (WP_REST_Request $r) {
+	register_rest_route('store-sdk/v1/auth', '/validate', ['methods' => 'GET', 'callback' => function (WP_REST_Request $r) {
 		$h = storesdk_get_authorization_header();
 		if (!$h || !preg_match('/^Bearer\s+(.*)$/i', $h, $m)) {
 			return new WP_Error('storesdk_jwt.missing_token', __('Missing bearer token', 'store-sdk'), ['status' => 401]);
@@ -619,7 +619,7 @@ if (STORESDK_JWT_PLUGIN_ACTIVE) add_action('init', function () {
 });
 
 add_action('rest_api_init', function () {
-	register_rest_route('store-sdk-auth/v1', '/status', ['methods' => 'GET', 'permission_callback' => '__return_true', 'callback' => function () {
+	register_rest_route('store-sdk/v1/auth', '/status', ['methods' => 'GET', 'permission_callback' => '__return_true', 'callback' => function () {
 		$flag_defined = defined('STORESDK_JWT_ENABLED');
 		$flag_enabled = $flag_defined && (bool)(STORESDK_JWT_ENABLED); // Align secret detection with admin notice logic (exclude placeholder 'change_me')
 		$secret_defined = defined('STORESDK_JWT_SECRET') && ($__sv = (string)constant('STORESDK_JWT_SECRET')) !== '' && strtolower($__sv) !== 'change_me';

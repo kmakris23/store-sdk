@@ -155,7 +155,7 @@ if wp plugin is-installed store-sdk >/dev/null 2>&1; then
     $warn = function($m){ echo "[storesdk-jwt][WARN] $m\n"; };
     if (!function_exists("storesdk_jwt_encode")) { $warn("storesdk_jwt_encode() missing (core not loaded)"); } else { echo "[storesdk-jwt] core functions loaded\n"; }
     foreach (["token","validate","autologin","one-time-token","refresh"] as $endpoint) {
-      $path = "/store-sdk-auth/v1/$endpoint";
+      $path = "/store-sdk/v1/auth/$endpoint";
       if (isset($routes[$path])) { echo "[storesdk-jwt] $path route registered\n"; } else { $warn("$endpoint route not registered"); }
     }
   ' || true

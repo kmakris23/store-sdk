@@ -90,7 +90,7 @@ const CUSTOMER_PASSWORD = process.env.TEST_CUSTOMER_PASSWORD || 'customer123';
 // Helper to get standard token
 async function issueStandardToken() {
   const r = await jsonFetch<IssueTokenResponse | ErrorResponse>(
-    `${BASE}/wp-json/store-sdk-auth/v1/token`,
+    `${BASE}/wp-json/store-sdk/v1/auth/token`,
     {
       method: 'POST',
       body: JSON.stringify({
@@ -109,7 +109,7 @@ async function issueStandardToken() {
 async function issueOneTimeToken() {
   // Use Bearer of standard token
   const r = await jsonFetch<OneTimeTokenResponse | ErrorResponse>(
-    `${BASE}/wp-json/store-sdk-auth/v1/one-time-token`,
+    `${BASE}/wp-json/store-sdk/v1/auth/one-time-token`,
     {
       method: 'POST',
       headers: { Authorization: `Bearer ${passwordToken}` },
@@ -129,7 +129,7 @@ describe('Store SDK JWT mu-plugin', () => {
 
   it('rejects invalid credentials', async () => {
     const r = await jsonFetch<ErrorResponse>(
-      `${BASE}/wp-json/store-sdk-auth/v1/token`,
+      `${BASE}/wp-json/store-sdk/v1/auth/token`,
       {
         method: 'POST',
         body: JSON.stringify({ login: 'nope', password: 'wrong' }),
@@ -142,7 +142,7 @@ describe('Store SDK JWT mu-plugin', () => {
 
   it('silently ignores invalid bearer by default (no 401)', async () => {
     const r = await jsonFetch<ValidateResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk-auth/v1/validate`,
+      `${BASE}/wp-json/store-sdk/v1/auth/validate`,
       { headers: { Authorization: 'Bearer totally.invalid.token' } }
     );
     expect(r.ok).toBe(false);
@@ -157,7 +157,7 @@ describe('Store SDK JWT mu-plugin', () => {
 
   it('validates standard token', async () => {
     const r = await jsonFetch<ValidateResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk-auth/v1/validate`,
+      `${BASE}/wp-json/store-sdk/v1/auth/validate`,
       {
         headers: { Authorization: `Bearer ${passwordToken}` },
       }
@@ -176,7 +176,7 @@ describe('Store SDK JWT mu-plugin', () => {
   it('fails autologin with standard token (must be one-time)', async () => {
     if (!passwordToken) throw new Error('passwordToken missing');
     const r = await jsonFetch<ErrorResponse | AutoLoginSuccess>(
-      `${BASE}/wp-json/store-sdk-auth/v1/autologin?token=${encodeURIComponent(
+      `${BASE}/wp-json/store-sdk/v1/auth/autologin?token=${encodeURIComponent(
         passwordToken
       )}`
     );
@@ -197,7 +197,7 @@ describe('Store SDK JWT mu-plugin', () => {
     if (!refreshToken) throw new Error('Missing initial refresh token');
     // First refresh
     const r1 = await jsonFetch<IssueTokenResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk-auth/v1/refresh`,
+      `${BASE}/wp-json/store-sdk/v1/auth/refresh`,
       {
         method: 'POST',
         body: JSON.stringify({ refresh_token: refreshToken }),
@@ -215,7 +215,7 @@ describe('Store SDK JWT mu-plugin', () => {
     refreshToken = data1.refresh_token;
     // Second refresh using new refresh token works
     const r2 = await jsonFetch<IssueTokenResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk-auth/v1/refresh`,
+      `${BASE}/wp-json/store-sdk/v1/auth/refresh`,
       {
         method: 'POST',
         body: JSON.stringify({ refresh_token: refreshToken }),
@@ -230,7 +230,7 @@ describe('Store SDK JWT mu-plugin', () => {
     expect(data2.refresh_token).toBeTruthy();
     // Reuse of first refresh token should now fail
     const reuse = await jsonFetch<ErrorResponse>(
-      `${BASE}/wp-json/store-sdk-auth/v1/refresh`,
+      `${BASE}/wp-json/store-sdk/v1/auth/refresh`,
       {
         method: 'POST',
         body: JSON.stringify({ refresh_token: oldRefresh }),
@@ -245,7 +245,7 @@ describe('Store SDK JWT mu-plugin', () => {
     if (!oneTimeToken)
       throw new Error('oneTimeToken missing (issueOneTimeToken failed)');
     const r = await jsonFetch<ErrorResponse | AutoLoginSuccess>(
-      `${BASE}/wp-json/store-sdk-auth/v1/autologin?token=${encodeURIComponent(
+      `${BASE}/wp-json/store-sdk/v1/auth/autologin?token=${encodeURIComponent(
         oneTimeToken
       )}`
     );
@@ -260,7 +260,7 @@ describe('Store SDK JWT mu-plugin', () => {
   it('one-time token cannot be reused', async () => {
     if (!oneTimeToken) throw new Error('oneTimeToken missing for reuse test');
     const r = await jsonFetch<ErrorResponse | AutoLoginSuccess>(
-      `${BASE}/wp-json/store-sdk-auth/v1/autologin?token=${encodeURIComponent(
+      `${BASE}/wp-json/store-sdk/v1/auth/autologin?token=${encodeURIComponent(
         oneTimeToken
       )}`
     );
@@ -277,7 +277,7 @@ describe('Store SDK JWT mu-plugin', () => {
     if (!passwordToken || !refreshToken)
       throw new Error('Prereq tokens missing');
     const revoke = await jsonFetch<RevokeResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk-auth/v1/revoke`,
+      `${BASE}/wp-json/store-sdk/v1/auth/revoke`,
       {
         method: 'POST',
         body: JSON.stringify({ scope: 'refresh' }),
@@ -290,7 +290,7 @@ describe('Store SDK JWT mu-plugin', () => {
     expect((revoke.data as RevokeResponse).scope).toBe('refresh');
     // Old access token should still validate
     const validate = await jsonFetch<ValidateResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk-auth/v1/validate`,
+      `${BASE}/wp-json/store-sdk/v1/auth/validate`,
       { headers: { Authorization: `Bearer ${passwordToken}` } }
     );
     expect(validate.ok).toBe(true);
@@ -299,7 +299,7 @@ describe('Store SDK JWT mu-plugin', () => {
   it('revoke all bumps version and invalidates old access token', async () => {
     if (!passwordToken) throw new Error('Missing access token');
     const revoke = await jsonFetch<RevokeResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk-auth/v1/revoke`,
+      `${BASE}/wp-json/store-sdk/v1/auth/revoke`,
       {
         method: 'POST',
         body: JSON.stringify({ scope: 'all' }),
@@ -313,14 +313,14 @@ describe('Store SDK JWT mu-plugin', () => {
     expect(rev.revoked).toBe(true);
     // Old token should now fail validation with version mismatch or unauthorized
     const validateOld = await jsonFetch<ValidateResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk-auth/v1/validate`,
+      `${BASE}/wp-json/store-sdk/v1/auth/validate`,
       { headers: { Authorization: `Bearer ${passwordToken}` } }
     );
     expect(validateOld.ok).toBe(false);
     // Issue a new token (login again) -> should have new version
     await issueStandardToken();
     const validateNew = await jsonFetch<ValidateResponse | ErrorResponse>(
-      `${BASE}/wp-json/store-sdk-auth/v1/validate`,
+      `${BASE}/wp-json/store-sdk/v1/auth/validate`,
       { headers: { Authorization: `Bearer ${passwordToken}` } }
     );
     expect(validateNew.ok).toBe(true);
