@@ -123,7 +123,7 @@ function storesdk_jwt_encode(array $p)
 	$segs[] = $sig;
 	return implode('.', $segs);
 }
-function storesdk_jwt_decode($t)
+function storesdk_jwt_decode($t, $opts = [])
 {
 	$parts = explode('.', $t);
 	if (count($parts) !== 3) {
@@ -140,13 +140,14 @@ function storesdk_jwt_decode($t)
 		return new WP_Error('storesdk_jwt.bad_signature', 'Invalid JWT signature');
 	}
 	$now = time();
+	$ignore_exp = !empty($opts['ignore_exp']);
 	if (isset($p['nbf']) && $p['nbf'] > $now + 30) {
 		return new WP_Error('storesdk_jwt.nbf', 'Token not yet valid');
 	}
 	if (isset($p['iat']) && $p['iat'] > $now + 30) {
 		return new WP_Error('storesdk_jwt.iat', 'Token issued in the future');
 	}
-	if (isset($p['exp']) && $p['exp'] < $now) {
+	if (isset($p['exp']) && !$ignore_exp && $p['exp'] < $now) {
 		return new WP_Error('storesdk_jwt.expired', 'Token expired');
 	}
 	return $p;
@@ -272,7 +273,18 @@ function storesdk_rest_issue_token(WP_REST_Request $r)
 	}
 	$iat = time();
 	$exp = $iat + storesdk_jwt_default_expiration();
-	$payload = ['iss' => get_site_url(), 'iat' => $iat, 'nbf' => $iat - 5, 'exp' => $exp, 'sub' => $user->ID, 'login' => $user->user_login, 'email' => $user->user_email, 'ver' => storesdk_get_token_version($user->ID)];
+	$payload = [
+		'iss' => get_site_url(),
+		'iat' => $iat,
+		'nbf' => $iat - 5,
+		'exp' => $exp,
+		'sub' => $user->ID,
+		'login' => $user->user_login,
+		'email' => $user->user_email,
+		// include unique identifier to ensure token rotation uniqueness
+		'jti' => storesdk_jwt_generate_jti(),
+		'ver' => storesdk_get_token_version($user->ID),
+	];
 	$token = storesdk_jwt_encode($payload);
 	$refreshTtl = (int)$r->get_param('refresh_ttl');
 	if ($refreshTtl <= 0) {
@@ -359,7 +371,8 @@ function storesdk_rest_refresh_token(WP_REST_Request $r)
 	$auth = storesdk_get_authorization_header();
 	$user = null;
 	if ($auth && preg_match('/^Bearer\s+(.*)$/i', $auth, $m)) {
-		$maybe = storesdk_jwt_decode(trim($m[1]));
+		// Accept expired access tokens during refresh, but still verify signature
+		$maybe = storesdk_jwt_decode(trim($m[1]), ['ignore_exp' => true]);
 		if (!is_wp_error($maybe) && !empty($maybe['sub'])) {
 			$user = get_user_by('id', (int)$maybe['sub']);
 		}
@@ -376,7 +389,18 @@ function storesdk_rest_refresh_token(WP_REST_Request $r)
 	}
 	$iat = time();
 	$exp = $iat + storesdk_jwt_default_expiration();
-	$payload = ['iss' => get_site_url(), 'iat' => $iat, 'nbf' => $iat - 5, 'exp' => $exp, 'sub' => $user->ID, 'login' => $user->user_login, 'email' => $user->user_email, 'ver' => storesdk_get_token_version($user->ID)];
+	$payload = [
+		'iss' => get_site_url(),
+		'iat' => $iat,
+		'nbf' => $iat - 5,
+		'exp' => $exp,
+		'sub' => $user->ID,
+		'login' => $user->user_login,
+		'email' => $user->user_email,
+		// rotate with a new unique identifier
+		'jti' => storesdk_jwt_generate_jti(),
+		'ver' => storesdk_get_token_version($user->ID),
+	];
 	$access = storesdk_jwt_encode($payload);
 	$rot = storesdk_issue_refresh_token($user->ID, (int)STORESDK_JWT_REFRESH_DEFAULT_TTL);
 	return new WP_REST_Response(['token' => $access, 'token_type' => 'Bearer', 'expires_in' => $exp - time(), 'refresh_token' => $rot['token'], 'refresh_expires_in' => $rot['expires_in'], 'user' => ['id' => $user->ID, 'login' => $user->user_login, 'email' => $user->user_email, 'display_name' => $user->display_name]]);
