@@ -10,35 +10,42 @@ const CUSTOMER_PASS = process.env.TEST_CUSTOMER_PASSWORD || 'customer123';
 let accessToken = '';
 let refreshToken = '';
 
-const config: StoreSdkConfig = {
-  baseUrl: WP_BASE_URL,
-  auth: {
-    getToken: async () => {
-      return accessToken;
-    },
-    setToken: async (t: string) => {
-      accessToken = t;
-    },
-    getRefreshToken: async () => {
-      return refreshToken;
-    },
-    setRefreshToken: async (t: string) => {
-      refreshToken = t;
-    },
-    clearToken: async () => {
-      accessToken = '';
-    },
-  },
-};
-
 // Initialize SDK once and use exposed auth facade
 const sdk = StoreSdk;
 // We'll init lazily in beforeAll so baseUrl & config callbacks are wired
 let pluginActive: boolean | undefined;
 
 describe('Integration: Auth', () => {
+  const tokenStore = { token: '', refresh: '' };
+
   beforeAll(async () => {
     // Probe status first; if unreachable or inactive, later tests will soft-pass
+
+    const config: StoreSdkConfig = {
+      baseUrl: WP_BASE_URL,
+      auth: {
+        getToken: async () => {
+          return accessToken;
+        },
+        setToken: async (t: string) => {
+          accessToken = t;
+          tokenStore.token = t;
+        },
+        getRefreshToken: async () => {
+          return refreshToken;
+        },
+        setRefreshToken: async (t: string) => {
+          refreshToken = t;
+          tokenStore.refresh = t;
+        },
+        clearToken: async () => {
+          accessToken = '';
+
+          tokenStore.token = '';
+          tokenStore.refresh = '';
+        },
+      },
+    };
     await sdk.init(config);
     const status = await sdk.auth.status();
     pluginActive = !!status.data?.active;
@@ -111,6 +118,35 @@ describe('Integration: Auth', () => {
       expect(data.one_time_token.length).toBeGreaterThan(10);
     }
   });
+
+  it('logs in, token expires, 401 triggers refresh interceptor, retried request succeeds', async () => {
+    // 1) Login and set a very short access_ttl to force expiry
+    const { data, error } = await StoreSdk.auth.token({
+      login: CUSTOMER_USER,
+      password: CUSTOMER_PASS,
+      access_ttl: 1, // seconds
+    });
+
+    expect(error).toBeUndefined();
+    expect(data?.token).toBeTruthy();
+    expect(tokenStore.token).toBeTruthy();
+    expect(tokenStore.refresh).toBeTruthy();
+    const oldToken = tokenStore.token;
+
+    // 2) Wait for the access token to expire
+    await new Promise((r) => setTimeout(r, 3000));
+
+    // 3) Call a protected WP endpoint; initial 401 should be auto-refreshed and retried
+    //    /wp/v2/users/me requires authentication
+    // const res = await httpClient.get('/wp-json/wp/v2/users/me');
+    const { data: cartData } = await StoreSdk.store.cart.get();
+
+    // If the refresh interceptor worked, we should have a 200 and user data
+    // expect(res.status).toBe(200);
+    expect(cartData).toBeTruthy();
+    expect(tokenStore.token).toBeTruthy();
+    expect(tokenStore.token).not.toBe(oldToken); // token must rotate after refresh
+  }, 8000);
 
   it('revokes token and subsequent validate may fail', async () => {
     if (!pluginActive || !accessToken) {

@@ -99,10 +99,10 @@ It provides lightweight JWT issuance, one-time autologin tokens, refresh token r
 | `STORESDK_JWT_SECRET`                         | (no default, REQUIRED) | HMAC signing secret (HS256). Must be explicitly defined.             |
 | `STORESDK_JWT_ACCESS_TTL`                     | `3600`                 | Base access token lifetime (seconds). Filter can still override.     |
 | `STORESDK_JWT_ENABLED`                        | `true`                 | Master enable flag. If `false`, plugin is inert (no routes).         |
-| `STORESDK_JWT_REFRESH_DEFAULT_TTL`            | `1209600` (14d)        | Default refresh token lifetime.                                      |
+| `STORESDK_JWT_REFRESH_TTL`                    | `1209600` (14d)        | Default refresh token lifetime.                                      |
 | `STORESDK_JWT_REFRESH_MIN_TTL`                | `86400` (1d)           | Minimum allowed `refresh_ttl`.                                       |
 | `STORESDK_JWT_REFRESH_MAX_TTL`                | `2592000` (30d)        | Maximum allowed `refresh_ttl`.                                       |
-| `STORESDK_JWT_ONE_TIME_DEFAULT_TTL`           | `300` (5m)             | Default one-time token TTL.                                          |
+| `STORESDK_JWT_ONE_TIME_TTL`                   | `300` (5m)             | Default one-time token TTL.                                          |
 | `STORESDK_JWT_ONE_TIME_MIN_TTL`               | `30`                   | Minimum one-time TTL.                                                |
 | `STORESDK_JWT_ONE_TIME_MAX_TTL`               | `900` (15m)            | Maximum one-time TTL.                                                |
 | `STORESDK_JWT_REFRESH_MAX_TOKENS`             | `10`                   | Max stored refresh tokens per user (oldest pruned). `0` = unlimited. |
@@ -120,7 +120,7 @@ It provides lightweight JWT issuance, one-time autologin tokens, refresh token r
 define('STORESDK_JWT_SECRET', 'prod_super_secret_at_least_32_chars');
 define('STORESDK_JWT_ENABLED', true);
 define('STORESDK_JWT_ACCESS_TTL', 3600); // 1h
-define('STORESDK_JWT_REFRESH_DEFAULT_TTL', 60 * 60 * 24 * 7); // 7 days
+define('STORESDK_JWT_REFRESH_TTL', 60 * 60 * 24 * 7); // 7 days
 define('STORESDK_JWT_REFRESH_MAX_TOKENS', 5); // Keep last 5 refresh tokens
 define('STORESDK_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN', true); // Enforce hardened autologin
 // Disable front-channel autologin in certain environments
@@ -130,7 +130,7 @@ define('STORESDK_JWT_ENABLE_FRONT_CHANNEL', false);
 ### Security & Hardening
 
 - Always set a strong `STORESDK_JWT_SECRET` (rotate if leaked/after staging refreshes).
-- Restrict refresh token lifetime (`STORESDK_JWT_REFRESH_DEFAULT_TTL`) to business needs; prune aggressively via `STORESDK_JWT_REFRESH_MAX_TOKENS`.
+- Restrict refresh token lifetime (`STORESDK_JWT_REFRESH_TTL`) to business needs; prune aggressively via `STORESDK_JWT_REFRESH_MAX_TOKENS`.
 - Disable front-channel autologin (`STORESDK_JWT_ENABLE_FRONT_CHANNEL=false`) unless a controlled deep-link scenario is required.
 - Consider adding IP / User-Agent binding in a fork for higher assurance (e.g., store alongside refresh token metadata and validate on consume).
 - Implement rate limiting (at reverse proxy or WAF) for `/token` and `/refresh` endpoints to mitigate brute force and token stuffing.
