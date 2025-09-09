@@ -1,3 +1,7 @@
+## 1.3.5-alpha.0 (2025-09-09)
+
+This was a version bump only, there were no code changes.
+
 ## 1.3.4-alpha.0 (2025-09-08)
 
 This was a version bump only, there were no code changes.
