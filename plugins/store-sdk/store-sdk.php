@@ -28,8 +28,6 @@ if (!defined('STORESDK_JWT_AUTH_VERSION')) define('STORESDK_JWT_AUTH_VERSION', '
  *
  * define('STORESDK_JWT_ENABLED', true);
  * define('STORESDK_JWT_SECRET', 'REPLACE_WITH_RANDOM_48_CHARS');
- * define('STORESDK_JWT_ENABLE_CORS', false); // opt-in CORS helper
- * define('STORESDK_JWT_CORS_ALLOWED_ORIGINS', 'https://app.example.com,https://www.example.com'); // optional allowlist
  * define('STORESDK_JWT_DEBUG_SHOW_NOTICE', false);
  */
 
@@ -45,7 +43,48 @@ if (!defined('STORESDK_JWT_REFRESH_MAX_TOKENS')) define('STORESDK_JWT_REFRESH_MA
 if (!defined('STORESDK_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN')) define('STORESDK_JWT_REQUIRE_ONE_TIME_FOR_AUTOLOGIN', true);
 if (!defined('STORESDK_JWT_ENABLE_FRONT_CHANNEL')) define('STORESDK_JWT_ENABLE_FRONT_CHANNEL', true);
 if (!defined('STORESDK_JWT_LEEWAY')) define('STORESDK_JWT_LEEWAY', 1); // clock skew leeway (seconds)
-if (!defined('STORESDK_JWT_ENABLE_CORS')) define('STORESDK_JWT_ENABLE_CORS', false);
+
+// CORS defaults (override in wp-config.php before plugin load if needed)
+// Comma-separated list for origins so it's easy to define as a constant string.
+if (!defined('STORESDK_JWT_CORS_ENABLE')) define('STORESDK_JWT_CORS_ENABLE', true);
+if (!defined('STORESDK_JWT_CORS_ALLOWED_ORIGINS')) define('STORESDK_JWT_CORS_ALLOWED_ORIGINS', 'http://localhost:4200,https://staging2.herbally.gr,https://app.herbally.gr');
+if (!defined('STORESDK_JWT_CORS_ALLOW_CREDENTIALS')) define('STORESDK_JWT_CORS_ALLOW_CREDENTIALS', true);
+if (!defined('STORESDK_JWT_CORS_ALLOW_METHODS')) define('STORESDK_JWT_CORS_ALLOW_METHODS', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+if (!defined('STORESDK_JWT_CORS_ALLOW_HEADERS')) define('STORESDK_JWT_CORS_ALLOW_HEADERS', 'Authorization, Content-Type, cart-token');
+
+// CORS handling (runs early) – mirrors user-provided working snippet but configurable via constants
+if (STORESDK_JWT_CORS_ENABLE) {
+	add_action('rest_api_init', function () {
+		// Remove WP core CORS headers to avoid duplicates / conflicts
+		remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
+
+		add_filter('rest_pre_serve_request', function ($value) {
+			$origin  = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+			$allowed = array_filter(array_map('trim', explode(',', (string) STORESDK_JWT_CORS_ALLOWED_ORIGINS)));
+			// Allow customization via filter
+			if (function_exists('apply_filters')) {
+				$allowed = apply_filters('storesdk_jwt_cors_allowed_origins', $allowed, $origin);
+			}
+
+			if ($origin && in_array($origin, $allowed, true)) {
+				header('Access-Control-Allow-Origin: ' . $origin);
+				if (STORESDK_JWT_CORS_ALLOW_CREDENTIALS) {
+					header('Access-Control-Allow-Credentials: true');
+				}
+				header('Access-Control-Allow-Methods: ' . STORESDK_JWT_CORS_ALLOW_METHODS);
+				header('Access-Control-Allow-Headers: ' . STORESDK_JWT_CORS_ALLOW_HEADERS);
+				header('Vary: Origin');
+			}
+
+			// Short-circuit preflight (OPTIONS) for REST routes
+			if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+				status_header(204);
+				exit;
+			}
+			return $value;
+		}, 0); // run as early as possible
+	});
+}
 
 // Activation state
 $storesdk_flag_defined   = defined('STORESDK_JWT_ENABLED');
@@ -890,53 +929,6 @@ add_action('rest_api_init', function () {
 		}
 	]);
 });
-
-/* =======================
- * Optional CORS helpers (off by default)
- * ======================= */
-
-if (STORESDK_JWT_ENABLE_CORS) {
-	// Add Access-Control-* for REST responses, reflect allowed origins
-	add_action('rest_api_init', function () {
-		add_filter('rest_pre_serve_request', function ($served, $result, $request, $server) {
-			header('Vary: Origin', false);
-			$origin = get_http_origin();
-			$allowlist = array_filter(array_map('trim', explode(',', (string) (defined('STORESDK_JWT_CORS_ALLOWED_ORIGINS') ? STORESDK_JWT_CORS_ALLOWED_ORIGINS : ''))));
-			if ($origin && wp_http_validate_url($origin)) {
-				if (empty($allowlist) || in_array($origin, $allowlist, true)) {
-					header("Access-Control-Allow-Origin: $origin");
-					header('Access-Control-Allow-Credentials: true');
-					header('Access-Control-Expose-Headers: Authorization, Content-Type, X-WP-Total, X-WP-TotalPages');
-				}
-			}
-			return $served;
-		}, 10, 4);
-	});
-
-	// Handle REST preflight OPTIONS quickly
-	add_action('init', function () {
-		if (('OPTIONS' === ($_SERVER['REQUEST_METHOD'] ?? '')) && !headers_sent()) {
-			$prefix = rest_get_url_prefix();
-			$path = wp_parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
-			if (str_contains($path, "/$prefix/")) {
-				header('Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce');
-				header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-				header('Vary: Origin', false);
-
-				$origin = get_http_origin();
-				$allowlist = array_filter(array_map('trim', explode(',', (string) (defined('STORESDK_JWT_CORS_ALLOWED_ORIGINS') ? STORESDK_JWT_CORS_ALLOWED_ORIGINS : ''))));
-				if ($origin && wp_http_validate_url($origin)) {
-					if (empty($allowlist) || in_array($origin, $allowlist, true)) {
-						header("Access-Control-Allow-Origin: $origin");
-						header('Access-Control-Allow-Credentials: true');
-					}
-				}
-				status_header(200);
-				exit;
-			}
-		}
-	});
-}
 
 /* =======================
  * Final hook
