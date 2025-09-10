@@ -5,15 +5,15 @@
 - create comprehensive README.md with detailed documentation ([d466536](https://github.com/kmakris23/store-sdk/commit/d466536))
 - Implement enhanced plugin architecture with event handler registration and include Angular example in CI builds ([fcf9ac3](https://github.com/kmakris23/store-sdk/commit/fcf9ac3))
 - enhance cart and order integration tests, improve error handling and assertions ([649641d](https://github.com/kmakris23/store-sdk/commit/649641d))
-- ⚠️  unify authentication in core package and introduce WordPress plugin ([74ede26](https://github.com/kmakris23/store-sdk/commit/74ede26))
+- ⚠️ unify authentication in core package and introduce WordPress plugin ([74ede26](https://github.com/kmakris23/store-sdk/commit/74ede26))
 
 ### 🩹 Fixes
 
 - **deps:** update angular monorepo to ~20.2.0 ([823cb86](https://github.com/kmakris23/store-sdk/commit/823cb86))
 
-### ⚠️  Breaking Changes
+### ⚠️ Breaking Changes
 
-- ⚠️  unify authentication in core package and introduce WordPress plugin ([74ede26](https://github.com/kmakris23/store-sdk/commit/74ede26))
+- ⚠️ unify authentication in core package and introduce WordPress plugin ([74ede26](https://github.com/kmakris23/store-sdk/commit/74ede26))
 
 ### ❤️ Thank You
 

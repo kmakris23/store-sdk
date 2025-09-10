@@ -17,7 +17,9 @@
     {
       "plugin": "@nx/js/typescript",
       "options": {
-        "typecheck": { "targetName": "typecheck" },
+        "typecheck": {
+          "targetName": "typecheck"
+        },
         "build": {
           "targetName": "build",
           "configName": "tsconfig.lib.json",
@@ -26,7 +28,12 @@
         }
       }
     },
-    { "plugin": "@nx/eslint/plugin", "options": { "targetName": "lint" } },
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "lint"
+      }
+    },
     {
       "plugin": "@nx/vite/plugin",
       "options": {
@@ -43,13 +50,15 @@
     }
   ],
   "release": {
-    "projects": ["packages/*"],
+    "projects": ["packages/core"],
     "version": {
       "preVersionCommand": "npx nx run-many -t build",
       "conventionalCommits": true
     },
     "changelog": {
-      "workspaceChangelog": { "createRelease": "github" },
+      "workspaceChangelog": {
+        "createRelease": "github"
+      },
       "projectChangelogs": {
         "renderOptions": {
           "authors": false,
@@ -58,5 +67,9 @@
       }
     }
   },
-  "targetDefaults": { "test": { "dependsOn": ["^build"] } }
+  "targetDefaults": {
+    "test": {
+      "dependsOn": ["^build"]
+    }
+  }
 }

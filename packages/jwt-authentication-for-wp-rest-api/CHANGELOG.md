@@ -2,12 +2,12 @@
 
 ### 🚀 Features
 
-- ⚠️  unify authentication in core package and introduce WordPress plugin ([74ede26](https://github.com/kmakris23/store-sdk/commit/74ede26))
+- ⚠️ unify authentication in core package and introduce WordPress plugin ([74ede26](https://github.com/kmakris23/store-sdk/commit/74ede26))
 - Implement enhanced plugin architecture with event handler registration and include Angular example in CI builds ([fcf9ac3](https://github.com/kmakris23/store-sdk/commit/fcf9ac3))
 
-### ⚠️  Breaking Changes
+### ⚠️ Breaking Changes
 
-- ⚠️  unify authentication in core package and introduce WordPress plugin ([74ede26](https://github.com/kmakris23/store-sdk/commit/74ede26))
+- ⚠️ unify authentication in core package and introduce WordPress plugin ([74ede26](https://github.com/kmakris23/store-sdk/commit/74ede26))
 
 ## 1.3.5-alpha.5 (2025-09-10)
 
