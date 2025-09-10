@@ -1,3 +1,9 @@
+## 1.3.5-alpha.2 (2025-09-10)
+
+### 🚀 Features
+
+- **interceptors:** enhance refresh token handling with queue management and state reset functionality ([b296d14](https://github.com/kmakris23/store-sdk/commit/b296d14))
+
 ## 1.3.5-alpha.1 (2025-09-10)
 
 ### 🚀 Features

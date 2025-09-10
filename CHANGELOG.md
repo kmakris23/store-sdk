@@ -1,3 +1,14 @@
+## 1.3.5-alpha.2 (2025-09-10)
+
+### 🚀 Features
+
+- **deps:** add React and ReactDOM with peer dependencies, remove dev flags from several packages ([ff699a9](https://github.com/kmakris23/store-sdk/commit/ff699a9))
+- **interceptors:** enhance refresh token handling with queue management and state reset functionality ([b296d14](https://github.com/kmakris23/store-sdk/commit/b296d14))
+
+### ❤️ Thank You
+
+- kmakris23
+
 ## 1.3.5-alpha.1 (2025-09-10)
 
 ### 🚀 Features
