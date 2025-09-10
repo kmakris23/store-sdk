@@ -61,7 +61,12 @@ declare module '../../../types/sdk.state.js' {
 // Mock the HTTP client and other dependencies
 vi.mock('../../../services/api.js', () => ({
   createHttpClient: vi.fn(),
-  httpClient: {},
+  httpClient: {
+    interceptors: {
+      request: { use: vi.fn() },
+      response: { use: vi.fn() },
+    },
+  },
 }));
 
 vi.mock('../../../interceptors/cart.token.interceptor.js', () => ({

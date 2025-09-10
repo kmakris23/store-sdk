@@ -1,3 +1,127 @@
+## 1.3.5-alpha.5 (2025-09-10)
+
+### 🚀 Features
+
+- **auth:** update getAutoLoginUrl parameter names for consistency ([60a6ad2](https://github.com/kmakris23/store-sdk/commit/60a6ad2))
+- **deps:** add React and ReactDOM with peer dependencies ([343adad](https://github.com/kmakris23/store-sdk/commit/343adad))
+
+### ❤️ Thank You
+
+- kmakris23
+
+## 1.3.5-alpha.4 (2025-09-10)
+
+### 🚀 Features
+
+- **auth:** update getAutoLoginUrl to accept ott parameter for token generation ([c405c12](https://github.com/kmakris23/store-sdk/commit/c405c12))
+- **auth:** refactor getAutoLoginUrl tests to directly pass token and redirectUrl ([43beb57](https://github.com/kmakris23/store-sdk/commit/43beb57))
+
+### ❤️ Thank You
+
+- kmakris23
+
+## 1.3.5-alpha.3 (2025-09-10)
+
+### 🚀 Features
+
+- **auth:** update getAutoLoginUrl to require redirectUrl and improve URL generation ([07af077](https://github.com/kmakris23/store-sdk/commit/07af077))
+
+### ❤️ Thank You
+
+- kmakris23
+
+## 1.3.5-alpha.2 (2025-09-10)
+
+### 🚀 Features
+
+- **deps:** add React and ReactDOM with peer dependencies, remove dev flags from several packages ([ff699a9](https://github.com/kmakris23/store-sdk/commit/ff699a9))
+- **interceptors:** enhance refresh token handling with queue management and state reset functionality ([b296d14](https://github.com/kmakris23/store-sdk/commit/b296d14))
+
+### ❤️ Thank You
+
+- kmakris23
+
+## 1.3.5-alpha.1 (2025-09-10)
+
+### 🚀 Features
+
+- **auth:** implement force authentication for specific endpoints ([f0a1740](https://github.com/kmakris23/store-sdk/commit/f0a1740))
+- **auth:** add test endpoint for force authentication and update deployment guide ([547bb91](https://github.com/kmakris23/store-sdk/commit/547bb91))
+- **auth:** improve token handling by ensuring async token and refresh token setting ([c7723c8](https://github.com/kmakris23/store-sdk/commit/c7723c8))
+
+### ❤️ Thank You
+
+- kmakris23
+
+## 1.3.5-alpha.0 (2025-09-09)
+
+This was a version bump only, there were no code changes.
+
+## 1.3.4-alpha.0 (2025-09-08)
+
+This was a version bump only, there were no code changes.
+
+## 1.3.3-alpha.0 (2025-09-08)
+
+### 🚀 Features
+
+- **auth:** initialize authentication state based on provided token ([442c25f](https://github.com/kmakris23/store-sdk/commit/442c25f))
+
+### 🩹 Fixes
+
+- **auth:** correct token retrieval logic in refresh token interceptor ([1a491d6](https://github.com/kmakris23/store-sdk/commit/1a491d6))
+
+### ❤️ Thank You
+
+- kmakris23
+
+## 1.3.2-alpha.0 (2025-09-08)
+
+### 🚀 Features
+
+- **auth:** add support for setting refresh token in token response ([91f13bf](https://github.com/kmakris23/store-sdk/commit/91f13bf))
+
+### ❤️ Thank You
+
+- kmakris23
+
+## 1.3.1-alpha.0 (2025-09-08)
+
+### 🚀 Features
+
+- **auth:** enhance authentication flow with token management and auto-login URL ([4ee683b](https://github.com/kmakris23/store-sdk/commit/4ee683b))
+
+### ❤️ Thank You
+
+- kmakris23
+
+## 1.3.0-alpha.0 (2025-09-08)
+
+This was a version bump only, there were no code changes.
+
+## 1.2.0-alpha.0 (2025-09-08)
+
+### 🚀 Features
+
+- create comprehensive README.md with detailed documentation ([d466536](https://github.com/kmakris23/store-sdk/commit/d466536))
+- Implement enhanced plugin architecture with event handler registration and include Angular example in CI builds ([fcf9ac3](https://github.com/kmakris23/store-sdk/commit/fcf9ac3))
+- enhance cart and order integration tests, improve error handling and assertions ([649641d](https://github.com/kmakris23/store-sdk/commit/649641d))
+- Implement Store SDK JWT Authentication Plugin ([098a02a](https://github.com/kmakris23/store-sdk/commit/098a02a))
+- Refactor Store SDK authentication plugin structure and update documentation for unified JWT support ([b39db7f](https://github.com/kmakris23/store-sdk/commit/b39db7f))
+- Add JWT support configuration and enhance user creation logic in setup script ([853a08b](https://github.com/kmakris23/store-sdk/commit/853a08b))
+- **auth:** implement token management and refresh functionality ([3511c31](https://github.com/kmakris23/store-sdk/commit/3511c31))
+
+### 🩹 Fixes
+
+- Adjust table formatting in README for clarity on recommended approaches ([92ccab5](https://github.com/kmakris23/store-sdk/commit/92ccab5))
+- **deps:** update angular monorepo to ~20.2.0 ([823cb86](https://github.com/kmakris23/store-sdk/commit/823cb86))
+- **package:** add missing newline at end of file ([1d6fc0a](https://github.com/kmakris23/store-sdk/commit/1d6fc0a))
+
+### ❤️ Thank You
+
+- Copilot @Copilot
+- kmakris23
+
 ## 1.1.1 (2025-08-20)
 
 ### 🩹 Fixes

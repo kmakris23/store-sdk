@@ -6,10 +6,14 @@ import { addNonceInterceptors } from './interceptors/nonce.interceptor.js';
 import { StoreService } from './services/store.service.js';
 import { StoreSdkEvent } from './sdk.events.js';
 import { EventBus } from './bus/event.bus.js';
+import { addTokenInterceptor } from './interceptors/token.interceptor.js';
+import { AuthService } from './services/auth/auth.service.js';
+import { addRefreshTokenInterceptor } from './interceptors/refresh.token.interceptor.js';
 
 export class Sdk {
   state: StoreSdkState = {};
 
+  private _auth!: AuthService;
   private _store!: StoreService;
 
   private _initialized = false;
@@ -19,6 +23,7 @@ export class Sdk {
   public async init(config: StoreSdkConfig): Promise<void> {
     if (this._initialized) return;
 
+    this._auth = new AuthService(this.state, config, this.events);
     this._store = new StoreService(this.state, config, this.events);
 
     createHttpClient({
@@ -27,6 +32,26 @@ export class Sdk {
 
     addNonceInterceptors(config, this.state, this.events);
     addCartTokenInterceptors(config, this.state, this.events);
+
+    const useTokenInterceptor = config.auth?.useTokenInterceptor ?? true;
+    if (useTokenInterceptor) {
+      addTokenInterceptor(config);
+    }
+
+    const useRefreshTokenInterceptor =
+      config.auth?.useRefreshTokenInterceptor ?? true;
+    if (useRefreshTokenInterceptor) {
+      addRefreshTokenInterceptor(config, this._auth);
+    }
+
+    // Set initial authentication state based on config
+    // This is useful if the token is already set
+    if (config.auth?.getToken) {
+      config.auth.getToken().then((token) => {
+        StoreSdk.state.authenticated = !!token;
+        StoreSdk.events.emit('auth:changed', !!token);
+      });
+    }
 
     const allPlugins = [...(config.plugins ?? [])];
     for (const plugin of allPlugins) {
@@ -45,6 +70,14 @@ export class Sdk {
     this._initialized = true;
 
     await this._store.cart.get();
+  }
+
+  /**
+   * Auth API
+   */
+  get auth() {
+    this.throwIfNotInitized();
+    return this._auth;
   }
 
   /**

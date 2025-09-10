@@ -3,15 +3,6 @@ import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { AuthService } from './auth.service.js';
 import { AuthConfig } from './auth.config.js';
 
-declare module '@store-sdk/core' {
-  interface Sdk {
-    auth: AuthService;
-  }
-  interface StoreSdkState {
-    isAuthenticated?: boolean;
-  }
-}
-
 class AuthPlugin implements StoreSdkPlugin<AuthConfig> {
   private _auth!: AuthService;
   private readonly _config: AuthConfig;
