@@ -1,3 +1,10 @@
+## 1.3.5-alpha.4 (2025-09-10)
+
+### 🚀 Features
+
+- **auth:** refactor getAutoLoginUrl tests to directly pass token and redirectUrl ([43beb57](https://github.com/kmakris23/store-sdk/commit/43beb57))
+- **auth:** update getAutoLoginUrl to accept ott parameter for token generation ([c405c12](https://github.com/kmakris23/store-sdk/commit/c405c12))
+
 ## 1.3.5-alpha.3 (2025-09-10)
 
 ### 🚀 Features
