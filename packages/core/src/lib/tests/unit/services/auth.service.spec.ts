@@ -306,48 +306,48 @@ describe('AuthService', () => {
   describe('getAutoLoginUrl', () => {
     it('generates correct auto-login URL with token and redirect URL', async () => {
       const mockToken = 'test-jwt-token-123';
-      const redirectUrl = 'https://example.com/dashboard';
+      const redirect = 'https://example.com/dashboard';
 
-      const result = await service.getAutoLoginUrl(mockToken, redirectUrl);
+      const result = await service.getAutoLoginUrl(mockToken, redirect);
 
       expect(result).toBe(
-        'https://example.com/wp-json/store-sdk/v1/auth/autologin?token=test-jwt-token-123&redirectUrl=https%3A%2F%2Fexample.com%2Fdashboard'
+        'https://example.com/wp-json/store-sdk/v1/auth/autologin?token=test-jwt-token-123&redirect=https%3A%2F%2Fexample.com%2Fdashboard'
       );
     });
 
     it('properly encodes special characters in redirect URL', async () => {
       const mockToken = 'test-token';
-      const redirectUrl = 'https://example.com/path?param=value&another=test';
+      const redirect = 'https://example.com/path?param=value&another=test';
 
-      const result = await service.getAutoLoginUrl(mockToken, redirectUrl);
+      const result = await service.getAutoLoginUrl(mockToken, redirect);
 
       expect(result).toBe(
-        'https://example.com/wp-json/store-sdk/v1/auth/autologin?token=test-token&redirectUrl=https%3A%2F%2Fexample.com%2Fpath%3Fparam%3Dvalue%26another%3Dtest'
+        'https://example.com/wp-json/store-sdk/v1/auth/autologin?token=test-token&redirect=https%3A%2F%2Fexample.com%2Fpath%3Fparam%3Dvalue%26another%3Dtest'
       );
     });
 
     it('generates auto-login URL with empty token', async () => {
       const emptyToken = '';
-      const redirectUrl = 'https://example.com/dashboard';
+      const redirect = 'https://example.com/dashboard';
 
-      const result = await service.getAutoLoginUrl(emptyToken, redirectUrl);
+      const result = await service.getAutoLoginUrl(emptyToken, redirect);
 
       expect(result).toBe(
-        'https://example.com/wp-json/store-sdk/v1/auth/autologin?token=&redirectUrl=https%3A%2F%2Fexample.com%2Fdashboard'
+        'https://example.com/wp-json/store-sdk/v1/auth/autologin?token=&redirect=https%3A%2F%2Fexample.com%2Fdashboard'
       );
     });
 
     it('generates auto-login URL with complex JWT token', async () => {
       const mockToken =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
-      const redirectUrl = 'https://example.com/dashboard';
+      const redirect = 'https://example.com/dashboard';
 
-      const result = await service.getAutoLoginUrl(mockToken, redirectUrl);
+      const result = await service.getAutoLoginUrl(mockToken, redirect);
 
       expect(result).toBe(
         `https://example.com/wp-json/store-sdk/v1/auth/autologin?token=${encodeURIComponent(
           mockToken
-        )}&redirectUrl=https%3A%2F%2Fexample.com%2Fdashboard`
+        )}&redirect=https%3A%2F%2Fexample.com%2Fdashboard`
       );
     });
   });
