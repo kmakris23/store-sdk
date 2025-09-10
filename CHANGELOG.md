@@ -1,3 +1,13 @@
+## 1.3.5-alpha.3 (2025-09-10)
+
+### 🚀 Features
+
+- **auth:** update getAutoLoginUrl to require redirectUrl and improve URL generation ([07af077](https://github.com/kmakris23/store-sdk/commit/07af077))
+
+### ❤️ Thank You
+
+- kmakris23
+
 ## 1.3.5-alpha.2 (2025-09-10)
 
 ### 🚀 Features
