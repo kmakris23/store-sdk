@@ -141,7 +141,7 @@ if ! grep -q 'STORESDK_JWT_SECRET' wp-config.php; then
 fi
 if ! grep -q 'STORESDK_JWT_FORCE_AUTH_ENDPOINTS' wp-config.php; then
   log "Adding STORESDK_JWT_FORCE_AUTH_ENDPOINTS to wp-config.php for testing"
-  echo "define('STORESDK_JWT_FORCE_AUTH_ENDPOINTS', 'wp-json/wc/store/v1/cart');" >> wp-config.php
+  echo "define('STORESDK_JWT_FORCE_AUTH_ENDPOINTS', 'wp-json/store-sdk/v1/test/cart-protected');" >> wp-config.php
 else
   log "STORESDK_JWT_FORCE_AUTH_ENDPOINTS already exists in wp-config.php"
 fi

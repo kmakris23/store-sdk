@@ -349,7 +349,7 @@ describe('Store SDK JWT mu-plugin', () => {
     console.log('🔍 Testing force authentication functionality...');
 
     // Test 1: Try accessing a potentially protected endpoint without authentication
-    const testEndpoint = 'wp-json/wc/store/v1/cart';
+    const testEndpoint = 'wp-json/store-sdk/v1/test/cart-protected';
     const unprotectedRequest = await jsonFetch<ErrorResponse>(
       `${BASE}/${testEndpoint}`,
       {

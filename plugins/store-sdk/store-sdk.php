@@ -1062,6 +1062,55 @@ add_action('rest_api_init', function () {
 			]);
 		}
 	]);
+
+	// Test endpoint for force authentication - mirrors WooCommerce cart endpoint
+	register_rest_route('store-sdk/v1/test', '/cart-protected', [
+		'methods' => 'GET',
+		'permission_callback' => '__return_true',
+		'callback' => function () {
+			// This endpoint mirrors the WooCommerce cart response for testing purposes
+			// It will be protected by force authentication when included in STORESDK_JWT_FORCE_AUTH_ENDPOINTS
+			return new WP_REST_Response([
+				'coupons' => [],
+				'shipping_rates' => [],
+				'shipping_address' => [],
+				'billing_address' => [],
+				'items' => [],
+				'items_count' => 0,
+				'items_weight' => 0,
+				'cross_sells' => [],
+				'needs_payment' => false,
+				'needs_shipping' => false,
+				'has_calculated_shipping' => false,
+				'fees' => [],
+				'taxes' => [],
+				'tax_lines' => [],
+				'totals' => [
+					'total_items' => '0',
+					'total_items_tax' => '0',
+					'total_fees' => '0',
+					'total_fees_tax' => '0',
+					'total_discount' => '0',
+					'total_discount_tax' => '0',
+					'total_shipping' => '0',
+					'total_shipping_tax' => '0',
+					'total_tax' => '0',
+					'total_price' => '0',
+					'currency_code' => 'USD',
+					'currency_symbol' => '$',
+					'currency_minor_unit' => 2,
+					'currency_decimal_separator' => '.',
+					'currency_thousand_separator' => ',',
+					'currency_prefix' => '$',
+					'currency_suffix' => ''
+				],
+				'errors' => [],
+				'payment_methods' => [],
+				'payment_requirements' => [],
+				'extensions' => []
+			]);
+		}
+	]);
 });
 
 /* =======================
