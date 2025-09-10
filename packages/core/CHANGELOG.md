@@ -1,3 +1,9 @@
+## 1.3.5-alpha.5 (2025-09-10)
+
+### 🚀 Features
+
+- **auth:** update getAutoLoginUrl parameter names for consistency ([60a6ad2](https://github.com/kmakris23/store-sdk/commit/60a6ad2))
+
 ## 1.3.5-alpha.4 (2025-09-10)
 
 ### 🚀 Features

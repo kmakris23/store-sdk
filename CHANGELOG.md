@@ -1,3 +1,14 @@
+## 1.3.5-alpha.5 (2025-09-10)
+
+### 🚀 Features
+
+- **auth:** update getAutoLoginUrl parameter names for consistency ([60a6ad2](https://github.com/kmakris23/store-sdk/commit/60a6ad2))
+- **deps:** add React and ReactDOM with peer dependencies ([343adad](https://github.com/kmakris23/store-sdk/commit/343adad))
+
+### ❤️ Thank You
+
+- kmakris23
+
 ## 1.3.5-alpha.4 (2025-09-10)
 
 ### 🚀 Features
