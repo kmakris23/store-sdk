@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach } from 'vitest';
 import { StoreSdk } from '../../sdk.js';
 import { StoreSdkConfig } from '../../configs/sdk.config.js';
+import { resetRefreshTokenState } from '../../interceptors/refresh.token.interceptor.js';
 
 const WP_BASE_URL = process.env.WP_BASE_URL || 'http://localhost:8080';
 const CUSTOMER_USER = process.env.TEST_CUSTOMER_USER || 'customer';
@@ -17,6 +18,11 @@ let pluginActive: boolean | undefined;
 
 describe('Integration: Auth', () => {
   const tokenStore = { token: '', refresh: '' };
+
+  beforeEach(() => {
+    // Reset the global refresh token state before each test
+    resetRefreshTokenState();
+  });
 
   beforeAll(async () => {
     // Probe status first; if unreachable or inactive, later tests will soft-pass

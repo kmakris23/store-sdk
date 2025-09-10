@@ -1,9 +1,46 @@
-import axios, { AxiosRequestConfig, AxiosError } from 'axios';
+import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
 import { StoreSdk } from '../sdk.js';
 import { httpClient } from '../services/api.js';
 import { AuthService } from '../services/auth/auth.service.js';
 import { StoreSdkConfig } from '../configs/sdk.config.js';
 import { ApiError } from '../types/api.js';
+
+// Interface for queued request item
+interface QueuedRequest {
+  resolve: (value: AxiosResponse | Promise<AxiosResponse>) => void;
+  reject: (reason: ApiError) => void;
+  originalRequest: AxiosRequestConfig;
+}
+
+// Global state to manage single-flight refresh token requests
+let isRefreshing = false;
+let failedQueue: QueuedRequest[] = [];
+
+// Function to reset the state (useful for testing)
+export const resetRefreshTokenState = () => {
+  isRefreshing = false;
+  failedQueue = [];
+};
+
+const processQueue = (error: ApiError | null, token: string | null = null) => {
+  failedQueue.forEach(({ resolve, reject, originalRequest }) => {
+    if (error) {
+      reject(error);
+    } else {
+      // Update the Authorization header with the new token
+      if (!originalRequest.headers) {
+        originalRequest.headers = {};
+      }
+      originalRequest.headers = {
+        ...originalRequest.headers,
+        Authorization: `Bearer ${token}`,
+      };
+      resolve(axios(originalRequest));
+    }
+  });
+
+  failedQueue = [];
+};
 
 export const addRefreshTokenInterceptor = (
   config: StoreSdkConfig,
@@ -19,16 +56,31 @@ export const addRefreshTokenInterceptor = (
         originalRequest &&
         !originalRequest._retry
       ) {
+        if (isRefreshing) {
+          // If refresh is already in progress, queue this request
+          return new Promise((resolve, reject) => {
+            failedQueue.push({ resolve, reject, originalRequest });
+          });
+        }
+
         originalRequest._retry = true; // Mark the request as retried to avoid infinite loops.
+        isRefreshing = true;
+
         try {
           if (!config.auth?.getRefreshToken) {
-            return await refreshTokenFailed(config);
+            const refreshError = await refreshTokenFailed(config);
+            processQueue(refreshError, null);
+            return refreshError;
           }
 
           const refreshToken = await config.auth.getRefreshToken();
-          if (!refreshToken) return await refreshTokenFailed(config);
+          if (!refreshToken) {
+            const refreshError = await refreshTokenFailed(config);
+            processQueue(refreshError, null);
+            return refreshError;
+          }
 
-          const { data, error } = await auth.refreshToken(
+          const { data, error: refreshError } = await auth.refreshToken(
             {
               refresh_token: refreshToken,
             },
@@ -36,18 +88,41 @@ export const addRefreshTokenInterceptor = (
               _retry: true,
             } as AxiosRequestConfig
           );
-          if (error) return await refreshTokenFailed(config, error);
-          if (!data) return await refreshTokenFailed(config);
+
+          if (refreshError) {
+            const tokenFailedError = await refreshTokenFailed(
+              config,
+              refreshError
+            );
+            processQueue(tokenFailedError, null);
+            return tokenFailedError;
+          }
+
+          if (!data) {
+            const tokenFailedError = await refreshTokenFailed(config);
+            processQueue(tokenFailedError, null);
+            return tokenFailedError;
+          }
+
+          // Success: process the queue with the new token
+          processQueue(null, data.token);
 
           return axios({
             ...originalRequest,
             headers: {
               ...originalRequest.headers,
-              Authorization: `Bearer ${data?.token}`,
+              Authorization: `Bearer ${data.token}`,
             },
           });
         } catch (refreshError) {
-          return await refreshTokenFailed(config, refreshError);
+          const tokenFailedError = await refreshTokenFailed(
+            config,
+            refreshError
+          );
+          processQueue(tokenFailedError, null);
+          return tokenFailedError;
+        } finally {
+          isRefreshing = false;
         }
       }
       // For non-401 errors, just reject with the original error
