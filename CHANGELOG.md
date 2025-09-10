@@ -1,3 +1,15 @@
+## 1.3.5-alpha.1 (2025-09-10)
+
+### 🚀 Features
+
+- **auth:** implement force authentication for specific endpoints ([f0a1740](https://github.com/kmakris23/store-sdk/commit/f0a1740))
+- **auth:** add test endpoint for force authentication and update deployment guide ([547bb91](https://github.com/kmakris23/store-sdk/commit/547bb91))
+- **auth:** improve token handling by ensuring async token and refresh token setting ([c7723c8](https://github.com/kmakris23/store-sdk/commit/c7723c8))
+
+### ❤️ Thank You
+
+- kmakris23
+
 ## 1.3.5-alpha.0 (2025-09-09)
 
 This was a version bump only, there were no code changes.

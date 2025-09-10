@@ -1,3 +1,9 @@
+## 1.3.5-alpha.1 (2025-09-10)
+
+### 🚀 Features
+
+- **auth:** improve token handling by ensuring async token and refresh token setting ([c7723c8](https://github.com/kmakris23/store-sdk/commit/c7723c8))
+
 ## 1.3.5-alpha.0 (2025-09-09)
 
 This was a version bump only for core to align it with other projects, there were no code changes.
