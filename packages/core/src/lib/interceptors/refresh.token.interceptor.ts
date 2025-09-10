@@ -1,8 +1,9 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosError } from 'axios';
 import { StoreSdk } from '../sdk.js';
 import { httpClient } from '../services/api.js';
 import { AuthService } from '../services/auth/auth.service.js';
 import { StoreSdkConfig } from '../configs/sdk.config.js';
+import { ApiError } from '../types/api.js';
 
 export const addRefreshTokenInterceptor = (
   config: StoreSdkConfig,
@@ -49,7 +50,8 @@ export const addRefreshTokenInterceptor = (
           return await refreshTokenFailed(config, refreshError);
         }
       }
-      return await refreshTokenFailed(config, error);
+      // For non-401 errors, just reject with the original error
+      return Promise.reject(error);
     }
   );
 };
@@ -60,5 +62,31 @@ const refreshTokenFailed = async (config: StoreSdkConfig, reason?: unknown) => {
   }
   StoreSdk.state.authenticated = false;
   StoreSdk.events.emit('auth:changed', false);
-  return Promise.reject(reason);
+
+  // Always return a consistent ApiError structure
+  let apiError: ApiError;
+
+  if (reason && typeof reason === 'object' && 'response' in reason) {
+    // If it's an axios error with response data, extract the ApiError
+    const axiosError = reason as AxiosError<ApiError>;
+    apiError = axiosError.response?.data || {
+      code: 'refresh_token_failed',
+      message: 'Token refresh failed',
+      data: { status: axiosError.response?.status || 401 },
+      details: {},
+    };
+  } else if (reason && typeof reason === 'object' && 'code' in reason) {
+    // If it's already an ApiError, use it
+    apiError = reason as ApiError;
+  } else {
+    // Default error structure
+    apiError = {
+      code: 'refresh_token_failed',
+      message: typeof reason === 'string' ? reason : 'Token refresh failed',
+      data: { status: 401 },
+      details: {},
+    };
+  }
+
+  return Promise.reject(apiError);
 };

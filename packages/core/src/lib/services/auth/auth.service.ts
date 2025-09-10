@@ -52,15 +52,15 @@ export class AuthService extends BaseService {
     this.events.emitIf(!!data, 'auth:login:success');
     this.events.emitIf(!!error, 'auth:login:error', error);
 
-    if (!error) {
+    if (!error && data) {
       if (this.config.auth?.setToken) {
         this.state.authenticated = true;
         this.events.emit('auth:changed', true);
 
-        this.config.auth.setToken(data?.token ?? '');
+        await this.config.auth.setToken(data.token);
       }
       if (this.config.auth?.setRefreshToken) {
-        this.config.auth.setRefreshToken(data?.refresh_token ?? '');
+        await this.config.auth.setRefreshToken(data.refresh_token);
       }
     }
 
@@ -84,12 +84,14 @@ export class AuthService extends BaseService {
     this.events.emitIf(!!data, 'auth:token:refresh:success');
     this.events.emitIf(!!error, 'auth:token:refresh:error', error);
 
-    if (this.config.auth?.setToken) {
-      this.config.auth?.setToken(data?.token ?? '');
-    }
+    if (!error && data) {
+      if (this.config.auth?.setToken) {
+        await this.config.auth.setToken(data.token);
+      }
 
-    if (this.config.auth?.setRefreshToken) {
-      this.config.auth?.setRefreshToken(data?.refresh_token ?? '');
+      if (this.config.auth?.setRefreshToken) {
+        await this.config.auth.setRefreshToken(data.refresh_token);
+      }
     }
 
     return { data: data, error };
