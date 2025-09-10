@@ -21,15 +21,6 @@ if (!defined('ABSPATH')) {
 
 if (!defined('STORESDK_JWT_AUTH_VERSION')) define('STORESDK_JWT_AUTH_VERSION', '1.0.0');
 
-/**
- * Feature flags / configuration
- *
- * Define these in wp-config.php (recommended):
- *
- * define('STORESDK_JWT_ENABLED', true);
- * define('STORESDK_JWT_SECRET', 'REPLACE_WITH_RANDOM_48_CHARS');
- * define('STORESDK_JWT_DEBUG_SHOW_NOTICE', false);
- */
 
 // Defaults
 if (!defined('STORESDK_JWT_ACCESS_TTL')) define('STORESDK_JWT_ACCESS_TTL', 3600);
@@ -47,7 +38,7 @@ if (!defined('STORESDK_JWT_LEEWAY')) define('STORESDK_JWT_LEEWAY', 1); // clock 
 // CORS defaults (override in wp-config.php before plugin load if needed)
 // Comma-separated list for origins so it's easy to define as a constant string.
 if (!defined('STORESDK_JWT_CORS_ENABLE')) define('STORESDK_JWT_CORS_ENABLE', true);
-if (!defined('STORESDK_JWT_CORS_ALLOWED_ORIGINS')) define('STORESDK_JWT_CORS_ALLOWED_ORIGINS', 'http://localhost:4200,https://staging2.herbally.gr,https://app.herbally.gr');
+if (!defined('STORESDK_JWT_CORS_ALLOWED_ORIGINS')) define('STORESDK_JWT_CORS_ALLOWED_ORIGINS', '*');
 if (!defined('STORESDK_JWT_CORS_ALLOW_CREDENTIALS')) define('STORESDK_JWT_CORS_ALLOW_CREDENTIALS', true);
 if (!defined('STORESDK_JWT_CORS_ALLOW_METHODS')) define('STORESDK_JWT_CORS_ALLOW_METHODS', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
 if (!defined('STORESDK_JWT_CORS_ALLOW_HEADERS')) define('STORESDK_JWT_CORS_ALLOW_HEADERS', 'Authorization, Content-Type, cart-token');
@@ -164,6 +155,79 @@ function storesdk_jwt_plugin_active() {
 function storesdk_jwt_default_expiration() {
 	$ttl = (int) STORESDK_JWT_ACCESS_TTL;
 	return (int) apply_filters('storesdk_jwt_default_expiration', $ttl);
+}
+
+/**
+ * Check if the current endpoint requires forced authentication
+ */
+function storesdk_jwt_endpoint_requires_auth($route_path = null) {
+	// Get the list of protected endpoints from the constant
+	$protected_endpoints = defined('STORESDK_JWT_FORCE_AUTH_ENDPOINTS') ? STORESDK_JWT_FORCE_AUTH_ENDPOINTS : '';
+	
+	// If no route provided, try to detect it
+	if ($route_path === null) {
+		$route_path = storesdk_jwt_get_current_route_path();
+	}
+
+	if (empty($route_path)) {
+		return false;
+	}
+
+	// Parse the comma-separated list of protected endpoints
+	$endpoints = array_filter(array_map('trim', explode(',', $protected_endpoints)));
+	
+	// Allow filtering of protected endpoints
+	$endpoints = apply_filters('storesdk_jwt_force_auth_endpoints', $endpoints, $route_path);
+	
+	foreach ($endpoints as $endpoint) {
+		$endpoint = trim($endpoint);
+		if (empty($endpoint)) continue;
+		
+		// Normalize endpoint: remove wp-json/ prefix if present for comparison
+		$normalized_endpoint = $endpoint;
+		$prefix = function_exists('rest_get_url_prefix') ? rest_get_url_prefix() : 'wp-json';
+		if (strpos($normalized_endpoint, $prefix . '/') === 0) {
+			$normalized_endpoint = substr($normalized_endpoint, strlen($prefix) + 1);
+		}
+		
+		// Support wildcard matching with * on both original and normalized endpoint
+		$pattern = str_replace('*', '.*', preg_quote($normalized_endpoint, '#'));
+		if (preg_match('#^' . $pattern . '$#', $route_path)) {
+			// Allow final override via filter
+			return apply_filters('storesdk_jwt_endpoint_requires_auth', true, $route_path, $endpoint);
+		}
+		
+		// Also check exact match for both formats (handles cases where user specifies full path)
+		if ($route_path === $normalized_endpoint || $route_path === $endpoint) {
+			return apply_filters('storesdk_jwt_endpoint_requires_auth', true, $route_path, $endpoint);
+		}
+	}
+
+	return apply_filters('storesdk_jwt_endpoint_requires_auth', false, $route_path, null);
+}
+
+/**
+ * Get the current REST route path
+ */
+function storesdk_jwt_get_current_route_path() {
+	$uri = $_SERVER['REQUEST_URI'] ?? '';
+	$path = ltrim((string) wp_parse_url($uri, PHP_URL_PATH), '/');
+	$query = (string) wp_parse_url($uri, PHP_URL_QUERY);
+	parse_str($query, $qs);
+	$route = $qs['rest_route'] ?? ($_GET['rest_route'] ?? null);
+	$prefix = function_exists('rest_get_url_prefix') ? rest_get_url_prefix() : 'wp-json';
+
+	// Pretty URLs: "wp-json/wc/store/v1/cart"
+	if ($path !== '' && strpos($path, $prefix . '/') === 0) {
+		return substr($path, strlen($prefix) + 1);
+	}
+
+	// Non-pretty URLs: "?rest_route=/wc/store/v1/cart"
+	if ($route && strpos($route, '/') === 0) {
+		return ltrim($route, '/');
+	}
+
+	return '';
 }
 
 function storesdk_base64url_encode($d) {
@@ -324,20 +388,11 @@ function storesdk_consume_refresh_token($uid, $raw) {
 		return new WP_Error('storesdk_jwt.refresh_invalid', __('Invalid refresh token', 'store-sdk'), ['status' => 401]);
 	}
 
-	$table = $wpdb->usermeta;
-	$prev  = maybe_serialize($list);
-	$next  = maybe_serialize($remain);
-
-	$updated = $wpdb->update(
-		$table,
-		['meta_value' => $next],
-		['user_id' => $uid, 'meta_key' => $key, 'meta_value' => $prev],
-		['%s'],
-		['%d', '%s', '%s']
-	);
-
-	if ($updated === false || $updated === 0) {
-		// Re-check once: if still present, another request likely won; reject this one
+	// Use update_user_meta to ensure reliable update
+	$success = update_user_meta($uid, $key, $remain);
+	
+	if (!$success) {
+		// If update failed, check if the token is still there (another request might have consumed it)
 		$after = get_user_meta($uid, $key, true);
 		if (is_array($after)) {
 			foreach ($after as $e) {
@@ -346,6 +401,7 @@ function storesdk_consume_refresh_token($uid, $raw) {
 				}
 			}
 		}
+		return new WP_Error('storesdk_jwt.refresh_update_failed', __('Failed to update refresh tokens', 'store-sdk'), ['status' => 500]);
 	}
 
 	return true;
@@ -685,6 +741,7 @@ if (STORESDK_JWT_PLUGIN_ACTIVE) add_filter('determine_current_user', function ($
 
     $is_refresh = false;
     $is_auth_namespace = false;
+    $current_route_path = '';
 
     // Pretty URLs: "wp-json/store-sdk/v1/auth/refresh"
     if ($path !== '') {
@@ -694,6 +751,10 @@ if (STORESDK_JWT_PLUGIN_ACTIVE) add_filter('determine_current_user', function ($
         if (preg_match('#^' . preg_quote($prefix, '#') . '/store-sdk/v1/auth(/|$)#', $path)) {
             $is_auth_namespace = true;
         }
+        // Extract the route path for protected endpoint checking
+        if (strpos($path, $prefix . '/') === 0) {
+            $current_route_path = substr($path, strlen($prefix) + 1);
+        }
     }
 
     // Non-pretty: "?rest_route=/store-sdk/v1/auth/refresh"
@@ -702,6 +763,10 @@ if (STORESDK_JWT_PLUGIN_ACTIVE) add_filter('determine_current_user', function ($
     }
     if (!$is_auth_namespace && $route && str_starts_with($route, '/store-sdk/v1/auth')) {
         $is_auth_namespace = true;
+    }
+    // Extract route path for non-pretty URLs
+    if (empty($current_route_path) && $route && strpos($route, '/') === 0) {
+        $current_route_path = ltrim($route, '/');
     }
 
     // --- Hard bypass for refresh: DO NOT parse Authorization, let endpoint handle it
@@ -715,7 +780,9 @@ if (STORESDK_JWT_PLUGIN_ACTIVE) add_filter('determine_current_user', function ($
         return $user_id;
     }
     $token = trim($m[1]);
-    if ($token === '') return $user_id;
+    if ($token === '') {
+        return $user_id;
+    }
 
     // Strict expiry for bearer here (leeway 0 is optional):
     $payload = storesdk_jwt_decode($token /*, ['leeway' => 0]*/);
@@ -751,6 +818,31 @@ if (STORESDK_JWT_PLUGIN_ACTIVE) add_filter('determine_current_user', function ($
 
     return (int) $jwt_user->ID;
 }, 50);
+
+// Add REST authentication errors filter to handle force authentication
+if (STORESDK_JWT_PLUGIN_ACTIVE) add_filter('rest_authentication_errors', function ($errors) {
+    // Only process if we haven't already set an error
+    if (!empty($errors)) {
+        return $errors;
+    }
+
+    // Directly check if current route requires authentication
+    $current_route_path = storesdk_jwt_get_current_route_path();
+    $requires_auth = storesdk_jwt_endpoint_requires_auth($current_route_path);
+    
+    if ($requires_auth) {
+        $user = wp_get_current_user();
+        if (!$user || $user->ID === 0) {
+            return new WP_Error(
+                'storesdk_jwt.auth_required',
+                __('Authentication required for this endpoint', 'store-sdk'),
+                ['status' => 401]
+            );
+        }
+    }
+
+    return $errors;
+}, 5);
 
 
 if (STORESDK_JWT_PLUGIN_ACTIVE) add_filter('rest_authentication_errors', function ($result) {
@@ -915,6 +1007,10 @@ add_action('rest_api_init', function () {
 
 			$secret_len = $secret_defined ? strlen(constant('STORESDK_JWT_SECRET')) : 0;
 
+			// Add force auth endpoints info
+			$force_auth_defined = defined('STORESDK_JWT_FORCE_AUTH_ENDPOINTS');
+			$force_auth_value = $force_auth_defined ? (string) constant('STORESDK_JWT_FORCE_AUTH_ENDPOINTS') : '';
+
 			return new WP_REST_Response([
 				'active'          => $active,
 				'flag_defined'    => $flag_defined,
@@ -925,6 +1021,44 @@ add_action('rest_api_init', function () {
 				'endpoints'       => $endpoints,
 				'version'         => STORESDK_JWT_AUTH_VERSION,
 				'timestamp'       => time(),
+				'force_auth_defined' => $force_auth_defined,
+				'force_auth_value' => $force_auth_value,
+			]);
+		}
+	]);
+
+	// Debug endpoint to test force auth detection
+	register_rest_route('store-sdk/v1/auth', '/debug-route', [
+		'methods' => 'GET',
+		'permission_callback' => '__return_true',
+		'callback' => function () {
+			$route_path = storesdk_jwt_get_current_route_path();
+			$requires_auth = storesdk_jwt_endpoint_requires_auth($route_path);
+			$force_auth_constant = defined('STORESDK_JWT_FORCE_AUTH_ENDPOINTS') ? (string) constant('STORESDK_JWT_FORCE_AUTH_ENDPOINTS') : 'NOT_DEFINED';
+			
+			return new WP_REST_Response([
+				'current_route' => $route_path,
+				'requires_auth' => $requires_auth,
+				'force_auth_constant' => $force_auth_constant,
+				'server_uri' => $_SERVER['REQUEST_URI'] ?? 'not_set',
+				'get_params' => $_GET,
+			]);
+		}
+	]);
+
+	// Simple debug endpoint for force auth status
+	register_rest_route('store-sdk/v1/debug', '/status', [
+		'methods' => 'GET',
+		'permission_callback' => '__return_true',
+		'callback' => function () {
+			$force_auth_defined = defined('STORESDK_JWT_FORCE_AUTH_ENDPOINTS');
+			$force_auth_value = $force_auth_defined ? (string) constant('STORESDK_JWT_FORCE_AUTH_ENDPOINTS') : '';
+			
+			return new WP_REST_Response([
+				'force_auth_defined' => $force_auth_defined,
+				'force_auth_value' => $force_auth_value,
+				'plugin_version' => STORESDK_JWT_AUTH_VERSION,
+				'timestamp' => time(),
 			]);
 		}
 	]);

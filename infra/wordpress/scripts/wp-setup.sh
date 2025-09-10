@@ -139,6 +139,12 @@ if ! grep -q 'STORESDK_JWT_SECRET' wp-config.php; then
   log "Adding STORESDK_JWT_SECRET to wp-config.php (re-uses JWT_SECRET env)"
   echo "define('STORESDK_JWT_SECRET', '$(printf %q "${JWT_SECRET:-change_me}")');" >> wp-config.php
 fi
+if ! grep -q 'STORESDK_JWT_FORCE_AUTH_ENDPOINTS' wp-config.php; then
+  log "Adding STORESDK_JWT_FORCE_AUTH_ENDPOINTS to wp-config.php for testing"
+  echo "define('STORESDK_JWT_FORCE_AUTH_ENDPOINTS', 'wp-json/wc/store/v1/cart');" >> wp-config.php
+else
+  log "STORESDK_JWT_FORCE_AUTH_ENDPOINTS already exists in wp-config.php"
+fi
 
 # ---------------------------------------------------------------------------
 # Verify Store SDK JWT plugin presence & REST route registration
