@@ -57,8 +57,27 @@ if (STORESDK_JWT_CORS_ENABLE) {
 				$allowed = apply_filters('storesdk_jwt_cors_allowed_origins', $allowed, $origin);
 			}
 
-			if ($origin && in_array($origin, $allowed, true)) {
-				header('Access-Control-Allow-Origin: ' . $origin);
+			$allow_origin = false;
+			if ($origin) {
+				// Check for wildcard or exact match
+				if (in_array('*', $allowed, true)) {
+					$allow_origin = true;
+				} elseif (in_array($origin, $allowed, true)) {
+					$allow_origin = true;
+				}
+			}
+
+			if ($allow_origin) {
+				// When using wildcard with credentials, we must echo the actual origin
+				// not '*' because browsers reject '*' with credentials
+				if (in_array('*', $allowed, true) && STORESDK_JWT_CORS_ALLOW_CREDENTIALS) {
+					header('Access-Control-Allow-Origin: ' . $origin);
+				} elseif (in_array('*', $allowed, true)) {
+					header('Access-Control-Allow-Origin: *');
+				} else {
+					header('Access-Control-Allow-Origin: ' . $origin);
+				}
+				
 				if (STORESDK_JWT_CORS_ALLOW_CREDENTIALS) {
 					header('Access-Control-Allow-Credentials: true');
 				}

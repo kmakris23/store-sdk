@@ -7,13 +7,17 @@ The Store SDK plugin provides force authentication functionality that can protec
 ## Development vs Production Endpoints
 
 ### Development/Testing
+
 For testing purposes, the plugin includes a dedicated test endpoint:
+
 - **Test Endpoint**: `/wp-json/store-sdk/v1/test/cart-protected`
 - **Purpose**: Safe testing of force authentication without affecting real WooCommerce functionality
 - **Response**: Mirrors WooCommerce cart structure but with empty/default values
 
 ### Production
+
 For production, you can protect any real endpoint:
+
 - **Common Examples**: `/wp-json/wc/store/v1/cart`, `/wp-json/wp/v2/posts`, `/wp-json/wc/store/v1/checkout`
 - **Impact**: Protected endpoints will require authentication for all access
 
@@ -54,6 +58,7 @@ define('STORESDK_JWT_FORCE_AUTH_ENDPOINTS', 'wp-json/wc/store/v1/cart,wp/v2/post
 ### Step 3: Testing
 
 #### For Development/Testing
+
 Test with the dedicated test endpoint:
 
 ```bash
@@ -64,6 +69,7 @@ curl -X GET http://your-site.com/wp-json/store-sdk/v1/test/cart-protected
 **Expected Result**: `401 Unauthorized` with error message `"Authentication required for this endpoint"`
 
 #### For Production Endpoints
+
 Test the protected endpoint without authentication:
 
 ```bash
