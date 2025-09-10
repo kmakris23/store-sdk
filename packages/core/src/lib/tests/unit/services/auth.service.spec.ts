@@ -307,50 +307,19 @@ describe('AuthService', () => {
     it('generates correct auto-login URL with token and redirect URL', async () => {
       const mockToken = 'test-jwt-token-123';
       const redirectUrl = 'https://example.com/dashboard';
-      const getToken = vi.fn(async () => mockToken);
 
-      config.auth = { getToken };
+      const result = await service.getAutoLoginUrl(mockToken, redirectUrl);
 
-      const result = await service.getAutoLoginUrl(redirectUrl);
-
-      expect(getToken).toHaveBeenCalledOnce();
       expect(result).toBe(
         'https://example.com/wp-json/store-sdk/v1/auth/autologin?token=test-jwt-token-123&redirectUrl=https%3A%2F%2Fexample.com%2Fdashboard'
-      );
-    });
-
-    it('generates correct auto-login URL when getToken is not configured', async () => {
-      const redirectUrl = 'https://example.com/dashboard';
-
-      config.auth = {}; // No getToken function
-
-      const result = await service.getAutoLoginUrl(redirectUrl);
-
-      expect(result).toBe(
-        'https://example.com/wp-json/store-sdk/v1/auth/autologin?redirectUrl=https%3A%2F%2Fexample.com%2Fdashboard'
-      );
-    });
-
-    it('generates correct auto-login URL when auth config is not configured', async () => {
-      const redirectUrl = 'https://example.com/dashboard';
-
-      config.auth = undefined; // No auth config
-
-      const result = await service.getAutoLoginUrl(redirectUrl);
-
-      expect(result).toBe(
-        'https://example.com/wp-json/store-sdk/v1/auth/autologin?redirectUrl=https%3A%2F%2Fexample.com%2Fdashboard'
       );
     });
 
     it('properly encodes special characters in redirect URL', async () => {
       const mockToken = 'test-token';
       const redirectUrl = 'https://example.com/path?param=value&another=test';
-      const getToken = vi.fn(async () => mockToken);
 
-      config.auth = { getToken };
-
-      const result = await service.getAutoLoginUrl(redirectUrl);
+      const result = await service.getAutoLoginUrl(mockToken, redirectUrl);
 
       expect(result).toBe(
         'https://example.com/wp-json/store-sdk/v1/auth/autologin?token=test-token&redirectUrl=https%3A%2F%2Fexample.com%2Fpath%3Fparam%3Dvalue%26another%3Dtest'
@@ -358,14 +327,11 @@ describe('AuthService', () => {
     });
 
     it('generates auto-login URL with empty token', async () => {
+      const emptyToken = '';
       const redirectUrl = 'https://example.com/dashboard';
-      const getToken = vi.fn(async () => '');
 
-      config.auth = { getToken };
+      const result = await service.getAutoLoginUrl(emptyToken, redirectUrl);
 
-      const result = await service.getAutoLoginUrl(redirectUrl);
-
-      expect(getToken).toHaveBeenCalledOnce();
       expect(result).toBe(
         'https://example.com/wp-json/store-sdk/v1/auth/autologin?token=&redirectUrl=https%3A%2F%2Fexample.com%2Fdashboard'
       );
@@ -375,13 +341,9 @@ describe('AuthService', () => {
       const mockToken =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
       const redirectUrl = 'https://example.com/dashboard';
-      const getToken = vi.fn(async () => mockToken);
 
-      config.auth = { getToken };
+      const result = await service.getAutoLoginUrl(mockToken, redirectUrl);
 
-      const result = await service.getAutoLoginUrl(redirectUrl);
-
-      expect(getToken).toHaveBeenCalledOnce();
       expect(result).toBe(
         `https://example.com/wp-json/store-sdk/v1/auth/autologin?token=${encodeURIComponent(
           mockToken
