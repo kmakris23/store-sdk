@@ -1,4 +1,6 @@
 name: WordPress.org Plugin Deploy
+permissions:
+  contents: read
 
 on:
   release:
