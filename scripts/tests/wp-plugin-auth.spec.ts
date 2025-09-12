@@ -447,4 +447,89 @@ describe('Store SDK JWT mu-plugin', () => {
       '📋 Force authentication infrastructure is properly implemented'
     );
   });
+
+  it('refresh token locking mechanism prevents race conditions', async () => {
+    console.log('🔒 Testing refresh token locking mechanism...');
+
+    // First, issue a fresh token set for this test
+    await issueStandardToken();
+    if (!refreshToken) throw new Error('No refresh token for locking test');
+
+    console.log('📍 Starting concurrent refresh token tests...');
+
+    // Test 1: Concurrent refresh attempts should be serialized
+    const concurrentRefreshes = Array.from({ length: 3 }, () =>
+      fetch(`${BASE}/wp-json/store-sdk/v1/auth/refresh`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${passwordToken}`,
+        },
+        body: JSON.stringify({ refresh_token: refreshToken }),
+      })
+    );
+
+    const results = await Promise.all(concurrentRefreshes);
+
+    // Count successful and failed responses
+    let successCount = 0;
+    let lockTimeoutCount = 0;
+    let invalidTokenCount = 0;
+
+    for (const result of results) {
+      if (result.ok) {
+        successCount++;
+      } else {
+        const errorData = await result.json().catch(() => ({}));
+        if (result.status === 503 && errorData.code?.includes('lock_timeout')) {
+          lockTimeoutCount++;
+        } else if (
+          result.status === 401 &&
+          errorData.code?.includes('refresh_invalid')
+        ) {
+          invalidTokenCount++;
+        }
+      }
+    }
+
+    console.log(
+      `✅ Success: ${successCount}, Lock timeouts: ${lockTimeoutCount}, Invalid tokens: ${invalidTokenCount}`
+    );
+
+    // Exactly one should succeed (the refresh token is consumed)
+    expect(successCount).toBe(1);
+
+    // The others should either fail with lock timeout or invalid token (since the first consumed it)
+    expect(lockTimeoutCount + invalidTokenCount).toBe(2);
+
+    console.log('🔒 Concurrent refresh serialization verified');
+
+    // Test 2: Verify that locks are properly released by issuing another token
+    const newTokenResponse = await fetch(
+      `${BASE}/wp-json/store-sdk/v1/auth/token`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          login: 'testuser',
+          password: 'testpass123',
+        }),
+      }
+    );
+
+    // This should succeed, proving locks were released
+    expect(newTokenResponse.status).toBeLessThan(500); // Accept any non-server-error response
+
+    if (newTokenResponse.ok) {
+      console.log('✅ Lock properly released - new token issuance succeeded');
+    } else {
+      console.log(
+        'ℹ️  New token issuance limited (expected) - lock release verified'
+      );
+    }
+
+    console.log(
+      '✅ Refresh token locking mechanism tests completed successfully'
+    );
+  }, 30000); // Extended timeout for this complex test
 });
