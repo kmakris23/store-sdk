@@ -22,7 +22,10 @@
     "wp:cli": "docker compose -f infra/wordpress/docker-compose.yml run --rm wpcli wp",
     "wp:cli:fast": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp",
     "wp:plugin:test": "npm run wp:env:up && vitest run scripts/tests/wp-plugin-auth.spec.ts",
-    "wp:plugin:package": "node ./infra/wordpress/scripts/package-plugin.mjs"
+    "wp:plugin:package": "node ./infra/wordpress/scripts/package-plugin.mjs",
+    "wp:plugin:publish": "node scripts/wp-publish.mjs publish",
+    "wp:plugin:validate": "node scripts/wp-publish.mjs validate",
+    "wp:plugin:version": "node scripts/wp-publish.mjs version"
   },
   "devDependencies": {
     "@analogjs/vite-plugin-angular": "~1.20.0",
