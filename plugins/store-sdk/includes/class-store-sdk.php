@@ -195,7 +195,7 @@ final class Store_SDK {
 	 */
 	public function activation_check() {
 		if (version_compare(PHP_VERSION, '8.0', '<')) {
-			deactivate_plugins(plugin_basename(__FILE__));
+			deactivate_plugins(plugin_basename(STORESDK_PLUGIN_FILE));
 			wp_die(
 				esc_html__('Store SDK requires PHP version 8.0 or above.', 'store-sdk'),
 				esc_html__('Plugin Activation Error', 'store-sdk'),

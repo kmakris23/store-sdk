@@ -61,7 +61,8 @@ $storesdk_flag_defined = defined('STORESDK_JWT_ENABLED');
 $storesdk_flag_enabled = $storesdk_flag_defined ? (bool) STORESDK_JWT_ENABLED : true;
 $storesdk_secret_defined = defined('STORESDK_JWT_SECRET') && 
 	!empty(constant('STORESDK_JWT_SECRET')) && 
-	strtolower(constant('STORESDK_JWT_SECRET')) !== 'change_me';
+	constant('STORESDK_JWT_SECRET') !== 'change_me' && 
+	constant('STORESDK_JWT_SECRET') !== 'CHANGE_ME';
 
 if (!defined('STORESDK_JWT_PLUGIN_ACTIVE')) {
 	define('STORESDK_JWT_PLUGIN_ACTIVE', $storesdk_flag_enabled && $storesdk_secret_defined);
