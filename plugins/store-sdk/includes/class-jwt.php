@@ -256,39 +256,64 @@ class Store_SDK_JWT {
 	 *
 	 * @param int $user_id User ID.
 	 * @param int $ttl Time to live in seconds.
-	 * @return array
+	 * @return array|WP_Error
 	 */
 	public function issue_refresh_token($user_id, $ttl) {
-		$raw_token = $this->generate_random_token();
-		$now = time();
-		$expires = $now + $ttl;
-		$hash = $this->hash_refresh_token($raw_token);
+		$lock_key = "storesdk_refresh_lock_{$user_id}";
+		$max_attempts = 3;
+		$attempt = 0;
 
-		$tokens = get_user_meta($user_id, 'storesdk_refresh_tokens', true);
-		if (!is_array($tokens)) {
-			$tokens = array();
+		while ($attempt < $max_attempts) {
+			// Try to acquire lock
+			if ($this->acquire_refresh_token_lock($user_id)) {
+				try {
+					$raw_token = $this->generate_random_token();
+					$now = time();
+					$expires = $now + $ttl;
+					$hash = $this->hash_refresh_token($raw_token);
+
+					$tokens = get_user_meta($user_id, 'storesdk_refresh_tokens', true);
+					if (!is_array($tokens)) {
+						$tokens = array();
+					}
+
+					$tokens[] = array('hash' => $hash, 'exp' => $expires);
+
+					// Garbage collect expired tokens
+					$tokens = array_values(array_filter($tokens, function ($token) use ($now) {
+						return !empty($token['exp']) && $token['exp'] > $now;
+					}));
+
+					// Enforce max tokens limit
+					$max_tokens = defined('STORESDK_JWT_REFRESH_MAX_TOKENS') ? (int) STORESDK_JWT_REFRESH_MAX_TOKENS : 10;
+					if ($max_tokens > 0 && count($tokens) > $max_tokens) {
+						$excess = count($tokens) - $max_tokens;
+						$tokens = array_slice($tokens, $excess);
+					}
+
+					$success = update_user_meta($user_id, 'storesdk_refresh_tokens', $tokens);
+					if (!$success) {
+						return new WP_Error('storesdk_jwt.refresh_update_failed', __('Failed to update refresh tokens', 'store-sdk'), array('status' => 500));
+					}
+
+					return array(
+						'token' => $raw_token,
+						'expires_in' => $expires - $now
+					);
+				} finally {
+					// Always release lock
+					$this->release_refresh_token_lock($user_id);
+				}
+			}
+
+			$attempt++;
+			if ($attempt < $max_attempts) {
+				// Wait briefly before retrying (exponential backoff)
+				usleep(100000 * $attempt); // 0.1s, 0.2s, 0.3s
+			}
 		}
 
-		$tokens[] = array('hash' => $hash, 'exp' => $expires);
-
-		// Garbage collect expired tokens
-		$tokens = array_values(array_filter($tokens, function ($token) use ($now) {
-			return !empty($token['exp']) && $token['exp'] > $now;
-		}));
-
-		// Enforce max tokens limit
-		$max_tokens = defined('STORESDK_JWT_REFRESH_MAX_TOKENS') ? (int) STORESDK_JWT_REFRESH_MAX_TOKENS : 10;
-		if ($max_tokens > 0 && count($tokens) > $max_tokens) {
-			$excess = count($tokens) - $max_tokens;
-			$tokens = array_slice($tokens, $excess);
-		}
-
-		update_user_meta($user_id, 'storesdk_refresh_tokens', $tokens);
-
-		return array(
-			'token' => $raw_token,
-			'expires_in' => $expires - $now
-		);
+		return new WP_Error('storesdk_jwt.refresh_lock_timeout', __('Unable to acquire refresh token lock, please retry', 'store-sdk'), array('status' => 503));
 	}
 
 	/**
@@ -301,52 +326,88 @@ class Store_SDK_JWT {
 	public function consume_refresh_token($user_id, $raw_token) {
 		$hash = $this->hash_refresh_token($raw_token);
 		$key = 'storesdk_refresh_tokens';
+		$max_attempts = 3;
+		$attempt = 0;
 
-		$tokens = get_user_meta($user_id, $key, true);
-		if (!is_array($tokens) || empty($tokens)) {
-			return new WP_Error('storesdk_jwt.refresh_invalid', __('Invalid refresh token', 'store-sdk'), array('status' => 401));
-		}
-
-		$now = time();
-		$found = false;
-		$remaining = array();
-
-		foreach ($tokens as $token) {
-			if (empty($token['hash']) || empty($token['exp'])) {
-				continue;
-			}
-
-			if ($token['hash'] === $hash) {
-				if ($token['exp'] < $now) {
-					return new WP_Error('storesdk_jwt.refresh_expired', __('Refresh token expired', 'store-sdk'), array('status' => 401));
-				}
-				$found = true;
-				continue; // Skip - this token is consumed
-			}
-
-			if ($token['exp'] > $now) {
-				$remaining[] = $token;
-			}
-		}
-
-		if (!$found) {
-			return new WP_Error('storesdk_jwt.refresh_invalid', __('Invalid refresh token', 'store-sdk'), array('status' => 401));
-		}
-
-		$success = update_user_meta($user_id, $key, $remaining);
-		if (!$success) {
-			// Check if token still exists (race condition)
-			$after = get_user_meta($user_id, $key, true);
-			if (is_array($after)) {
-				foreach ($after as $token) {
-					if (!empty($token['hash']) && $token['hash'] === $hash && !empty($token['exp']) && $token['exp'] > $now) {
-						return new WP_Error('storesdk_jwt.refresh_race', __('Concurrent refresh detected, please retry', 'store-sdk'), array('status' => 409));
+		while ($attempt < $max_attempts) {
+			// Try to acquire lock
+			if ($this->acquire_refresh_token_lock($user_id)) {
+				try {
+					$tokens = get_user_meta($user_id, $key, true);
+					if (!is_array($tokens) || empty($tokens)) {
+						return new WP_Error('storesdk_jwt.refresh_invalid', __('Invalid refresh token', 'store-sdk'), array('status' => 401));
 					}
+
+					$now = time();
+					$found = false;
+					$remaining = array();
+
+					foreach ($tokens as $token) {
+						if (empty($token['hash']) || empty($token['exp'])) {
+							continue;
+						}
+
+						if ($token['hash'] === $hash) {
+							if ($token['exp'] < $now) {
+								return new WP_Error('storesdk_jwt.refresh_expired', __('Refresh token expired', 'store-sdk'), array('status' => 401));
+							}
+							$found = true;
+							continue; // Skip - this token is consumed
+						}
+
+						if ($token['exp'] > $now) {
+							$remaining[] = $token;
+						}
+					}
+
+					if (!$found) {
+						return new WP_Error('storesdk_jwt.refresh_invalid', __('Invalid refresh token', 'store-sdk'), array('status' => 401));
+					}
+
+					$success = update_user_meta($user_id, $key, $remaining);
+					if (!$success) {
+						return new WP_Error('storesdk_jwt.refresh_update_failed', __('Failed to update refresh tokens', 'store-sdk'), array('status' => 500));
+					}
+
+					return true;
+				} finally {
+					// Always release lock
+					$this->release_refresh_token_lock($user_id);
 				}
 			}
-			return new WP_Error('storesdk_jwt.refresh_update_failed', __('Failed to update refresh tokens', 'store-sdk'), array('status' => 500));
+
+			$attempt++;
+			if ($attempt < $max_attempts) {
+				// Wait briefly before retrying (exponential backoff)
+				usleep(100000 * $attempt); // 0.1s, 0.2s, 0.3s
+			}
 		}
 
-		return true;
+		return new WP_Error('storesdk_jwt.refresh_lock_timeout', __('Unable to acquire refresh token lock, please retry', 'store-sdk'), array('status' => 503));
+	}
+
+	/**
+	 * Acquire refresh token lock for a user.
+	 *
+	 * @param int $user_id User ID.
+	 * @return bool True if lock acquired, false otherwise.
+	 */
+	private function acquire_refresh_token_lock($user_id) {
+		$lock_key = "storesdk_refresh_lock_{$user_id}";
+		$lock_timeout = defined('STORESDK_JWT_LOCK_TIMEOUT') ? (int) STORESDK_JWT_LOCK_TIMEOUT : 5;
+		
+		// Try to set transient (returns false if already exists)
+		return set_transient($lock_key, time(), $lock_timeout);
+	}
+
+	/**
+	 * Release refresh token lock for a user.
+	 *
+	 * @param int $user_id User ID.
+	 * @return bool True if lock released, false otherwise.
+	 */
+	private function release_refresh_token_lock($user_id) {
+		$lock_key = "storesdk_refresh_lock_{$user_id}";
+		return delete_transient($lock_key);
 	}
 }
