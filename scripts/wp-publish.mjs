@@ -54,9 +54,35 @@ function warning(message) {
 }
 
 // Utility functions
+function escapeShellArg(arg) {
+  // Escape shell arguments to prevent command injection
+  // On Windows, we need to escape quotes and handle spaces
+  if (process.platform === 'win32') {
+    // Escape double quotes and wrap in quotes if contains spaces or special chars
+    const escaped = arg.replace(/"/g, '""');
+    return /[\s&|<>^]/.test(escaped) ? `"${escaped}"` : escaped;
+  } else {
+    // On Unix-like systems, use single quotes and escape any single quotes
+    return `'${arg.replace(/'/g, "'\"'\"'")}'`;
+  }
+}
+
 function execCommand(command, options = {}) {
   try {
-    const result = execSync(command, {
+    let finalCommand;
+
+    if (Array.isArray(command)) {
+      // Safe execution with command and arguments separated
+      const [cmd, ...args] = command;
+      finalCommand = `${escapeShellArg(cmd)} ${args
+        .map(escapeShellArg)
+        .join(' ')}`;
+    } else {
+      // Legacy string command - keep for backward compatibility but warn about security
+      finalCommand = command;
+    }
+
+    const result = execSync(finalCommand, {
       encoding: 'utf8',
       stdio: options.silent ? 'pipe' : 'inherit',
       ...options,
@@ -64,7 +90,11 @@ function execCommand(command, options = {}) {
     return result?.toString().trim();
   } catch (err) {
     if (!options.allowFailure) {
-      error(`Command failed: ${command}`);
+      error(
+        `Command failed: ${
+          Array.isArray(command) ? command.join(' ') : command
+        }`
+      );
       error(err.message);
       process.exit(1);
     }
@@ -163,7 +193,7 @@ async function checkoutSVN() {
 
   mkdirSync(CONFIG.SVN_DIR, { recursive: true });
 
-  execCommand(`svn checkout ${CONFIG.SVN_URL} ${CONFIG.SVN_DIR}`);
+  execCommand(['svn', 'checkout', CONFIG.SVN_URL, CONFIG.SVN_DIR]);
   success('SVN checkout completed');
 }
 
@@ -172,7 +202,18 @@ function copyPluginFiles(targetDir) {
 
   // Remove existing files in target (except .svn)
   const files = execCommand(
-    `find ${targetDir} -maxdepth 1 -not -name '.svn' -not -path ${targetDir}`,
+    [
+      'find',
+      targetDir,
+      '-maxdepth',
+      '1',
+      '-not',
+      '-name',
+      '.svn',
+      '-not',
+      '-path',
+      targetDir,
+    ],
     {
       silent: true,
       allowFailure: true,
@@ -191,13 +232,13 @@ function copyPluginFiles(targetDir) {
   }
 
   // Copy plugin files
-  execCommand(`cp -r ${CONFIG.PLUGIN_DIR}/* ${targetDir}/`);
+  execCommand(['cp', '-r', CONFIG.PLUGIN_DIR + '/.', targetDir]);
 
   // Copy WordPress.org assets if they exist
   if (existsSync(CONFIG.ASSETS_DIR)) {
     const assetsTarget = join(CONFIG.SVN_DIR, 'assets');
     mkdirSync(assetsTarget, { recursive: true });
-    execCommand(`cp -r ${CONFIG.ASSETS_DIR}/* ${assetsTarget}/`);
+    execCommand(['cp', '-r', CONFIG.ASSETS_DIR + '/.', assetsTarget]);
   }
 
   success('Plugin files copied');
@@ -233,29 +274,32 @@ function commitChanges(version, message) {
   info('Committing changes to SVN...');
 
   // Add all new files
-  execCommand(`svn add --force ${CONFIG.SVN_DIR}/*`, { allowFailure: true });
+  execCommand(['svn', 'add', '--force', CONFIG.SVN_DIR], {
+    allowFailure: true,
+  });
 
   // Remove deleted files
-  const deletedFiles = execCommand(
-    `svn status ${CONFIG.SVN_DIR} | grep '^!' | awk '{print $2}'`,
-    {
-      silent: true,
-      allowFailure: true,
-    }
-  );
+  const deletedFiles = execCommand(['svn', 'status', CONFIG.SVN_DIR], {
+    silent: true,
+    allowFailure: true,
+  });
 
   if (deletedFiles) {
-    deletedFiles
+    // Parse svn status output to find deleted files (lines starting with '!')
+    const filesToRemove = deletedFiles
       .split('\n')
-      .filter(Boolean)
-      .forEach((file) => {
-        execCommand(`svn remove "${file}"`, { allowFailure: true });
-      });
+      .filter((line) => line.startsWith('!'))
+      .map((line) => line.substring(1).trim())
+      .filter(Boolean);
+
+    filesToRemove.forEach((file) => {
+      execCommand(['svn', 'remove', file], { allowFailure: true });
+    });
   }
 
   // Commit changes
   const commitMessage = message || `Release version ${version}`;
-  execCommand(`svn commit -m "${commitMessage}" ${CONFIG.SVN_DIR}`);
+  execCommand(['svn', 'commit', '-m', commitMessage, CONFIG.SVN_DIR]);
 
   success('Changes committed to WordPress.org');
 }
@@ -279,7 +323,7 @@ async function publishToWordPress() {
   info(`Plugin version: ${version}`);
 
   // Check if SVN is available
-  execCommand('svn --version', { silent: true });
+  execCommand(['svn', '--version'], { silent: true });
   success('SVN is available');
 
   // Confirm with user
@@ -301,7 +345,7 @@ async function publishToWordPress() {
   try {
     // Build plugin package first
     info('Building plugin package...');
-    execCommand('npm run wp:plugin:package');
+    execCommand(['npm', 'run', 'wp:plugin:package']);
 
     // SVN operations
     await checkoutSVN();
