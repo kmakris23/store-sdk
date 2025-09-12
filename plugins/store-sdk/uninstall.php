@@ -62,22 +62,40 @@ class Store_SDK_Uninstaller {
 
 		// Delete user meta (refresh tokens + token version counters)
 		$meta_keys = array('storesdk_refresh_tokens', 'storesdk_token_version');
-		$placeholders = implode(',', array_fill(0, count($meta_keys), '%s'));
-		
-		$wpdb->query(
-			$wpdb->prepare(
-				"DELETE FROM {$wpdb->usermeta} WHERE meta_key IN ({$placeholders})",
-				...$meta_keys
-			)
-		);
+		foreach ($meta_keys as $meta_key) {
+			$wpdb->query(
+				$wpdb->prepare(
+					"DELETE FROM {$wpdb->usermeta} WHERE meta_key = %s",
+					$meta_key
+				)
+			);
+		}
 
 		// Delete one-time token transients
 		// Stored as _transient_storesdk_jti_xxx and _transient_timeout_storesdk_jti_xxx
-		$wpdb->query(
-			"DELETE FROM {$wpdb->options} 
-			 WHERE option_name LIKE '_transient_storesdk_jti_%' 
-			    OR option_name LIKE '_transient_timeout_storesdk_jti_%'"
+		// Find all transients matching the patterns and delete them using the API
+		$transient_patterns = array(
+			'_transient_storesdk_jti_%',
+			'_transient_timeout_storesdk_jti_%'
 		);
+		foreach ( $transient_patterns as $pattern ) {
+			$option_names = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s",
+					$pattern
+				)
+			);
+			foreach ( $option_names as $option_name ) {
+				// Remove the prefix to get the transient name
+				if ( strpos( $option_name, '_transient_' ) === 0 ) {
+					$transient_name = substr( $option_name, strlen( '_transient_' ) );
+					delete_transient( $transient_name );
+				} elseif ( strpos( $option_name, '_transient_timeout_' ) === 0 ) {
+					$transient_name = substr( $option_name, strlen( '_transient_timeout_' ) );
+					delete_transient( $transient_name );
+				}
+			}
+		}
 
 		// Allow additional cleanup via action
 		do_action('storesdk_jwt_after_uninstall_cleanup');
