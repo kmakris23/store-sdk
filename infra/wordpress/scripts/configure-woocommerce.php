@@ -73,6 +73,13 @@ update_option( 'woocommerce_onboarding_profile', [
     'skipped'          => false,
 ] );
 
+// Ensure store is fully operational and not in coming soon mode
+update_option( 'woocommerce_store_setup_completed', 'yes' );
+update_option( 'woocommerce_task_list_complete', 'yes' );
+update_option( 'woocommerce_coming_soon', 'no' );  // Disable WooCommerce coming soon mode
+update_option( 'woocommerce_private_link', '' );   // Clear any private store link
+update_option( 'woocommerce_store_pages_only', 'no' );  // Ensure entire site is accessible
+
 // Mark tasks complete (best-effort keys used by recent WooCommerce versions)
 $completed = [ 'store_details','product_types','products','payments','tax','shipping','marketing','appearance' ];
 update_option( 'woocommerce_task_list_tracked_completed_tasks', $completed );
@@ -85,6 +92,12 @@ update_option( 'woocommerce_show_marketplace_suggestions', 'no' );
 update_option( 'woocommerce_show_setup_wizard', 'no' );
 update_option( 'woocommerce_task_list_welcome_modal_dismissed', 'yes' );
 update_option( 'woocommerce_shipping_enabled', 'yes' );
+
+// Additional options to prevent any setup or coming soon screens
+update_option( 'woocommerce_setup_complete', 'yes' );
+update_option( 'woocommerce_onboarding_opt_in', 'no' );
+update_option( 'woocommerce_admin_customize_store_completed', 'yes' );
+update_option( 'woocommerce_onboarding_profile_completed', 'yes' );
 
 // Clear cached gateways so Store API / checkout sees COD immediately
 delete_transient( 'woocommerce_payment_gateways' );

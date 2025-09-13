@@ -50,11 +50,30 @@ else
     --admin_password="${WP_ADMIN_PASSWORD:-admin}" \
     --admin_email="${WP_ADMIN_EMAIL:-admin@example.com}" \
     --skip-email
+  
+  # Immediately after install, ensure basic settings are correct
+  wp option update users_can_register "0" >/dev/null  # Security: disable user registration
 fi
 
 # Ensure correct site URL (useful if re-created containers)
 wp option update siteurl "$SITE_URL" >/dev/null
 wp option update home "$SITE_URL" >/dev/null
+
+# Ensure site is publicly visible and not in maintenance/coming soon mode
+log "Ensuring site visibility settings..."
+wp option update blog_public "1" >/dev/null  # Make site visible to search engines and public
+wp option update maintenance_mode "0" >/dev/null || true  # Disable maintenance mode if option exists
+wp option update coming_soon "0" >/dev/null || true  # Disable coming soon mode if option exists
+
+# Ensure active theme doesn't have coming soon mode enabled
+log "Checking theme settings for coming soon mode..."
+CURRENT_THEME=$(wp theme list --status=active --field=name --format=csv | head -1)
+log "Current active theme: $CURRENT_THEME"
+
+# Check common theme options that might enable coming soon mode
+wp option update "${CURRENT_THEME}_coming_soon" "0" >/dev/null 2>&1 || true
+wp option update "${CURRENT_THEME}_maintenance_mode" "0" >/dev/null 2>&1 || true
+wp option update "theme_mods_${CURRENT_THEME}" "$(wp option get "theme_mods_${CURRENT_THEME}" --format=json 2>/dev/null | jq -r 'if type == "object" then . + {"coming_soon": false, "maintenance_mode": false} else {} end' 2>/dev/null || echo '{}')" >/dev/null 2>&1 || true
 
 log "Ensuring required plugins present (WooCommerce)..."
 
@@ -179,6 +198,16 @@ fi
 log "Setup complete. Site available at: $SITE_URL"
 log "Admin: ${WP_ADMIN_USER:-admin} / ${WP_ADMIN_PASSWORD:-admin}"
 log "Customer: ${TEST_CUSTOMER_USER:-customer} / ${TEST_CUSTOMER_PASSWORD:-customer123}" || true
+
+# Final verification: ensure store is accessible and not showing coming soon page
+log "Verifying store accessibility..."
+HOMEPAGE_CONTENT=$(wp eval 'echo wp_remote_get(home_url())["body"] ?? ""; ' 2>/dev/null || echo "")
+if echo "$HOMEPAGE_CONTENT" | grep -i "coming soon\|under construction\|maintenance" >/dev/null 2>&1; then
+  log "[WARN] Store may still be showing coming soon page. Manual verification recommended."
+  log "[WARN] Check: wp option get blog_public, active plugins, and theme settings"
+else
+  log "✅ Store appears to be accessible (no coming soon content detected)"
+fi
 
 # Always attempt seeding once (guarded internally by option) if WooCommerce active
 if wp plugin is-active woocommerce >/dev/null 2>&1; then
