@@ -52,7 +52,6 @@ else
     --skip-email
   
   # Immediately after install, ensure basic settings are correct
-  wp option update blog_public "1" >/dev/null  # Ensure site is public
   wp option update users_can_register "0" >/dev/null  # Security: disable user registration
 fi
 
