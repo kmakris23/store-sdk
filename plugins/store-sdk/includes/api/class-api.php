@@ -264,6 +264,14 @@ class Store_SDK_API {
 
 		$refresh = $this->jwt->issue_refresh_token($user->ID, $refresh_ttl);
 
+		if (is_wp_error($refresh)) {
+			return new WP_REST_Response(array(
+				'code'    => 'refresh_token_failed',
+				'message' => 'Failed to issue refresh token: ' . $refresh->get_error_message(),
+				'data'    => array('status' => 500)
+			), 500);
+		}
+
 		return new WP_REST_Response(array(
 			'token'              => $token,
 			'token_type'         => 'Bearer',
