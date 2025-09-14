@@ -143,12 +143,9 @@ describe('Integration: Auth', () => {
     await new Promise((r) => setTimeout(r, 3000));
 
     // 3) Call a protected WP endpoint; initial 401 should be auto-refreshed and retried
-    //    /wp/v2/users/me requires authentication
-    // const res = await httpClient.get('/wp-json/wp/v2/users/me');
     const { data: cartData } = await StoreSdk.store.cart.get();
 
-    // If the refresh interceptor worked, we should have a 200 and user data
-    // expect(res.status).toBe(200);
+    // If the refresh interceptor worked, we should have a 200 and cart data
     expect(cartData).toBeTruthy();
     expect(tokenStore.token).toBeTruthy();
     expect(tokenStore.token).not.toBe(oldToken); // token must rotate after refresh
