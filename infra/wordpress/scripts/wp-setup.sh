@@ -150,14 +150,6 @@ if ! grep -q 'SIMPLE_JWT_LOGIN_SECRET_KEY' wp-config.php; then
   log "Adding SIMPLE_JWT_LOGIN_SECRET_KEY to wp-config.php"
   echo "define('SIMPLE_JWT_LOGIN_SECRET_KEY', '$(printf %q "${JWT_SECRET:-change_me}")');" >> wp-config.php
 fi
-if ! grep -q 'STORESDK_JWT_ENABLED' wp-config.php; then
-  log "Adding STORESDK_JWT_ENABLED to wp-config.php"
-  echo "define('STORESDK_JWT_ENABLED', true);" >> wp-config.php
-fi
-if ! grep -q 'STORESDK_JWT_SECRET' wp-config.php; then
-  log "Adding STORESDK_JWT_SECRET to wp-config.php (re-uses JWT_SECRET env)"
-  echo "define('STORESDK_JWT_SECRET', '$(printf %q "${JWT_SECRET:-change_me}")');" >> wp-config.php
-fi
 if ! grep -q 'STORESDK_JWT_FORCE_AUTH_ENDPOINTS' wp-config.php; then
   log "Adding STORESDK_JWT_FORCE_AUTH_ENDPOINTS to wp-config.php for testing"
   echo "define('STORESDK_JWT_FORCE_AUTH_ENDPOINTS', 'wp-json/store-sdk/v1/test/cart-protected');" >> wp-config.php
