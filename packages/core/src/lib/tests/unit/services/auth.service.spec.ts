@@ -350,5 +350,94 @@ describe('AuthService', () => {
         )}&redirect=https%3A%2F%2Fexample.com%2Fdashboard`
       );
     });
+
+    it('generates auto-login URL with tracking parameters', async () => {
+      const mockToken = 'test-jwt-token-123';
+      const redirect = 'https://example.com/dashboard';
+      const trackingParams = {
+        utm_source: 'email',
+        utm_medium: 'newsletter',
+        utm_campaign: 'winter-sale',
+        customer_id: 'CUST123',
+      };
+
+      const result = await service.getAutoLoginUrl(
+        mockToken,
+        redirect,
+        trackingParams
+      );
+
+      expect(result).toBe(
+        'https://example.com/wp-json/store-sdk/v1/auth/autologin?token=test-jwt-token-123&redirect=https%3A%2F%2Fexample.com%2Fdashboard&utm_source=email&utm_medium=newsletter&utm_campaign=winter-sale&customer_id=CUST123'
+      );
+    });
+
+    it('generates auto-login URL with tracking parameters containing special characters', async () => {
+      const mockToken = 'test-token';
+      const redirect = 'https://example.com/dashboard';
+      const trackingParams = {
+        utm_source: 'google ads',
+        utm_content: 'click here!',
+        special_chars: 'value with spaces & symbols',
+      };
+
+      const result = await service.getAutoLoginUrl(
+        mockToken,
+        redirect,
+        trackingParams
+      );
+
+      expect(result).toBe(
+        'https://example.com/wp-json/store-sdk/v1/auth/autologin?token=test-token&redirect=https%3A%2F%2Fexample.com%2Fdashboard&utm_source=google%20ads&utm_content=click%20here%21&special_chars=value%20with%20spaces%20%26%20symbols'
+      );
+    });
+
+    it('generates auto-login URL with numeric and boolean tracking parameters', async () => {
+      const mockToken = 'test-token';
+      const redirect = 'https://example.com/dashboard';
+      const trackingParams = {
+        user_id: 12345,
+        is_premium: true,
+        discount_rate: 0.15,
+        active: false,
+      };
+
+      const result = await service.getAutoLoginUrl(
+        mockToken,
+        redirect,
+        trackingParams
+      );
+
+      expect(result).toBe(
+        'https://example.com/wp-json/store-sdk/v1/auth/autologin?token=test-token&redirect=https%3A%2F%2Fexample.com%2Fdashboard&user_id=12345&is_premium=true&discount_rate=0.15&active=false'
+      );
+    });
+
+    it('generates auto-login URL with empty tracking parameters', async () => {
+      const mockToken = 'test-token';
+      const redirect = 'https://example.com/dashboard';
+      const trackingParams = {};
+
+      const result = await service.getAutoLoginUrl(
+        mockToken,
+        redirect,
+        trackingParams
+      );
+
+      expect(result).toBe(
+        'https://example.com/wp-json/store-sdk/v1/auth/autologin?token=test-token&redirect=https%3A%2F%2Fexample.com%2Fdashboard'
+      );
+    });
+
+    it('generates auto-login URL without tracking parameters (backward compatibility)', async () => {
+      const mockToken = 'test-token';
+      const redirect = 'https://example.com/dashboard';
+
+      const result = await service.getAutoLoginUrl(mockToken, redirect);
+
+      expect(result).toBe(
+        'https://example.com/wp-json/store-sdk/v1/auth/autologin?token=test-token&redirect=https%3A%2F%2Fexample.com%2Fdashboard'
+      );
+    });
   });
 });

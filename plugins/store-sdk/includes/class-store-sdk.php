@@ -54,6 +54,13 @@ final class Store_SDK {
 	public $api;
 
 	/**
+	 * Tracking handler instance.
+	 *
+	 * @var Store_SDK_Tracking
+	 */
+	public $tracking;
+
+	/**
 	 * Admin handler instance.
 	 *
 	 * @var Store_SDK_Admin
@@ -148,7 +155,8 @@ final class Store_SDK {
 		include_once STORESDK_ABSPATH . 'includes/class-jwt.php';
 		include_once STORESDK_ABSPATH . 'includes/class-auth.php';
 		include_once STORESDK_ABSPATH . 'includes/api/class-api.php';
-
+		include_once STORESDK_ABSPATH . 'includes/class-tracking.php';
+		
 		if ($this->is_request('admin')) {
 			include_once STORESDK_ABSPATH . 'includes/admin/class-admin.php';
 		}
@@ -169,6 +177,7 @@ final class Store_SDK {
 		$this->jwt = new Store_SDK_JWT();
 		$this->auth = new Store_SDK_Auth();
 		$this->api = new Store_SDK_API();
+		$this->tracking = new Store_SDK_Tracking();
 
 		if ($this->is_request('admin')) {
 			$this->admin = new Store_SDK_Admin();

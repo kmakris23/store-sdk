@@ -29,8 +29,6 @@ services:
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE:-wordpress}
       JWT_SECRET: ${JWT_SECRET:-local_dev_secret_please_change}
       WORDPRESS_CONFIG_EXTRA: |
-        define('WP_DEBUG', true);
-        define('WP_DEBUG_LOG', true);
         define('WP_ENVIRONMENT_TYPE', 'local');
         define('STORESDK_JWT_ENABLED', true);
         define('STORESDK_JWT_SECRET', getenv('JWT_SECRET') ?: 'change_me');

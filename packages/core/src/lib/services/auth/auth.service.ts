@@ -20,10 +20,15 @@ import qs from 'qs';
 export class AuthService extends BaseService {
   private readonly endpoint = 'wp-json/store-sdk/v1/auth';
 
-  async getAutoLoginUrl(ott: string, redirect: string) {
+  async getAutoLoginUrl(
+    ott: string,
+    redirect: string,
+    trackingParams?: Record<string, string | number | boolean>
+  ) {
     const params = qs.stringify({
       token: ott,
       redirect: redirect,
+      ...(trackingParams ?? []),
     });
 
     const url = `${this.config.baseUrl}/${this.endpoint}/autologin`;

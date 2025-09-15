@@ -2,6 +2,7 @@ export * from './lib/sdk.js';
 export * from './lib/configs/sdk.config.js';
 
 export * from './lib/types/store/index.js';
+export * from './lib/types/auth/index.js';
 
 export * from './lib/configs/index.js';
 
