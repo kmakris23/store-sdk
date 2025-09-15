@@ -54,11 +54,25 @@ final class Store_SDK {
 	public $api;
 
 	/**
+	 * Tracking handler instance.
+	 *
+	 * @var Store_SDK_Tracking
+	 */
+	public $tracking;
+
+	/**
 	 * Admin handler instance.
 	 *
 	 * @var Store_SDK_Admin
 	 */
 	public $admin;
+
+	/**
+	 * Flag to track if plugin has been initialized.
+	 *
+	 * @var bool
+	 */
+	private $initialized = false;
 
 	/**
 	 * Main Store SDK Instance.
@@ -80,10 +94,16 @@ final class Store_SDK {
 	 * Store SDK Constructor.
 	 */
 	public function __construct() {
+		// Prevent double initialization
+		if ($this->initialized) {
+			return;
+		}
+
 		$this->define_constants();
 		$this->includes();
 		$this->init_hooks();
-
+		
+		$this->initialized = true;
 		do_action('storesdk_loaded');
 	}
 
@@ -148,7 +168,8 @@ final class Store_SDK {
 		include_once STORESDK_ABSPATH . 'includes/class-jwt.php';
 		include_once STORESDK_ABSPATH . 'includes/class-auth.php';
 		include_once STORESDK_ABSPATH . 'includes/api/class-api.php';
-
+		include_once STORESDK_ABSPATH . 'includes/class-tracking.php';
+		
 		if ($this->is_request('admin')) {
 			include_once STORESDK_ABSPATH . 'includes/admin/class-admin.php';
 		}
@@ -169,6 +190,7 @@ final class Store_SDK {
 		$this->jwt = new Store_SDK_JWT();
 		$this->auth = new Store_SDK_Auth();
 		$this->api = new Store_SDK_API();
+		$this->tracking = new Store_SDK_Tracking();
 
 		if ($this->is_request('admin')) {
 			$this->admin = new Store_SDK_Admin();

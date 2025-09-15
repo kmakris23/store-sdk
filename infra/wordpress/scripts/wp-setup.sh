@@ -75,7 +75,7 @@ wp option update "${CURRENT_THEME}_coming_soon" "0" >/dev/null 2>&1 || true
 wp option update "${CURRENT_THEME}_maintenance_mode" "0" >/dev/null 2>&1 || true
 wp option update "theme_mods_${CURRENT_THEME}" "$(wp option get "theme_mods_${CURRENT_THEME}" --format=json 2>/dev/null | jq -r 'if type == "object" then . + {"coming_soon": false, "maintenance_mode": false} else {} end' 2>/dev/null || echo '{}')" >/dev/null 2>&1 || true
 
-log "Ensuring required plugins present (WooCommerce)..."
+log "Ensuring required plugins present (WooCommerce, Database Manager – WP Adminer)..."
 
 install_with_retry() {
   local plugin=$1
@@ -99,7 +99,26 @@ install_with_retry() {
   return 1
 }
 
+log "Ensuring Database Manager – WP Adminer plugin present..."
+if wp plugin is-installed pexlechris-adminer >/dev/null 2>&1; then
+  # Activate if not active
+  if ! wp plugin is-active pexlechris-adminer >/dev/null 2>&1; then
+    wp plugin activate pexlechris-adminer || true
+  fi
+else
+  VERSION_FLAG=""
+  if ! install_with_retry pexlechris-adminer "$VERSION_FLAG"; then
+    fail "Database Manager – WP Adminer failed to install after retries. Set a compatible version (e.g. 9.x) and re-run."
+  fi
+fi
+
+# Validate Database Manager – WP Adminer active
+if ! wp plugin is-active pexlechris-adminer >/dev/null 2>&1; then
+  fail "Database Manager – WP Adminer plugin not active after installation attempts."
+fi
+
 # WooCommerce
+log "Ensuring WooCommerce plugin present..."
 if wp plugin is-installed woocommerce >/dev/null 2>&1; then
   # Activate if not active
   if ! wp plugin is-active woocommerce >/dev/null 2>&1; then
@@ -146,16 +165,35 @@ if [ "$CURRENT_PERMALINK" != "/%postname%/" ]; then
 fi
 
 # Ensure JWT secret constants present in wp-config.php (WordPress image supports appending)
-if ! grep -q 'SIMPLE_JWT_LOGIN_SECRET_KEY' wp-config.php; then
-  log "Adding SIMPLE_JWT_LOGIN_SECRET_KEY to wp-config.php"
-  echo "define('SIMPLE_JWT_LOGIN_SECRET_KEY', '$(printf %q "${JWT_SECRET:-change_me}")');" >> wp-config.php
-fi
 if ! grep -q 'STORESDK_JWT_FORCE_AUTH_ENDPOINTS' wp-config.php; then
   log "Adding STORESDK_JWT_FORCE_AUTH_ENDPOINTS to wp-config.php for testing"
   echo "define('STORESDK_JWT_FORCE_AUTH_ENDPOINTS', 'wp-json/store-sdk/v1/test/cart-protected');" >> wp-config.php
 else
   log "STORESDK_JWT_FORCE_AUTH_ENDPOINTS already exists in wp-config.php"
 fi
+
+# Ensure debug mode is properly configured and debug log file exists
+log "Ensuring debug mode is enabled and debug log is writable..."
+
+# Comment out the default WordPress Docker debug line to avoid conflicts
+if grep -q "define( 'WP_DEBUG', !!getenv_docker('WORDPRESS_DEBUG', '') );" wp-config.php; then
+  log "Commenting out default Docker debug line to avoid conflicts"
+  sed -i "s/define( 'WP_DEBUG', !!getenv_docker('WORDPRESS_DEBUG', '') );/\/\/ define( 'WP_DEBUG', !!getenv_docker('WORDPRESS_DEBUG', '') ); \/\/ Commented out by setup script/" wp-config.php
+fi
+
+if ! grep -q "define('WP_DEBUG', true);" wp-config.php; then
+  log "Adding debug settings to wp-config.php"
+  echo "define('WP_DEBUG', true);" >> wp-config.php
+  echo "define('WP_DEBUG_LOG', true);" >> wp-config.php
+  echo "define('WP_DEBUG_DISPLAY', true);" >> wp-config.php
+else
+  log "Debug settings already exist in wp-config.php"
+fi
+
+# Create debug log file with proper permissions
+touch wp-content/debug.log
+chmod 666 wp-content/debug.log
+log "Debug log file created and made writable"
 
 # ---------------------------------------------------------------------------
 # Verify Store SDK JWT plugin presence & REST route registration

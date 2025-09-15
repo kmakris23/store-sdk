@@ -47,6 +47,25 @@ $storesdk_defaults = array(
 	'STORESDK_JWT_CORS_ALLOW_CREDENTIALS' => true,
 	'STORESDK_JWT_CORS_ALLOW_METHODS' => 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
 	'STORESDK_JWT_CORS_ALLOW_HEADERS' => 'Authorization, Content-Type, cart-token',
+
+	'STORESDK_TRACKING_ENABLE' => true,
+	'STORESDK_TRACKING_WHITELISTED_PARAMS' => [],
+	'STORESDK_TRACKING_WHITELISTED_PATHS' => [],
+	'STORESDK_TRACKING_UNSET_ON_ORDER' => true,
+	'STORESDK_TRACKING_SESSION_KEY' => '_storesdk_tracking',
+	'STORESDK_TRACKING_EXPIRY_TIME' => 86400, // 24 hours in seconds
+	/** Example:
+	 * 
+	 * 'STORESDK_TRACKING_ADMIN_COLUMNS' => [
+	 * 		[{key}, '{column name}', '{position after column}', {default value}]
+	 * 		['_store_sdk_source', 'SDK Source', 'order_status', 'Web']
+	 * ],
+	 * 
+	 */
+	'STORESDK_TRACKING_ADMIN_COLUMNS' => [
+		['_store_sdk_source', 'SDK Source', 'order_status', 'Web']
+	],
+	'STORESDK_TRACKING_ADMIN_COLUMNS_AFTER' => 'order_status',
 );
 
 foreach ($storesdk_defaults as $constant => $default_value) {
