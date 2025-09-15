@@ -15,6 +15,7 @@
     "tests:flow": "npx vitest run src/lib/tests/flow",
     "wp:env:up:detached": "docker compose -f infra/wordpress/docker-compose.yml up -d",
     "wp:env:up": "docker compose -f infra/wordpress/docker-compose.yml up -d db wp && docker compose -f infra/wordpress/docker-compose.yml run --rm wpcli",
+    "wp:env:up:minimal": "docker compose -f infra/wordpress/docker-compose.yml up -d db wp && docker compose -f infra/wordpress/docker-compose.yml run --rm -e WP_SETUP_SCRIPT=wp-setup-minimal.sh wpcli",
     "wp:env:down": "docker compose -f infra/wordpress/docker-compose.yml down",
     "wp:env:clean": "docker compose -f infra/wordpress/docker-compose.yml down -v --remove-orphans",
     "wp:env:rebuild": "npm run wp:env:clean && npm run wp:env:up",
@@ -26,6 +27,10 @@
     "wp:plugin:publish": "node scripts/wp-publish.mjs publish",
     "wp:plugin:validate": "node scripts/wp-publish.mjs validate",
     "wp:plugin:version": "node scripts/wp-publish.mjs version",
+    "wp:plugin:check": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check store-sdk --format=table",
+    "wp:plugin:check:json": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check store-sdk --format=json",
+    "wp:plugin:check:summary": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check store-sdk --format=summary",
+    "wp:plugin:check:verbose": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check store-sdk --format=table --severity=info",
     "release": "npx nx release",
     "release:alpha": "npx nx release prerelease --preid alpha"
   },
@@ -97,10 +102,13 @@
   "nx": {
     "includedScripts": [
       "wp:env:up",
+      "wp:env:up:minimal",
       "wp:env:down",
       "wp:env:clean",
       "wp:env:logs",
-      "wp:cli"
+      "wp:cli",
+      "wp:plugin:check",
+      "wp:plugin:check:verbose"
     ]
   }
 }

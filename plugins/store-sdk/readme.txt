@@ -1,18 +1,22 @@
 === Store SDK ===
-Contributors: storesdk
-Tags: jwt, authentication, woocommerce, headless, api, rest-api, token, cors
+Contributors: storesdk, kmakris23
+Donate link: https://github.com/sponsors/kmakris23
+Tags: woocommerce, jwt, authentication, headless, api
 Requires at least: 6.3
-Tested up to: 6.6
+Tested up to: 6.8
 Requires PHP: 8.0
 Stable tag: 1.0.0
-License: MIT
-License URI: https://opensource.org/licenses/MIT
+License: GPL v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Network: true
 
 Comprehensive JWT authentication plugin for headless WooCommerce integrations with token management, CORS support, and security features.
 
 == Description ==
 
-Store SDK is a robust WordPress plugin that provides secure JWT-based authentication endpoints specifically designed for headless WooCommerce applications. It seamlessly integrates with the `@store-sdk/core` package to deliver a complete authentication solution.
+Store SDK is a robust WordPress plugin that provides secure JWT-based authentication endpoints specifically designed for headless WooCommerce applications. It seamlessly integrates with the `@store-sdk/core` package to deliver a complete authentication solution for modern e-commerce development.
+
+**Transform your WooCommerce store into a headless powerhouse** with enterprise-grade JWT authentication, automatic token management, and bulletproof security features.
 
 **Key Features:**
 
@@ -97,13 +101,6 @@ Yes, the plugin is fully compatible with WordPress multisite installations.
 = How do I get support? =
 For technical support and feature requests, please visit our GitHub repository or contact our support team.
 
-== Screenshots ==
-
-1. Admin configuration notice showing setup status
-2. Plugin activation and configuration validation
-3. API endpoint documentation in WordPress admin
-4. Security settings and token management options
-
 == Configuration ==
 
 The plugin offers extensive configuration options via WordPress constants:
@@ -164,3 +161,49 @@ See the full documentation in the plugin's README.md file.
 
 = 1.0.0 =
 Initial release of Store SDK. Configure your JWT secret key after activation for security.
+
+== Support ==
+
+**Need Help?**
+* 📖 [Documentation](https://github.com/kmakris23/store-sdk/wiki)
+* 🐛 [Report Issues](https://github.com/kmakris23/store-sdk/issues)
+* 💬 [Community Support](https://github.com/kmakris23/store-sdk/discussions)
+* 🚀 [Feature Requests](https://github.com/kmakris23/store-sdk/issues/new?template=feature_request.md)
+
+**Professional Support**
+For enterprise support, custom integrations, or consulting services, please contact us through our GitHub repository.
+
+== Privacy and Data ==
+
+Store SDK respects your privacy and follows WordPress best practices:
+
+* **No Data Collection**: The plugin does not collect or transmit any personal data
+* **Local Storage Only**: All tokens and configurations are stored locally in your WordPress database
+* **GDPR Compliant**: No external services or data sharing
+* **Clean Uninstall**: Complete removal of all plugin data when uninstalled
+
+== Third Party Services ==
+
+This plugin does not connect to any third-party services. All authentication processing happens locally on your WordPress installation.
+
+== Developer Information ==
+
+**Hooks & Actions Available:**
+* `storesdk_jwt_auth_loaded` - Fired when plugin is fully loaded
+* `storesdk_jwt_token_issued` - Fired when a token is issued
+* `storesdk_jwt_token_refreshed` - Fired when a token is refreshed
+* `storesdk_jwt_token_revoked` - Fired when a token is revoked
+
+**Filters Available:**
+* `storesdk_jwt_token_payload` - Modify token payload before encoding
+* `storesdk_jwt_access_ttl` - Customize access token TTL
+* `storesdk_jwt_cors_allowed_origins` - Modify CORS allowed origins
+
+**GitHub Repository:** [https://github.com/kmakris23/store-sdk](https://github.com/kmakris23/store-sdk)
+
+== Credits ==
+
+* **Lead Developer**: [Konstantinos Makris](https://github.com/kmakris23)
+* **Framework**: WordPress REST API
+* **License**: MIT License
+* **Contributing**: Pull requests welcome on GitHub

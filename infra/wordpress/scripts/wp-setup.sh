@@ -75,7 +75,7 @@ wp option update "${CURRENT_THEME}_coming_soon" "0" >/dev/null 2>&1 || true
 wp option update "${CURRENT_THEME}_maintenance_mode" "0" >/dev/null 2>&1 || true
 wp option update "theme_mods_${CURRENT_THEME}" "$(wp option get "theme_mods_${CURRENT_THEME}" --format=json 2>/dev/null | jq -r 'if type == "object" then . + {"coming_soon": false, "maintenance_mode": false} else {} end' 2>/dev/null || echo '{}')" >/dev/null 2>&1 || true
 
-log "Ensuring required plugins present (WooCommerce, Database Manager – WP Adminer)..."
+log "Ensuring required plugins present (WooCommerce, Database Manager – WP Adminer, Plugin Check)..."
 
 install_with_retry() {
   local plugin=$1
@@ -98,6 +98,26 @@ install_with_retry() {
   done
   return 1
 }
+
+log "Ensuring Plugin Check plugin present..."
+if wp plugin is-installed plugin-check >/dev/null 2>&1; then
+  # Activate if not active
+  if ! wp plugin is-active plugin-check >/dev/null 2>&1; then
+    wp plugin activate plugin-check || true
+  fi
+else
+  VERSION_FLAG=""
+  if ! install_with_retry plugin-check "$VERSION_FLAG"; then
+    log "[WARN] Plugin Check failed to install after retries. This is optional for development."
+  fi
+fi
+
+# Validate Plugin Check active (non-critical)
+if wp plugin is-active plugin-check >/dev/null 2>&1; then
+  log "✅ Plugin Check plugin is active and ready for use"
+else
+  log "[WARN] Plugin Check plugin not active - manual plugin checking won't be available"
+fi
 
 log "Ensuring Database Manager – WP Adminer plugin present..."
 if wp plugin is-installed pexlechris-adminer >/dev/null 2>&1; then

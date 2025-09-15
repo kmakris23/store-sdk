@@ -209,7 +209,7 @@ final class Store_SDK {
 
 		unload_textdomain('store-sdk');
 		load_textdomain('store-sdk', WP_LANG_DIR . '/store-sdk/store-sdk-' . $locale . '.mo');
-		load_plugin_textdomain('store-sdk', false, dirname(STORESDK_PLUGIN_BASENAME) . '/languages');
+		// WordPress automatically loads plugin translations from WordPress.org since 4.6
 	}
 
 	/**

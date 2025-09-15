@@ -114,7 +114,7 @@ class Store_SDK_Admin {
 		if (!empty($steps)) {
 			echo '<ul style="margin-left:20px;list-style:disc;">';
 			foreach ($steps as $step) {
-				echo '<li>' . $this->format_step_html($step) . '</li>';
+				echo '<li>' . wp_kses_post($this->format_step_html($step)) . '</li>';
 			}
 			echo '</ul>';
 		}
@@ -138,6 +138,7 @@ class Store_SDK_Admin {
 		if (!$config['flag_defined']) {
 			$steps[] = array(
 				'type' => 'code',
+				/* translators: %s: PHP code snippet to define JWT enabled flag */
 				'text' => __('Required: Add %s.', 'store-sdk'),
 				'code' => "define('STORESDK_JWT_ENABLED', true);"
 			);
@@ -146,6 +147,7 @@ class Store_SDK_Admin {
 		if (!$config['secret_defined']) {
 			$steps[] = array(
 				'type' => 'code',
+				/* translators: %s: PHP code snippet to define JWT secret */
 				'text' => __('Required: Add %s.', 'store-sdk'),
 				'code' => "define('STORESDK_JWT_SECRET', 'REPLACE_WITH_RANDOM_48_CHARS');"
 			);
