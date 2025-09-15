@@ -170,7 +170,7 @@ class Store_SDK_Tracking {
 		
 		// Parse visible columns and group by position
 		foreach ($visible_columns as $column_config) {
-			// Only support new format: [key, title, position]
+			// Support format: [key, title, position] or [key, title, position, default_value]
 			if (is_array($column_config) && count($column_config) >= 3) {
 				$param_key = $column_config[0];
 				$column_title = $column_config[1];
@@ -232,11 +232,16 @@ class Store_SDK_Tracking {
 		
 		// Check if this parameter key is configured
 		$is_valid_column = false;
+		$default_value = null;
 		foreach ($visible_columns as $column_config) {
 			if (is_array($column_config) && count($column_config) >= 3) {
 				$config_key = $column_config[0];
 				if ($config_key === $param_key) {
 					$is_valid_column = true;
+					// Check if default value is provided (4th parameter)
+					if (count($column_config) >= 4) {
+						$default_value = $column_config[3];
+					}
 					break;
 				}
 			}
@@ -253,7 +258,12 @@ class Store_SDK_Tracking {
 		if (!empty($tracking_data) && is_array($tracking_data) && isset($tracking_data[$param_key])) {
 			echo esc_html($tracking_data[$param_key]);
 		} else {
-			echo '<span style="color: #999;">—</span>';
+			// Use default value if provided, otherwise show dash
+			if ($default_value !== null) {
+				echo esc_html($default_value);
+			} else {
+				echo '<span style="color: #999;">—</span>';
+			}
 		}
 	}
 
@@ -271,11 +281,16 @@ class Store_SDK_Tracking {
 		
 		// Check if this parameter key is configured
 		$is_valid_column = false;
+		$default_value = null;
 		foreach ($visible_columns as $column_config) {
 			if (is_array($column_config) && count($column_config) >= 3) {
 				$config_key = $column_config[0];
 				if ($config_key === $param_key) {
 					$is_valid_column = true;
+					// Check if default value is provided (4th parameter)
+					if (count($column_config) >= 4) {
+						$default_value = $column_config[3];
+					}
 					break;
 				}
 			}
@@ -292,7 +307,12 @@ class Store_SDK_Tracking {
 		if (!empty($tracking_data) && is_array($tracking_data) && isset($tracking_data[$param_key])) {
 			echo esc_html($tracking_data[$param_key]);
 		} else {
-			echo '<span style="color: #999;">—</span>';
+			// Use default value if provided, otherwise show dash
+			if ($default_value !== null) {
+				echo esc_html($default_value);
+			} else {
+				echo '<span style="color: #999;">—</span>';
+			}
 		}
 	}
 }

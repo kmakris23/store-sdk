@@ -57,12 +57,13 @@ $storesdk_defaults = array(
 	/** Example:
 	 * 
 	 * 'STORESDK_TRACKING_ADMIN_COLUMNS' => [
-	 * 		['_store_sdk_source', 'SDK Source', 'order_status']
+	 * 		[{key}, '{column name}', '{position after column}', {default value}]
+	 * 		['_store_sdk_source', 'SDK Source', 'order_status', 'Web']
 	 * ],
 	 * 
 	 */
 	'STORESDK_TRACKING_ADMIN_COLUMNS' => [
-		['_store_sdk_source', 'SDK Source', 'order_status']
+		['_store_sdk_source', 'SDK Source', 'order_status', 'Web']
 	],
 	'STORESDK_TRACKING_ADMIN_COLUMNS_AFTER' => 'order_status',
 );
