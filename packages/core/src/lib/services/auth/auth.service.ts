@@ -28,7 +28,7 @@ export class AuthService extends BaseService {
     const params = qs.stringify({
       token: ott,
       redirect: redirect,
-      ...(trackingParams ?? []),
+      ...(trackingParams ?? {}),
     });
 
     const url = `${this.config.baseUrl}/${this.endpoint}/autologin`;
