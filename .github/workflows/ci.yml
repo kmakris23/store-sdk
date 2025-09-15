@@ -226,11 +226,11 @@ jobs:
       - name: Install Dependencies
         run: |
           if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
-      - name: Start WordPress Environment
+      - name: Start WordPress Environment (minimal)
         run: |
           set -euo pipefail
-          echo "Provisioning WordPress for plugin check..."
-          npm run wp:env:up
+          echo "Provisioning minimal WordPress for plugin check..."
+          npm run wp:env:up:minimal
       - name: Run WordPress Plugin Check
         run: |
           set -euo pipefail
