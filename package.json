@@ -25,7 +25,9 @@
     "wp:plugin:package": "node ./infra/wordpress/scripts/package-plugin.mjs",
     "wp:plugin:publish": "node scripts/wp-publish.mjs publish",
     "wp:plugin:validate": "node scripts/wp-publish.mjs validate",
-    "wp:plugin:version": "node scripts/wp-publish.mjs version"
+    "wp:plugin:version": "node scripts/wp-publish.mjs version",
+    "release": "npx nx release",
+    "release:alpha": "npx nx release prerelease --preid alpha"
   },
   "devDependencies": {
     "@analogjs/vite-plugin-angular": "~1.20.0",
