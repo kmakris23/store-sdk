@@ -31,21 +31,26 @@ const zipName = 'store-sdk.zip';
 const zipPath = join(distDir, zipName);
 let zipCreated = false;
 
-// Preferred: tar (bsdtar) with -C into buildDir and archive '.' contents
-try {
-  execFileSync('tar', ['-a', '-c', '-f', zipPath, '-C', buildDir, '.'], {
-    stdio: 'inherit',
-  });
-  zipCreated = true;
-} catch (tarErr) {
-  console.warn(
-    '[package-plugin] tar content-only packaging failed:',
-    tarErr?.message || tarErr
-  );
+// On Windows, prioritize PowerShell over tar to avoid drive letter issues
+const isWindows = process.platform === 'win32';
+
+if (!isWindows) {
+  // Preferred on Unix systems: tar (bsdtar) with -C into buildDir and archive '.' contents
+  try {
+    execFileSync('tar', ['-a', '-c', '-f', zipPath, '-C', buildDir, '.'], {
+      stdio: 'inherit',
+    });
+    zipCreated = true;
+  } catch (tarErr) {
+    console.warn(
+      '[package-plugin] tar content-only packaging failed:',
+      tarErr?.message || tarErr
+    );
+  }
 }
 
 if (!zipCreated) {
-  // PowerShell fallback: use wildcard to include children only
+  // PowerShell approach: use wildcard to include children only
   try {
     execFileSync(
       'powershell',
