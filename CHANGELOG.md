@@ -1,3 +1,20 @@
+## 2.0.1-alpha.0 (2025-09-15)
+
+### 🚀 Features
+
+- **store-sdk:** add initialization flag to prevent double initialization in Store SDK ([31cc4cd](https://github.com/kmakris23/store-sdk/commit/31cc4cd))
+- **tracking:** implement tracking functionality and enhance auto-login URL generation ([fa71133](https://github.com/kmakris23/store-sdk/commit/fa71133))
+
+### 🩹 Fixes
+
+- **auth:** correct default value for trackingParams in getAutoLoginUrl method ([ac5641f](https://github.com/kmakris23/store-sdk/commit/ac5641f))
+- **package-plugin:** prioritize PowerShell over tar for Windows packaging ([6655d71](https://github.com/kmakris23/store-sdk/commit/6655d71))
+- **tracking:** sanitize request URI before checking against whitelisted paths ([6f70b45](https://github.com/kmakris23/store-sdk/commit/6f70b45))
+
+### ❤️ Thank You
+
+- kmakris23
+
 # 2.0.0 (2025-09-10)
 
 ### 🚀 Features

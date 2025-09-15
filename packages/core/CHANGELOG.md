@@ -1,3 +1,13 @@
+## 2.0.1-alpha.0 (2025-09-15)
+
+### 🚀 Features
+
+- **tracking:** implement tracking functionality and enhance auto-login URL generation ([fa71133](https://github.com/kmakris23/store-sdk/commit/fa71133))
+
+### 🩹 Fixes
+
+- **auth:** correct default value for trackingParams in getAutoLoginUrl method ([ac5641f](https://github.com/kmakris23/store-sdk/commit/ac5641f))
+
 # 2.0.0 (2025-09-10)
 
 ### 🚀 Features
