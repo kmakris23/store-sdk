@@ -6,8 +6,8 @@ Requires at least: 6.3
 Tested up to: 6.8
 Requires PHP: 8.0
 Stable tag: 1.0.0
-License: MIT
-License URI: https://opensource.org/licenses/MIT
+License: GPL v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Network: true
 
 Comprehensive JWT authentication plugin for headless WooCommerce integrations with token management, CORS support, and security features.
@@ -100,13 +100,6 @@ Yes, the plugin is fully compatible with WordPress multisite installations.
 
 = How do I get support? =
 For technical support and feature requests, please visit our GitHub repository or contact our support team.
-
-== Screenshots ==
-
-1. Plugin configuration dashboard showing JWT settings and security status
-2. WordPress plugins page with Store SDK activation and configuration notice
-3. Complete API documentation with endpoint details and examples
-4. Security dashboard with token management and CORS configuration
 
 == Configuration ==
 

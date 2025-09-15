@@ -6,8 +6,8 @@
  * Version: 1.0.0
  * Author: Store SDK
  * Author URI: https://github.com/kmakris23
- * License: MIT
- * License URI: https://opensource.org/licenses/MIT
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: store-sdk
  * Requires at least: 6.3
  * Requires PHP: 8.0
