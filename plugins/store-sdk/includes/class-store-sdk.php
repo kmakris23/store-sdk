@@ -68,6 +68,13 @@ final class Store_SDK {
 	public $admin;
 
 	/**
+	 * Flag to track if plugin has been initialized.
+	 *
+	 * @var bool
+	 */
+	private $initialized = false;
+
+	/**
 	 * Main Store SDK Instance.
 	 *
 	 * Ensures only one instance of Store SDK is loaded or can be loaded.
@@ -87,10 +94,16 @@ final class Store_SDK {
 	 * Store SDK Constructor.
 	 */
 	public function __construct() {
+		// Prevent double initialization
+		if ($this->initialized) {
+			return;
+		}
+
 		$this->define_constants();
 		$this->includes();
 		$this->init_hooks();
-
+		
+		$this->initialized = true;
 		do_action('storesdk_loaded');
 	}
 

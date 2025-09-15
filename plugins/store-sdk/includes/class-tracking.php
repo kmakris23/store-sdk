@@ -1,12 +1,27 @@
 <?php
+/**
+ * Store SDK Tracking Functionality
+ *
+ * Handles parameter tracking and order attribution.
+ *
+ * @since 1.0.0
+ */
+
 // Exit if accessed directly.
 if (!defined('ABSPATH')) {
 	exit;
 }
 
-
+/**
+ * Store SDK Tracking Class.
+ *
+ * @class Store_SDK_Tracking
+ */
 class Store_SDK_Tracking {
 
+	/**
+	 * Constructor.
+	 */
 	public function __construct() {
 		// Hook to capture query parameters to session
 		add_action('init', [$this, 'capture_to_session'], 20);
