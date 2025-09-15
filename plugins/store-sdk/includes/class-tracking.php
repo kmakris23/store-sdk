@@ -82,7 +82,7 @@ class Store_SDK_Tracking {
 		// Check if current path is whitelisted (if whitelist is not empty)
 		$whitelisted_paths = STORESDK_TRACKING_WHITELISTED_PATHS;
 		if (!empty($whitelisted_paths)) {
-			$current_path = trim(parse_url(esc_url_raw($_SERVER['REQUEST_URI']), PHP_URL_PATH), '/');
+			$current_path = trim(wp_parse_url(esc_url_raw($_SERVER['REQUEST_URI']), PHP_URL_PATH), '/');
 			$path_allowed = false;
 			
 			foreach ($whitelisted_paths as $allowed_path) {

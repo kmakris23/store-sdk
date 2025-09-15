@@ -727,8 +727,8 @@ class Store_SDK_API {
 			return $url;
 		}
 
-		$host = parse_url(home_url(), PHP_URL_HOST);
-		$url_host = parse_url($url, PHP_URL_HOST);
+		$host = wp_parse_url(home_url(), PHP_URL_HOST);
+		$url_host = wp_parse_url($url, PHP_URL_HOST);
 		if ($host && $url_host && strtolower($host) === strtolower($url_host)) {
 			return $url;
 		}
