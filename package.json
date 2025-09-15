@@ -26,6 +26,10 @@
     "wp:plugin:publish": "node scripts/wp-publish.mjs publish",
     "wp:plugin:validate": "node scripts/wp-publish.mjs validate",
     "wp:plugin:version": "node scripts/wp-publish.mjs version",
+    "wp:plugin:check": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check store-sdk --format=table",
+    "wp:plugin:check:json": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check store-sdk --format=json",
+    "wp:plugin:check:summary": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check store-sdk --format=summary",
+    "wp:plugin:check:verbose": "docker compose -f infra/wordpress/docker-compose.yml run --rm -e SKIP_WP_SETUP=1 wpcli wp plugin check store-sdk --format=table --severity=info",
     "release": "npx nx release",
     "release:alpha": "npx nx release prerelease --preid alpha"
   },
@@ -100,7 +104,9 @@
       "wp:env:down",
       "wp:env:clean",
       "wp:env:logs",
-      "wp:cli"
+      "wp:cli",
+      "wp:plugin:check",
+      "wp:plugin:check:verbose"
     ]
   }
 }
