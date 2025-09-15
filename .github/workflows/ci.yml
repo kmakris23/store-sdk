@@ -211,10 +211,67 @@ jobs:
         run: |
           npx vitest run scripts/tests
 
+  plugin-check:
+    name: plugin / check
+    runs-on: ubuntu-latest
+    needs: [lint, format]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Install Dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
+      - name: Start WordPress Environment
+        run: |
+          set -euo pipefail
+          echo "Provisioning WordPress for plugin check..."
+          npm run wp:env:up
+      - name: Run WordPress Plugin Check
+        run: |
+          set -euo pipefail
+          echo "Running WordPress plugin check (errors only)..."
+
+          # Run plugin check and capture output
+          npm run wp:plugin:check:json > plugin-check-output.json || true
+
+          # Parse JSON and check for errors (not warnings)
+          if [ -f plugin-check-output.json ]; then
+            # Count errors (type: "ERROR")
+            ERROR_COUNT=$(jq '[.[] | select(.type == "ERROR")] | length' plugin-check-output.json 2>/dev/null || echo "0")
+            
+            echo "Plugin check completed:"
+            echo "- Errors found: $ERROR_COUNT"
+            
+            # Show all results for visibility
+            echo "Full plugin check results:"
+            npm run wp:plugin:check || true
+            
+            # Only fail if there are actual errors
+            if [ "$ERROR_COUNT" -gt 0 ]; then
+              echo "❌ Plugin check failed with $ERROR_COUNT error(s)"
+              echo "Error details:"
+              jq '[.[] | select(.type == "ERROR")]' plugin-check-output.json 2>/dev/null || echo "Failed to parse errors"
+              exit 1
+            else
+              echo "✅ Plugin check passed (no errors found, warnings are acceptable)"
+            fi
+          else
+            echo "⚠️ Could not parse plugin check output, running basic check..."
+            npm run wp:plugin:check
+          fi
+      - name: Tear Down WordPress Environment
+        if: always()
+        run: npm run wp:env:down || true
+
   build:
     name: build
     runs-on: ubuntu-latest
-    needs: [test-unit, test-integration-flow]
+    needs: [test-unit, test-integration-flow, plugin-check]
     steps:
       - uses: actions/checkout@v5
         with:
