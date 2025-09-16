@@ -1,3 +1,9 @@
+## 2.1.0 (2025-09-16)
+
+### 🚀 Features
+
+- **plugin:** implement tracking functionality ([bf7e738](https://github.com/kmakris23/store-sdk/commit/bf7e738))
+
 ## 2.0.1-alpha.0 (2025-09-15)
 
 ### 🚀 Features
