@@ -35,8 +35,8 @@
     "release:alpha": "npx nx release prerelease --preid alpha"
   },
   "devDependencies": {
-    "@analogjs/vite-plugin-angular": "~1.20.0",
-    "@analogjs/vitest-angular": "~1.20.0",
+    "@analogjs/vite-plugin-angular": "~1.21.0",
+    "@analogjs/vitest-angular": "~1.21.0",
     "@angular-devkit/core": "~20.2.0",
     "@angular-devkit/schematics": "~20.2.0",
     "@angular/build": "~20.2.0",
