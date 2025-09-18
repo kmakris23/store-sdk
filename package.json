@@ -86,7 +86,7 @@
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.10",
     "verdaccio": "^6.0.5",
-    "vite": "6.3.5",
+    "vite": "7.1.6",
     "vitest": "3.2.4"
   },
   "dependencies": {
